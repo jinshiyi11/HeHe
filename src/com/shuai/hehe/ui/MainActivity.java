@@ -1,6 +1,7 @@
-package com.shuai.hehe;
+package com.shuai.hehe.ui;
 
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.shuai.hehe.R;
 
 import android.os.Bundle;
 import android.app.Activity;
