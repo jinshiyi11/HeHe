@@ -7,18 +7,60 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Feed {
 	@SerializedName("id")
-	public int mId;
+	private int mId;
 	
 	@SerializedName("type")
-	public int mType;
+	private int mType;
 	
 	@SerializedName("title")
-	public String mTitle;
+	private String mTitle;
 	
 	@SerializedName("content")
-	public String mContent;
+	private String mContent;
 	
 	@SerializedName("from")
-	public int mFrom;
+	private int mFrom;
 	//public int mState;
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        this.mId = id;
+    }
+
+    public int getType() {
+        return mType;
+    }
+
+    public void setType(int type) {
+        this.mType = type;
+    }
+
+    public String getTitle() {
+        return mTitle;
+    }
+
+    public void setTitle(String title) {
+        this.mTitle = title;
+    }
+
+    public String getContent() {
+        return mContent;
+    }
+
+    public void setContent(String content) {
+        this.mContent = content;
+    }
+
+    public int getFrom() {
+        return mFrom;
+    }
+
+    public void setFrom(int from) {
+        this.mFrom = from;
+    }
+	
+	
 }
