@@ -8,7 +8,7 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
 
-    <application
+    <com.shuai.hehe.HeHeApplication
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -22,6 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
+    </com.shuai.hehe.HeHeApplication>
 
 </manifest>

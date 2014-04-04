@@ -20,6 +20,10 @@ public class Feed {
 	
 	@SerializedName("from")
 	private int mFrom;
+	
+	@SerializedName("showTime")
+	private long mShowTime;
+	
 	//public int mState;
 
     public int getId() {
@@ -60,6 +64,14 @@ public class Feed {
 
     public void setFrom(int from) {
         this.mFrom = from;
+    }
+
+    public long getShowTime() {
+        return mShowTime;
+    }
+
+    public void setShowTime(long showTime) {
+        this.mShowTime = showTime;
     }
 	
 	

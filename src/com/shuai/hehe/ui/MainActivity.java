@@ -1,16 +1,13 @@
 package com.shuai.hehe.ui;
 
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
-import com.shuai.hehe.R;
-
 import android.os.Bundle;
-import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.Window;
 
-public class MainActivity extends Activity {
-	
-	private PullToRefreshListView mListView;
+import com.shuai.hehe.R;
+
+public class MainActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

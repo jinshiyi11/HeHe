@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 标题文字颜色 -->
     <color name="title_color">#fff</color>
+    <!-- 标题栏背景色 -->
     <color name="title_bg_color">#0666ba</color>
+    <!-- 提示性文本的颜色 -->
+    <color name="text_hint_color">#999999</color>
 </resources>

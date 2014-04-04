@@ -4,8 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity" >
-
-    <RelativeLayout
+    
+    <!-- 标题栏 -->
+    <RelativeLayout 
         android:id="@+id/rl_title"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -21,8 +22,10 @@
             android:textColor="@color/title_color" />
 
     </RelativeLayout>
-    
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
+
+    <fragment
+        android:id="@+id/feed_fragment"
+        android:name="com.shuai.hehe.ui.FeedFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
