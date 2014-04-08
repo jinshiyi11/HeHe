@@ -3,6 +3,11 @@ package com.shuai.hehe.data;
 public class Constants {
 	public static boolean DEBUG = true;
 	public static final String SERVER_ADDRESS;
+	
+	/**
+	 * 协议版本号
+	 */
+	public static final String PROTOCOL_VERSION="1.0";
 
 	static {
 		if (DEBUG) {

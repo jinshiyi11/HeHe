@@ -24,6 +24,7 @@ public class UrlHelper {
 		List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
 		params.add(new BasicNameValuePair("id", Long.toString(id)));
 		params.add(new BasicNameValuePair("count", Integer.toString(count)));
+		params.add(new BasicNameValuePair("ver", Constants.PROTOCOL_VERSION));
 
 		return getUrl("getfeeds", params);
 	}
