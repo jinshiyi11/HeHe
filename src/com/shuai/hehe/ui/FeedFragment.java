@@ -1,6 +1,6 @@
 package com.shuai.hehe.ui;
 
-import org.json.JSONArray;
+import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,13 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.google.gson.JsonArray;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
@@ -23,16 +22,33 @@ import com.shuai.hehe.HeHeApplication;
 import com.shuai.hehe.R;
 import com.shuai.hehe.adapter.FeedAdapter;
 import com.shuai.hehe.adapter.FeedAdapter.FeedList;
+import com.shuai.hehe.data.Feed;
+import com.shuai.hehe.protocol.GetFeedsRequest;
 
 public class FeedFragment extends Fragment {
     
     private PullToRefreshListView mListView;
     private FeedList mFeedList=new FeedList(); 
     private FeedAdapter mFeedAdapter;
+    
+    /**
+     * 每次获取的feed个数
+     */
+	private static final int PAGE_COUNT = 30;
+	
+	/**
+	 * 起始feed的id
+	 */
+	private static final int START_ID = -1;
+	
     /**
      * 是否是启动之后的首次请求
      */ 
     private boolean mIsStartRequest=true;
+    
+    /**
+     * 异步请求队列
+     */
     private RequestQueue mRequestQueue;
 
     @Override
@@ -66,23 +82,41 @@ public class FeedFragment extends Fragment {
     	mRequestQueue.cancelAll(this);
 		super.onDestroyView();
 	}
-
-
-
-	private void getData(boolean isPullDown){
-    	String url="http://10.0.2.2:8080/hehe_server/getfeeds";
-    	JsonArrayRequest request=new JsonArrayRequest(url, new Listener<JSONArray>(){
+    
+	private void getData(final boolean isPullDown){
+		long id=START_ID;
+		if(mFeedAdapter.getCount()>0){
+			if (isPullDown) {
+				id=mFeedAdapter.getItem(0).getShowTime();
+			}else{
+				id=mFeedAdapter.getItem(mFeedAdapter.getCount()-1).getShowTime();
+			}
+		}
+		
+		GetFeedsRequest request=new GetFeedsRequest(id,PAGE_COUNT, new Listener<ArrayList<Feed>>(){
 
 			@Override
-			public void onResponse(JSONArray arg0) {
+			public void onResponse(ArrayList<Feed> feedList) {
 				mListView.onRefreshComplete();
+				if(mIsStartRequest){
+					//成功完成首次请求，clear启动时加载的cache数据
+					mFeedAdapter.clear();
+				}
+				
+				if(isPullDown){
+					mFeedList.addAll(0, feedList);
+				}else{
+					mFeedList.addAll(feedList);
+				}
 			}
     		
     	}, new ErrorListener(){
 
 			@Override
-			public void onErrorResponse(VolleyError arg0) {
+			public void onErrorResponse(VolleyError error) {
 				mListView.onRefreshComplete();
+				
+				Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
 			}
     		
     	});

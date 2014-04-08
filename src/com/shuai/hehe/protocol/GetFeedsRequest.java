@@ -14,8 +14,11 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
+import com.google.gson.Gson;
+import com.shuai.hehe.data.AlbumFeed;
 import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.data.FeedType;
+import com.shuai.hehe.data.VideoFeed;
 
 public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
 
@@ -29,23 +32,38 @@ public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
 	        ArrayList<Feed> feedList=new ArrayList<Feed>();
             String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
             
-            JSONArray jsonArray=new JSONArray(jsonString);
-            for(int i=0;i<jsonArray.length();i++){
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                
-                String jsonFeedString=jsonObject.toString();
-                int feedType=jsonObject.getInt("type");
-                switch (feedType) {
-                case FeedType.TYPE_ALBUM:
-                    
-                    break;
-                case FeedType.TYPE_VIDEO:
-                    
-                    break;
-                default:
-                    break;
-                }
-            }
+			JSONArray jsonArray = new JSONArray(jsonString);
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+				String jsonFeedString = jsonObject.toString();
+				int feedType = jsonObject.getInt("type");
+				switch (feedType) {
+				case FeedType.TYPE_ALBUM: {
+					Gson gson = new Gson();
+					AlbumFeed feed = gson.fromJson(jsonFeedString, AlbumFeed.class);
+
+					JSONObject content = new JSONObject(feed.getContent());
+					feed.setThumbImgUrl(content.getString("thumbImgUrl"));
+
+					feedList.add(feed);
+					break;
+				}
+				case FeedType.TYPE_VIDEO: {
+					Gson gson = new Gson();
+					VideoFeed feed = gson.fromJson(jsonFeedString, VideoFeed.class);
+
+					JSONObject content = new JSONObject(feed.getContent());
+					feed.setVideoUrl(content.getString("videoUrl"));
+					feed.setThumbImgUrl(content.getString("thumbImgUrl"));
+
+					feedList.add(feed);
+					break;
+				}
+				default:
+					break;
+				}
+			}
             
             return Response.success(feedList, HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
@@ -53,6 +71,7 @@ public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
         } catch (JSONException je) {
             return Response.error(new ParseError(je));
         } catch (Exception e) {
+        	//TODO:这个是否有必要
             return Response.error(new ParseError(e));
         }
 	}
