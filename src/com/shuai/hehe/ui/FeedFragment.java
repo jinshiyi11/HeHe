@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,6 +27,25 @@ import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.protocol.GetFeedsRequest;
 
 public class FeedFragment extends Fragment {
+    private ViewGroup mNoNetworkContainer;
+    private ViewGroup mLoadingContainer;
+    private ViewGroup mMainContainer;
+    enum Status {
+        /**
+         * 正在加载并且还没有任何数据
+         */
+        STATUS_LOADING,
+        /**
+         * 有数据
+         */
+        STATUS_GOT_DATA,
+        /**
+         * 加载失败并且没有任何数据
+         */
+        STATUS_NO_NETWORK_OR_DATA
+    }
+    
+    private Status mStatus;
     
     private PullToRefreshListView mListView;
     private FeedList mFeedList=new FeedList(); 
@@ -55,6 +75,11 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.feed_fragment, container,false);
         mRequestQueue=HeHeApplication.getRequestQueue();
+        
+        mNoNetworkContainer=(ViewGroup) view.findViewById(R.id.no_network_container);
+        mLoadingContainer=(ViewGroup) view.findViewById(R.id.loading_container);
+        mMainContainer=(ViewGroup) view.findViewById(R.id.main_container);
+        
         mListView=(PullToRefreshListView) view.findViewById(R.id.listview);
         mListView.setMode(Mode.BOTH);
         mFeedAdapter=new FeedAdapter(getActivity(), mFeedList);
@@ -73,6 +98,14 @@ public class FeedFragment extends Fragment {
             }
         });
         
+        mNoNetworkContainer.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                mListView.setRefreshing(false);
+            }
+        });
+        
         mListView.setRefreshing();
         return view;
     }
@@ -83,22 +116,57 @@ public class FeedFragment extends Fragment {
 		super.onDestroyView();
 	}
     
+    private void setStatus(Status status) {
+        mStatus = status;
+        switch (status) {
+        case STATUS_LOADING:
+            mLoadingContainer.setVisibility(View.VISIBLE);
+            mMainContainer.setVisibility(View.GONE);
+            mNoNetworkContainer.setVisibility(View.GONE);
+            break;
+        case STATUS_GOT_DATA:
+            mLoadingContainer.setVisibility(View.GONE);
+            mMainContainer.setVisibility(View.VISIBLE);
+            mNoNetworkContainer.setVisibility(View.GONE);
+            break;
+        case STATUS_NO_NETWORK_OR_DATA:
+            mLoadingContainer.setVisibility(View.GONE);
+            mMainContainer.setVisibility(View.GONE);
+            mNoNetworkContainer.setVisibility(View.VISIBLE);
+            break;
+        default:
+            break;
+        }
+
+    }
+    
 	private void getData(final boolean isPullDown){
-		long id=START_ID;
-		if(mFeedAdapter.getCount()>0){
-			if (isPullDown) {
-				id=mFeedAdapter.getItem(0).getShowTime();
-			}else{
-				id=mFeedAdapter.getItem(mFeedAdapter.getCount()-1).getShowTime();
-			}
-		}
+	    if(mFeedAdapter.getCount()==0){
+	        setStatus(Status.STATUS_LOADING);
+	    }else{
+	        setStatus(Status.STATUS_GOT_DATA);
+	    }
+	    
+        long id = START_ID;
+        int count = PAGE_COUNT * -1;
+        if (!mIsStartRequest && mFeedAdapter.getCount() > 0) {
+            if (isPullDown) {
+                id = mFeedAdapter.getItem(0).getShowTime();
+                count = PAGE_COUNT;
+            } else {
+                id = mFeedAdapter.getItem(mFeedAdapter.getCount() - 1).getShowTime();
+                count = PAGE_COUNT * -1;
+            }
+        }
 		
-		GetFeedsRequest request=new GetFeedsRequest(id,PAGE_COUNT, new Listener<ArrayList<Feed>>(){
+		GetFeedsRequest request=new GetFeedsRequest(id,count, new Listener<ArrayList<Feed>>(){
 
 			@Override
 			public void onResponse(ArrayList<Feed> feedList) {
 				mListView.onRefreshComplete();
+				setStatus(Status.STATUS_GOT_DATA);
 				if(mIsStartRequest){
+				    mIsStartRequest=false;
 					//成功完成首次请求，clear启动时加载的cache数据
 					mFeedAdapter.clear();
 				}
@@ -108,6 +176,7 @@ public class FeedFragment extends Fragment {
 				}else{
 					mFeedList.addAll(feedList);
 				}
+				
 			}
     		
     	}, new ErrorListener(){
@@ -116,6 +185,10 @@ public class FeedFragment extends Fragment {
 			public void onErrorResponse(VolleyError error) {
 				mListView.onRefreshComplete();
 				
+                if (mFeedAdapter.getCount() == 0) {
+                    setStatus(Status.STATUS_NO_NETWORK_OR_DATA);
+                }
+
 				Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
 			}
     		
@@ -124,9 +197,5 @@ public class FeedFragment extends Fragment {
     	request.setTag(this);    	
     	mRequestQueue.add(request);
     }
-
-    
-    
-    
 
 }

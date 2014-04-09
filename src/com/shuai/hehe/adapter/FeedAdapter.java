@@ -5,15 +5,24 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.shuai.hehe.R;
+import com.shuai.hehe.data.AlbumFeed;
 import com.shuai.hehe.data.Feed;
+import com.shuai.hehe.data.FeedType;
+import com.shuai.hehe.data.VideoFeed;
 
 public class FeedAdapter extends ArrayAdapter<Feed> {
     private Context mContext;
     private FeedList mFeeds;
+    private LayoutInflater mInflater;
 
     public static class FeedList extends ArrayList<Feed> {
         //用来快速检测对象是否已存在
@@ -89,12 +98,23 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         super(context, 0, objects);
         mContext = context;
         mFeeds = objects;
+        mInflater=(LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getItemViewType(int position) {
+        int type = IGNORE_ITEM_VIEW_TYPE;
         Feed item = getItem(position);
-        return item.getType();
+        switch (item.getType()) {
+        case FeedType.TYPE_ALBUM:
+            type = 0;
+            break;
+        case FeedType.TYPE_VIDEO:
+            type = 1;
+            break;
+        }
+
+        return type;
     }
 
     @Override
@@ -104,7 +124,71 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return super.getView(position, convertView, parent);
+        View view=null;
+        
+        Feed feed=getItem(position);
+        int type=feed.getType();
+        switch (type) {
+        case FeedType.TYPE_ALBUM:
+            view=getAlbumView(feed,position,convertView,parent);
+            break;
+        case FeedType.TYPE_VIDEO:
+            view=getVideoView(feed,position,convertView,parent);
+            break;
+        default:
+            break;
+        }
+        return view;
+    }
+    
+    class VideoViewHolder{
+        TextView mTvTitle;
+        ImageView mIvThumb;
+    }
+    
+    class AlbumViewHolder{
+        TextView mTvTitle;
+        ImageView mIvThumb;
+    }
+
+    private View getVideoView(Feed feed, int position, View convertView, ViewGroup parent) {
+        VideoFeed info=(VideoFeed) feed;
+        View view=convertView;
+        VideoViewHolder holder;
+        if(view==null){
+            view=mInflater.inflate(R.layout.video_feed_item, parent, false);
+            
+            holder=new VideoViewHolder();
+            holder.mTvTitle=(TextView) view.findViewById(R.id.tv_title);
+            holder.mIvThumb=(ImageView) view.findViewById(R.id.iv_thumb);
+            view.setTag(holder);
+        }else{
+            holder=(VideoViewHolder) view.getTag();
+        }
+        
+        holder.mTvTitle.setText(info.getTitle());
+        ImageLoader.getInstance().displayImage(info.getThumbImgUrl(), holder.mIvThumb);
+        return view;
+    }
+
+    private View getAlbumView(Feed feed, int position, View convertView, ViewGroup parent) {
+        AlbumFeed info=(AlbumFeed) feed;
+        View view=convertView;
+        AlbumViewHolder holder;
+        if(view==null){
+            view=mInflater.inflate(R.layout.album_feed_item, parent, false);
+            
+            holder=new AlbumViewHolder();
+            holder.mTvTitle=(TextView) view.findViewById(R.id.tv_title);
+            holder.mIvThumb=(ImageView) view.findViewById(R.id.iv_thumb);
+            view.setTag(holder);
+        }else{
+            holder=(AlbumViewHolder) view.getTag();
+        }
+        
+        holder.mTvTitle.setText(info.getTitle());
+        ImageLoader.getInstance().displayImage(info.getThumbImgUrl(), holder.mIvThumb);
+        return view;
     }
 
 }
