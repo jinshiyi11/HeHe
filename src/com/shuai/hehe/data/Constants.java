@@ -8,6 +8,9 @@ public class Constants {
 	 * 协议版本号
 	 */
 	public static final String PROTOCOL_VERSION="1.0";
+	
+	public static final String FEED_ID="feed_id";
+	public static final String VIDEO_URL="video_url";
 
 	static {
 		if (DEBUG) {

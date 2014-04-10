@@ -5,8 +5,10 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -15,9 +17,12 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.AlbumFeed;
+import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoFeed;
+import com.shuai.hehe.ui.AlbumActivity;
+import com.shuai.hehe.ui.VideoActivity;
 
 public class FeedAdapter extends ArrayAdapter<Feed> {
     private Context mContext;
@@ -152,7 +157,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
     }
 
     private View getVideoView(Feed feed, int position, View convertView, ViewGroup parent) {
-        VideoFeed info=(VideoFeed) feed;
+        final VideoFeed info=(VideoFeed) feed;
         View view=convertView;
         VideoViewHolder holder;
         if(view==null){
@@ -168,11 +173,21 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         
         holder.mTvTitle.setText(info.getTitle());
         ImageLoader.getInstance().displayImage(info.getThumbImgUrl(), holder.mIvThumb);
+        
+        holder.mIvThumb.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mContext, VideoActivity.class);
+                intent.putExtra(Constants.VIDEO_URL, info.getVideoUrl());
+                mContext.startActivity(intent);
+            }
+        });
         return view;
     }
 
     private View getAlbumView(Feed feed, int position, View convertView, ViewGroup parent) {
-        AlbumFeed info=(AlbumFeed) feed;
+        final AlbumFeed info=(AlbumFeed) feed;
         View view=convertView;
         AlbumViewHolder holder;
         if(view==null){
@@ -188,6 +203,16 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         
         holder.mTvTitle.setText(info.getTitle());
         ImageLoader.getInstance().displayImage(info.getThumbImgUrl(), holder.mIvThumb);
+        
+        holder.mIvThumb.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mContext, AlbumActivity.class);
+                intent.putExtra(Constants.FEED_ID, info.getId());
+                mContext.startActivity(intent);
+            }
+        });
         return view;
     }
 

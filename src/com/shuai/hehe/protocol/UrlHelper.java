@@ -29,4 +29,12 @@ public class UrlHelper {
 		return getUrl("getfeeds", params);
 	}
 
+    public static String getAlbumPicsUrl(int feedId) {
+        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+        params.add(new BasicNameValuePair("feedId", Long.toString(feedId)));
+        params.add(new BasicNameValuePair("ver", Constants.PROTOCOL_VERSION));
+
+        return getUrl("getalbumpics", params);
+    }
+
 }

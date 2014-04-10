@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="transparent_color">#0000</color>
+    <color name="white_color">#ffffffff</color>
+    <color name="black_color">#ff000000</color>
     <!-- 标题文字颜色 -->
     <color name="title_color">#fff</color>
     <!-- 标题栏背景色 -->
