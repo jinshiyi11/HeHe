@@ -7,7 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.Html;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +19,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.shuai.base.view.ExpandableTextView;
 import com.shuai.hehe.HeHeApplication;
 import com.shuai.hehe.R;
 import com.shuai.hehe.adapter.AlbumAdapter;
@@ -26,6 +30,11 @@ import com.shuai.hehe.protocol.GetAlbumPicsRequest;
 public class AlbumActivity extends Activity {
     private TextView mTvPageNum;
     private ViewPager mViewPager;
+    
+    /**
+     * 图片描述
+     */
+    private ExpandableTextView mEtvDesc;
     AlbumAdapter mAlbumAdapter;
     private int mFeedId;
     private ArrayList<PicInfo> mPicInfos;
@@ -46,6 +55,8 @@ public class AlbumActivity extends Activity {
         mTvPageNum=(TextView) findViewById(R.id.tv_pagenum);
         mTvPageNum.setVisibility(View.INVISIBLE);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mEtvDesc=(ExpandableTextView) findViewById(R.id.etv_desc);
+        mEtvDesc.setVisibility(View.INVISIBLE);
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setOnPageChangeListener(new OnPageChangeListener(){
 
@@ -65,6 +76,16 @@ public class AlbumActivity extends Activity {
             }
             
         });
+        
+        mViewPager.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                //TODO:单击隐藏pagenum和图片描述
+                Log.d("ggg", "msg");
+                
+            }
+        });
         Intent intent=getIntent();
         mFeedId=intent.getIntExtra(Constants.FEED_ID, -1);
         
@@ -76,8 +97,10 @@ public class AlbumActivity extends Activity {
 
             @Override
             public void onResponse(ArrayList<PicInfo> response) {
+                mPicInfos=response;
                 mTvPageNum.setVisibility(View.VISIBLE);
-                mAlbumAdapter=new AlbumAdapter(AlbumActivity.this, response);
+                mEtvDesc.setVisibility(View.VISIBLE);
+                mAlbumAdapter=new AlbumAdapter(AlbumActivity.this, mPicInfos);
                 mViewPager.setAdapter(mAlbumAdapter);
                 onPageSelected(0);
             }
@@ -102,6 +125,9 @@ public class AlbumActivity extends Activity {
     private void onPageSelected(int position) {
         if(mAlbumAdapter!=null && mAlbumAdapter.getCount()>0){
             mTvPageNum.setText(String.format("%d/%d", position+1,mAlbumAdapter.getCount()));
+            
+            PicInfo info=mPicInfos.get(position);
+            mEtvDesc.setText(Html.fromHtml(info.getPicDescription()));
         }
     }
 

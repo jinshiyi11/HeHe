@@ -19,7 +19,8 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:text="@string/title"
-            android:textColor="@color/title_color" />
+            android:textColor="@color/title_color"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 

@@ -2,19 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/transparent_color"
     android:orientation="vertical" >
-    
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
 
-    <ImageView
-        android:id="@+id/iv_thumb"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="5dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/feed_item_bg"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/feed_title_margin_bottom"
+            android:layout_marginLeft="@dimen/feed_title_margin_left"
+            android:layout_marginRight="@dimen/feed_title_margin_right"
+            android:layout_marginTop="@dimen/feed_title_margin_top"
+            android:lineSpacingExtra="2.5dp"
+            android:text="TextView"
+            android:textColor="@color/feed_title_color"
+            android:textSize="@dimen/feed_title_size" />
+
+        <ImageView
+            android:id="@+id/iv_thumb"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:scaleType="centerInside" />
+
+    </LinearLayout>
 
 </LinearLayout>

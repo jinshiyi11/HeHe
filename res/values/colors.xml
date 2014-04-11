@@ -11,4 +11,6 @@
     <color name="text_hint_color">#999999</color>
     <color name="feedlist_bg_color">#e6e6e6</color>
     <color name="feed_title_color">#333333</color>
+    <!-- 图片描述的背景颜色 -->
+    <color name="transparent_black_color">#33000000</color>
 </resources>

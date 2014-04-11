@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:expandable="http://schemas.android.com/apk/res/com.shuai.hehe"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/black"
      >
+     
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black" />
 
     <LinearLayout
         android:id="@+id/ll_pagenum"
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:layout_alignParentTop="true"
-        android:background="@android:color/black"
+        android:background="@color/transparent_black_color"
+        android:gravity="center"
         android:orientation="vertical" >
 
         <TextView
@@ -17,19 +26,46 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:background="@android:color/black"
+            android:gravity="center"           
             android:text="1/20"
             android:textColor="@color/white_color"
              />
 
     </LinearLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+    <com.shuai.base.view.ExpandableTextView
+        android:id="@+id/etv_desc"
+        expandable:maxCollapsedLines="2"
+        expandable:expandDrawable="@drawable/ic_expand"
+        expandable:collapseDrawable="@drawable/ic_collapse"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/ll_pagenum"
-        android:background="@android:color/black" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/transparent_black_color" >
+
+        <TextView
+            android:id="@+id/expandable_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:paddingBottom="3dp"
+            android:text="TextView"
+            android:textColor="@color/white_color"
+            android:textSize="15.0sp" />
+
+        <ImageButton
+            android:id="@+id/expand_collapse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:background="@color/transparent_color"
+            android:src="@drawable/ic_expand" />
+
+    </com.shuai.base.view.ExpandableTextView>
+    
+    
 
 </RelativeLayout>

@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Response;
@@ -16,14 +18,19 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
 import com.google.gson.Gson;
 import com.shuai.hehe.data.AlbumFeed;
+import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoFeed;
 
 public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
+    private final String TAG=getClass().getSimpleName();
 
 	public GetFeedsRequest(long id,int count,Listener<ArrayList<Feed>> listener, ErrorListener errorListener) {
 		super(Method.GET, UrlHelper.getFeedsUrl(id, count), null, listener, errorListener);
+		if(Constants.DEBUG){
+		    Log.d(TAG, UrlHelper.getFeedsUrl(id, count));
+		}
 	}
 
 	@Override
@@ -31,6 +38,9 @@ public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
 	    try {
 	        ArrayList<Feed> feedList=new ArrayList<Feed>();
             String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            if(Constants.DEBUG){
+                Log.d(TAG, jsonString);
+            }
             
 			JSONArray jsonArray = new JSONArray(jsonString);
 			for (int i = 0; i < jsonArray.length(); i++) {
