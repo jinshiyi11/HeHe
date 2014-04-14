@@ -6,7 +6,7 @@
     
     <dimen name="feed_title_size">15sp</dimen>
     <dimen name="feed_title_margin_top">8dp</dimen>
-    <dimen name="feed_title_margin_bottom">3dp</dimen>
+    <dimen name="feed_title_margin_bottom">8dp</dimen>
     <dimen name="feed_title_margin_left">8dp</dimen>
     <dimen name="feed_title_margin_right">8dp</dimen>
 

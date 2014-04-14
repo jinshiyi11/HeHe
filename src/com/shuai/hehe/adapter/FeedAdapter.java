@@ -6,15 +6,22 @@ import java.util.HashMap;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.AlbumFeed;
 import com.shuai.hehe.data.Constants;
@@ -28,6 +35,8 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
     private Context mContext;
     private FeedList mFeeds;
     private LayoutInflater mInflater;
+    private DisplayImageOptions mDisplayImageOptions;
+    private ImageLoadingListener mImageLoadingListener;
 
     public static class FeedList extends ArrayList<Feed> {
         //用来快速检测对象是否已存在
@@ -104,6 +113,54 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         mContext = context;
         mFeeds = objects;
         mInflater=(LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        init();
+    }
+    
+    private void init(){
+        mDisplayImageOptions=new DisplayImageOptions.Builder()
+            .cacheInMemory(true)
+            .cacheOnDisc(true)
+            .showImageOnLoading(new ColorDrawable(0xffcccccc))
+            .showImageOnFail(R.drawable.ic_image_load_failed)
+            .build();
+        
+        mImageLoadingListener=new ImageLoadingListener() {
+            
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+                
+            }
+            
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                // TODO Auto-generated method stub
+                
+            }
+            
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                // TODO Auto-generated method stub
+                LayoutParams layoutParams = view.getLayoutParams();
+                int viewWidth = MeasureSpec.getSize(layoutParams.width);
+                int viewHeight = MeasureSpec.getSize(layoutParams.height);
+                
+                if (((double)loadedImage.getWidth()) / loadedImage.getHeight() > ((double)viewWidth) / viewHeight) {
+                    int newHeight=loadedImage.getHeight() *viewWidth/ loadedImage.getWidth();
+                    int mode=MeasureSpec.getMode(viewHeight);
+                    layoutParams.height=MeasureSpec.makeMeasureSpec(newHeight, mode);
+                    view.setLayoutParams(layoutParams);
+                    view.requestLayout();
+                }              
+
+            }
+            
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                // TODO Auto-generated method stub
+                
+            }
+        };
+        
     }
 
     @Override
@@ -172,7 +229,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         }
         
         holder.mTvTitle.setText(info.getTitle());
-        ImageLoader.getInstance().displayImage(info.getThumbImgUrl(), holder.mIvThumb);
+        ImageLoader.getInstance().displayImage(info.getThumbImgUrl(), holder.mIvThumb,mDisplayImageOptions,mImageLoadingListener);
         
         holder.mIvThumb.setOnClickListener(new OnClickListener() {
             
@@ -202,7 +259,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         }
         
         holder.mTvTitle.setText(info.getTitle());
-        ImageLoader.getInstance().displayImage(info.getThumbImgUrl(), holder.mIvThumb);
+        ImageLoader.getInstance().displayImage(info.getThumbImgUrl(), holder.mIvThumb,mDisplayImageOptions,mImageLoadingListener);
         
         holder.mIvThumb.setOnClickListener(new OnClickListener() {
             
@@ -215,5 +272,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         });
         return view;
     }
+    
+    
 
 }
