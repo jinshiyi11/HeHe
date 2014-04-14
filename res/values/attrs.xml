@@ -6,4 +6,9 @@
         <attr name="collapseDrawable" format="reference|color"></attr>
     </declare-styleable>
     
+    <declare-styleable name="NetworkPhotoView">
+        <attr name="progressRadius" format="integer"></attr>
+        <attr name="hintTextSize" format="dimension"></attr>
+    </declare-styleable>
+    
 </resources>
