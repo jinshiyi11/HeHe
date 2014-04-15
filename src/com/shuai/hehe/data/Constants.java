@@ -1,7 +1,7 @@
 package com.shuai.hehe.data;
 
 public class Constants {
-	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 	public static final String SERVER_ADDRESS;
 	
 	/**
@@ -16,7 +16,7 @@ public class Constants {
 		if (DEBUG) {
 			SERVER_ADDRESS = "http://10.0.2.2:8080/hehe_server";
 		} else {
-			SERVER_ADDRESS = "";
+			SERVER_ADDRESS = "http://hehe1.sinaapp.com";
 		}
 	}
 	

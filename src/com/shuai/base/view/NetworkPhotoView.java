@@ -53,7 +53,7 @@ public class NetworkPhotoView extends PhotoView {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (mLoadingProgress > 0 && mLoadingProgress < 100) {
+        if (mLoadingProgress >= 0 && mLoadingProgress < 100) {
             float sweepAngle = (float) (mLoadingProgress / 100.0 * 360);
             
             float centerX=getWidth()/2;

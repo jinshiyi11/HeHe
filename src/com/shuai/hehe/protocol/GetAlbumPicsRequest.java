@@ -55,6 +55,7 @@ public class GetAlbumPicsRequest extends JsonRequest<ArrayList<PicInfo>> {
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
         } catch (Exception e) {
+            //JsonSyntaxException
             //TODO:这个是否有必要
             return Response.error(new ParseError(e));
         }

@@ -198,4 +198,16 @@ public class FeedFragment extends Fragment {
     	mRequestQueue.add(request);
     }
 
+	/**
+	 * 响应单击标题栏
+	 */
+    public void onTitleClicked() {
+        //单击标题栏时返回顶部
+        ListView listView=mListView.getRefreshableView();
+        if(listView.getCount()>0){
+            listView.setSelection(0);
+        }
+  
+    }
+
 }
