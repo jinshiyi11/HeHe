@@ -1,6 +1,5 @@
 package com.shuai.hehe.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnErrorListener;
@@ -13,10 +12,11 @@ import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.shuai.base.view.BaseActivity;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
 
-public class VideoActivity extends Activity {
+public class VideoActivity extends BaseActivity {
     
     private VideoView mVideoView;
 

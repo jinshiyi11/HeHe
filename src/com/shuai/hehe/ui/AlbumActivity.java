@@ -2,7 +2,7 @@ package com.shuai.hehe.ui;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -19,6 +19,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.shuai.base.view.BaseActivity;
 import com.shuai.base.view.ExpandableTextView;
 import com.shuai.hehe.HeHeApplication;
 import com.shuai.hehe.R;
@@ -27,7 +28,8 @@ import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.PicInfo;
 import com.shuai.hehe.protocol.GetAlbumPicsRequest;
 
-public class AlbumActivity extends Activity {
+public class AlbumActivity extends BaseActivity {
+    private Context mContext;
     private TextView mTvPageNum;
     private ViewPager mViewPager;
     
@@ -46,6 +48,7 @@ public class AlbumActivity extends Activity {
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mContext=this;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
@@ -97,12 +100,16 @@ public class AlbumActivity extends Activity {
 
             @Override
             public void onResponse(ArrayList<PicInfo> response) {
-                mPicInfos=response;
-                mTvPageNum.setVisibility(View.VISIBLE);
-                mEtvDesc.setVisibility(View.VISIBLE);
-                mAlbumAdapter=new AlbumAdapter(AlbumActivity.this, mPicInfos);
-                mViewPager.setAdapter(mAlbumAdapter);
-                onPageSelected(0);
+                mPicInfos = response;
+                if (mPicInfos.size() > 0) {
+                    mTvPageNum.setVisibility(View.VISIBLE);
+                    mEtvDesc.setVisibility(View.VISIBLE);
+                    mAlbumAdapter = new AlbumAdapter(AlbumActivity.this, mPicInfos);
+                    mViewPager.setAdapter(mAlbumAdapter);
+                    onPageSelected(0);
+                }else{
+                    Toast.makeText(mContext, R.string.error_data, Toast.LENGTH_LONG).show();
+                }
             }
         }, new ErrorListener() {
 

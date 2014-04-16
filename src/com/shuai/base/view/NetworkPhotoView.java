@@ -70,5 +70,13 @@ public class NetworkPhotoView extends PhotoView {
         mLoadingProgress = progress;
         invalidate();
     }
+    
+    public void onLoadingComplete() {
+        setProgress(100);
+    }
+    
+    public void onLoadingFailed() {
+        setProgress(100);
+    }
 
 }

@@ -82,6 +82,7 @@ public class AlbumAdapter extends PagerAdapter {
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
                 if(view!=null){
                     NetworkPhotoView photoView=(NetworkPhotoView) view;
+                    photoView.onLoadingFailed();
                     photoView.setScaleType(ScaleType.CENTER_INSIDE);
                 }
                 
@@ -91,6 +92,7 @@ public class AlbumAdapter extends PagerAdapter {
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 if(view!=null){
                     NetworkPhotoView photoView=(NetworkPhotoView) view;
+                    photoView.onLoadingComplete();
                     photoView.setScaleType(ScaleType.FIT_CENTER);
                 }
                 
