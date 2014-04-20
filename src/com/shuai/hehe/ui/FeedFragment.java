@@ -2,6 +2,7 @@ package com.shuai.hehe.ui;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -25,8 +26,10 @@ import com.shuai.hehe.adapter.FeedAdapter;
 import com.shuai.hehe.adapter.FeedAdapter.FeedList;
 import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.protocol.GetFeedsRequest;
+import com.shuai.hehe.protocol.ProtocolError;
 
 public class FeedFragment extends Fragment {
+	private Context mContext;
     private ViewGroup mNoNetworkContainer;
     private ViewGroup mLoadingContainer;
     private ViewGroup mMainContainer;
@@ -74,6 +77,7 @@ public class FeedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.feed_fragment, container,false);
+        mContext=getActivity();
         mRequestQueue=HeHeApplication.getRequestQueue();
         
         mNoNetworkContainer=(ViewGroup) view.findViewById(R.id.no_network_container);
@@ -189,9 +193,9 @@ public class FeedFragment extends Fragment {
                     setStatus(Status.STATUS_NO_NETWORK_OR_DATA);
                 }
 
-				Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(), ProtocolError.getErrorMessage(mContext, error), Toast.LENGTH_LONG).show();
 			}
-    		
+			
     	});
     	
     	request.setTag(this);    	

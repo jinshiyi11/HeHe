@@ -27,6 +27,7 @@ import com.shuai.hehe.adapter.AlbumAdapter;
 import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.PicInfo;
 import com.shuai.hehe.protocol.GetAlbumPicsRequest;
+import com.shuai.hehe.protocol.ProtocolError;
 
 public class AlbumActivity extends BaseActivity {
     private Context mContext;
@@ -115,7 +116,7 @@ public class AlbumActivity extends BaseActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(AlbumActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(AlbumActivity.this, ProtocolError.getErrorMessage(AlbumActivity.this, error), Toast.LENGTH_LONG).show();
             }
         });
         

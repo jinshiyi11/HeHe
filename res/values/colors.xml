@@ -3,6 +3,9 @@
     <color name="transparent_color">#0000</color>
     <color name="white_color">#ffffffff</color>
     <color name="black_color">#ff000000</color>
+    
+    <color name="main_menu_bg_color">#ff303537</color>
+    <color name="main_menu_item_split_color">#ff282c2e</color>
     <!-- 标题文字颜色 -->
     <color name="title_color">#fff</color>
     <!-- 标题栏背景色 -->

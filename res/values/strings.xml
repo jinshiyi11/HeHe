@@ -7,6 +7,17 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     
+    <!-- 主菜单 -->
+    <string name="my_fav">我的收藏</string>
+    <string name="feedback">吐槽</string>
+    <string name="about">关于</string>
+    
+    <string name="current_version">版本:%1$S</string>
+    
+    <string name="error_network_connection">无法连接网络</string>
+    <string name="error_http_service">服务异常</string>
+    <string name="error_data_format">数据格式异常</string>
+    <!-- 数据格式没问题，但是返回的数据还是不对，比如内容为空 -->
     <string name="error_data">数据异常</string>
 
 </resources>

@@ -30,6 +30,7 @@ import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoFeed;
 import com.shuai.hehe.ui.AlbumActivity;
 import com.shuai.hehe.ui.VideoActivity;
+import com.shuai.hehe.ui.WebViewActivity;
 
 public class FeedAdapter extends ArrayAdapter<Feed> {
     private Context mContext;
@@ -235,7 +236,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(mContext, VideoActivity.class);
+                Intent intent=new Intent(mContext, WebViewActivity.class);
                 intent.putExtra(Constants.VIDEO_URL, info.getVideoUrl());
                 mContext.startActivity(intent);
             }
