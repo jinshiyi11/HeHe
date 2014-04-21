@@ -2,15 +2,12 @@ package com.shuai.hehe.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -20,6 +17,7 @@ import android.widget.PopupWindow.OnDismissListener;
 import com.shuai.base.view.BaseFragmentActivity;
 import com.shuai.hehe.R;
 import com.shuai.utils.DisplayUtils;
+import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
 
 public class MainActivity extends BaseFragmentActivity implements OnClickListener {
@@ -116,12 +114,16 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 		//响应选中菜单项
 		int id=v.getId();
 		switch (id) {
-		case R.id.tv_about:
-		{
-			Intent intent=new Intent(mContext, AboutActivity.class);
+		case R.id.tv_about: {
+			Intent intent = new Intent(mContext, AboutActivity.class);
 			startActivity(intent);
-		}
 			break;
+		}
+		case R.id.tv_feedback: {
+			FeedbackAgent agent = new FeedbackAgent(mContext);
+			agent.startFeedbackActivity();
+			break;
+		}
 		default:
 			break;
 		}

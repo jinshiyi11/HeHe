@@ -1,6 +1,8 @@
 package com.shuai.hehe.ui;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.TextView;
 
@@ -9,6 +11,7 @@ import com.shuai.hehe.R;
 import com.shuai.utils.AppUtils;
 
 public class AboutActivity extends BaseActivity {
+	private View mIvBack;
 	private TextView mTvTitle;
 	private TextView mTvVersion;
 
@@ -18,6 +21,14 @@ public class AboutActivity extends BaseActivity {
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		
 		setContentView(R.layout.about_activity);
+		mIvBack=findViewById(R.id.iv_back);
+		mIvBack.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				finish();
+			}
+		});
 		
 		mTvTitle=(TextView) findViewById(R.id.tv_title);
 		mTvTitle.setText(R.string.about);

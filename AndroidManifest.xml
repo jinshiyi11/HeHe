@@ -34,6 +34,9 @@
         <activity android:name=".ui.AboutActivity" android:screenOrientation="portrait"></activity>
         
         <!-- 友盟信息 -->
+        <activity android:name="com.umeng.fb.ConversationActivity" android:theme="@android:style/Theme.NoTitleBar"/>
+        <activity android:name="com.umeng.fb.ContactActivity" android:theme="@android:style/Theme.NoTitleBar"/>
+        
         <service
             android:name="com.umeng.common.net.DownloadingService"
             android:process=":DownloadingService" >

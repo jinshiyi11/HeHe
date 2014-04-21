@@ -16,4 +16,13 @@
             android:textSize="@dimen/activity_title_size"
             android:textStyle="bold" />
 
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/activity_title_height"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/main_menu_btn_bg"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_menu_back" />
+
     </RelativeLayout>
