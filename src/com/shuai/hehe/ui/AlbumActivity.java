@@ -109,14 +109,14 @@ public class AlbumActivity extends BaseActivity {
                     mViewPager.setAdapter(mAlbumAdapter);
                     onPageSelected(0);
                 }else{
-                    Toast.makeText(mContext, R.string.error_data, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.error_data, Toast.LENGTH_SHORT).show();
                 }
             }
         }, new ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(AlbumActivity.this, ProtocolError.getErrorMessage(AlbumActivity.this, error), Toast.LENGTH_LONG).show();
+                Toast.makeText(AlbumActivity.this, ProtocolError.getErrorMessage(AlbumActivity.this, error), Toast.LENGTH_SHORT).show();
             }
         });
         

@@ -260,7 +260,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         }
         
         holder.mTvTitle.setText(info.getTitle());
-        ImageLoader.getInstance().displayImage(info.getThumbImgUrl(), holder.mIvThumb,mDisplayImageOptions,mImageLoadingListener);
+        ImageLoader.getInstance().displayImage(info.getBigImgUrl(), holder.mIvThumb,mDisplayImageOptions,mImageLoadingListener);
         
         holder.mIvThumb.setOnClickListener(new OnClickListener() {
             

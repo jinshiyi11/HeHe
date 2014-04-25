@@ -55,6 +55,7 @@ public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
 
 					JSONObject content = new JSONObject(feed.getContent());
 					feed.setThumbImgUrl(content.getString("thumbImgUrl"));
+					feed.setBigImgUrl(content.getString("bigImgUrl"));
 
 					feedList.add(feed);
 					break;

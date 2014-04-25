@@ -1,7 +1,7 @@
 package com.shuai.hehe.data;
 
 public class Constants {
-	public static boolean DEBUG = false;
+	public static boolean DEBUG = true;
 	public static final String SERVER_ADDRESS;
 	
 	/**
