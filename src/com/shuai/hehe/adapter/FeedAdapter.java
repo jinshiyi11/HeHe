@@ -18,6 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nineoldandroids.animation.AnimatorInflater;
+import com.nineoldandroids.animation.AnimatorSet;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -29,7 +31,6 @@ import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoFeed;
 import com.shuai.hehe.ui.AlbumActivity;
-import com.shuai.hehe.ui.VideoActivity;
 import com.shuai.hehe.ui.WebViewActivity;
 
 public class FeedAdapter extends ArrayAdapter<Feed> {
@@ -38,6 +39,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
     private LayoutInflater mInflater;
     private DisplayImageOptions mDisplayImageOptions;
     private ImageLoadingListener mImageLoadingListener;
+    private int mLastPosition=-1;
 
     public static class FeedList extends ArrayList<Feed> {
         //用来快速检测对象是否已存在
@@ -201,6 +203,14 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         default:
             break;
         }
+        
+        if(view!=null && position>mLastPosition){
+            AnimatorSet animator = (AnimatorSet) AnimatorInflater.loadAnimator(mContext, R.animator.feed_item_in);
+            animator.setTarget(view);
+            animator.start();
+        }
+        
+        mLastPosition=position;
         return view;
     }
     

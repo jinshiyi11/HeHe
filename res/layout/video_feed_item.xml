@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fiv="http://schemas.android.com/apk/res/com.shuai.hehe"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent_color"
@@ -31,7 +32,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" >
 
             <ImageView
                 android:id="@+id/iv_thumb"
@@ -49,6 +51,42 @@
                 android:src="@drawable/ic_btn_video" />
 
         </RelativeLayout>
+        
+        <View 
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#e5e5e5" />
+
+        <LinearLayout
+            android:id="@+id/ll_action"
+            android:layout_width="match_parent"
+            android:layout_height="36dp" >
+
+            <com.shuai.base.view.FlipImageView
+                android:id="@+id/fiv_star"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_star_0"
+                fiv:flipDrawable="@drawable/ic_star_1"
+                fiv:flipDuration="500"
+                fiv:flipRotations="y" />
+            
+            <View 
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="#e5e5e5" />
+
+            <ImageView
+                android:id="@+id/iv_redirect"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_redirect_normal" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

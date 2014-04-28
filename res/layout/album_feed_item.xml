@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fiv="http://schemas.android.com/apk/res/com.shuai.hehe"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/transparent_color"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:background="@drawable/feed_item_bg"
@@ -33,6 +34,42 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="8dp"
             android:scaleType="fitCenter" />
+        
+        <View 
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="#e5e5e5" />
+
+        <LinearLayout
+            android:id="@+id/ll_action"
+            android:layout_width="match_parent"
+            android:layout_height="36dp" >
+
+            <com.shuai.base.view.FlipImageView
+                android:id="@+id/fiv_star"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_star_0"
+                fiv:flipDrawable="@drawable/ic_star_1"
+                fiv:flipDuration="500"
+                fiv:flipRotations="y" />
+            
+            <View 
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="#e5e5e5" />
+
+            <ImageView
+                android:id="@+id/iv_redirect"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_redirect_normal" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
