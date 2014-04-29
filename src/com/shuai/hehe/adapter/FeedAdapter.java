@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,7 +32,13 @@ import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoFeed;
 import com.shuai.hehe.ui.AlbumActivity;
+import com.shuai.hehe.ui.VideoActivity;
 import com.shuai.hehe.ui.WebViewActivity;
+import com.umeng.socialize.controller.RequestType;
+import com.umeng.socialize.controller.UMServiceFactory;
+import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.media.UMImage;
+import com.umeng.socialize.sso.QZoneSsoHandler;
 
 public class FeedAdapter extends ArrayAdapter<Feed> {
     private Context mContext;
@@ -222,6 +229,8 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
     class AlbumViewHolder{
         TextView mTvTitle;
         ImageView mIvThumb;
+        
+        ImageView mIvRedirect;
     }
 
     private View getVideoView(Feed feed, int position, View convertView, ViewGroup parent) {
@@ -234,6 +243,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             holder=new VideoViewHolder();
             holder.mTvTitle=(TextView) view.findViewById(R.id.tv_title);
             holder.mIvThumb=(ImageView) view.findViewById(R.id.iv_thumb);
+            
             view.setTag(holder);
         }else{
             holder=(VideoViewHolder) view.getTag();
@@ -247,6 +257,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(mContext, WebViewActivity.class);
+                //Intent intent=new Intent(mContext, VideoActivity.class);
                 intent.putExtra(Constants.VIDEO_URL, info.getVideoUrl());
                 mContext.startActivity(intent);
             }
@@ -264,6 +275,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             holder=new AlbumViewHolder();
             holder.mTvTitle=(TextView) view.findViewById(R.id.tv_title);
             holder.mIvThumb=(ImageView) view.findViewById(R.id.iv_thumb);
+            holder.mIvRedirect=(ImageView) view.findViewById(R.id.iv_redirect);
             view.setTag(holder);
         }else{
             holder=(AlbumViewHolder) view.getTag();
@@ -279,6 +291,22 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
                 Intent intent=new Intent(mContext, AlbumActivity.class);
                 intent.putExtra(Constants.FEED_ID, info.getId());
                 mContext.startActivity(intent);
+            }
+        });
+        
+        holder.mIvRedirect.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share",
+                        RequestType.SOCIAL);
+                //设置分享内容
+                mController.setShareContent(info.getTitle());
+                //设置分享图片, 参数2为图片的url地址
+                mController.setShareMedia(new UMImage(mContext,info.getBigImgUrl()));
+                
+                mController.getConfig().setSsoHandler( new QZoneSsoHandler((Activity) mContext,Constants.OPEN_QQ_APP_ID) );
+                mController.openShare((Activity) mContext, false);
             }
         });
         return view;

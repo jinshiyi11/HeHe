@@ -35,6 +35,7 @@ public class VideoActivity extends BaseActivity {
         
         MediaController mediaController=new MediaController(this);
         mediaController.setAnchorView(mVideoView);
+        mediaController.setMediaPlayer(mVideoView);
         mVideoView.setMediaController(mediaController);
         mVideoView.setVideoURI(uri);
         
