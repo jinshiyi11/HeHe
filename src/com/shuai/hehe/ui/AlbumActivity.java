@@ -53,7 +53,7 @@ public class AlbumActivity extends BaseActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.album_activity);
+        setContentView(R.layout.activity_album);
         mRequestQueue=HeHeApplication.getRequestQueue();
         
         mTvPageNum=(TextView) findViewById(R.id.tv_pagenum);

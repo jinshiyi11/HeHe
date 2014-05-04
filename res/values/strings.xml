@@ -19,5 +19,7 @@
     <string name="error_data_format">数据格式异常</string>
     <!-- 数据格式没问题，但是返回的数据还是不对，比如内容为空 -->
     <string name="error_data">数据异常</string>
+    
+    <string name="no_star_hint">没有任何收藏</string>
 
 </resources>

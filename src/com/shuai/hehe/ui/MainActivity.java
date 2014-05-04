@@ -107,7 +107,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 				mMainMenuWindow.setWidth(DisplayUtils.dp2px(mContext, 150));
 				mMainMenuWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
 
-				view.findViewById(R.id.tv_myfav).setOnClickListener(this);
+				view.findViewById(R.id.tv_star).setOnClickListener(this);
 				view.findViewById(R.id.tv_feedback).setOnClickListener(this);
 				view.findViewById(R.id.tv_about).setOnClickListener(this);
 			}
@@ -130,14 +130,22 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 		//响应选中菜单项
 		int id=v.getId();
 		switch (id) {
+		//我的收藏
+        case R.id.tv_star: {
+            Intent intent = new Intent(mContext, StarActivity.class);
+            startActivity(intent);
+            break;
+        }
+        //反馈
+		case R.id.tv_feedback: {
+            FeedbackAgent agent = new FeedbackAgent(mContext);
+            agent.startFeedbackActivity();
+            break;
+        }
+		//关于
 		case R.id.tv_about: {
 			Intent intent = new Intent(mContext, AboutActivity.class);
 			startActivity(intent);
-			break;
-		}
-		case R.id.tv_feedback: {
-			FeedbackAgent agent = new FeedbackAgent(mContext);
-			agent.startFeedbackActivity();
 			break;
 		}
 		default:

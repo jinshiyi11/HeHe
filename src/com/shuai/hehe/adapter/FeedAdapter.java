@@ -25,14 +25,15 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+import com.shuai.base.view.FlipImageView;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.AlbumFeed;
 import com.shuai.hehe.data.Constants;
+import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoFeed;
 import com.shuai.hehe.ui.AlbumActivity;
-import com.shuai.hehe.ui.VideoActivity;
 import com.shuai.hehe.ui.WebViewActivity;
 import com.umeng.socialize.controller.RequestType;
 import com.umeng.socialize.controller.UMServiceFactory;
@@ -47,6 +48,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
     private DisplayImageOptions mDisplayImageOptions;
     private ImageLoadingListener mImageLoadingListener;
     private int mLastPosition=-1;
+    private DataManager mDataManager=DataManager.getInstance();
 
     public static class FeedList extends ArrayList<Feed> {
         //用来快速检测对象是否已存在
@@ -222,14 +224,42 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
     }
     
     class VideoViewHolder{
+        /**
+         * 标题
+         */
         TextView mTvTitle;
+        /**
+         * 缩略图
+         */
         ImageView mIvThumb;
+        
+        /**
+         * 收藏按钮
+         */
+        FlipImageView mFivStar;
+        /**
+         * 转发按钮
+         */
+        ImageView mIvRedirect;
     }
     
     class AlbumViewHolder{
+        /**
+         * 标题
+         */
         TextView mTvTitle;
+        /**
+         * 缩略图
+         */
         ImageView mIvThumb;
         
+        /**
+         * 收藏按钮
+         */
+        FlipImageView mFivStar;
+        /**
+         * 转发按钮
+         */
         ImageView mIvRedirect;
     }
 
@@ -243,7 +273,8 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             holder=new VideoViewHolder();
             holder.mTvTitle=(TextView) view.findViewById(R.id.tv_title);
             holder.mIvThumb=(ImageView) view.findViewById(R.id.iv_thumb);
-            
+            holder.mFivStar=(FlipImageView) view.findViewById(R.id.fiv_star);
+            holder.mIvRedirect=(ImageView) view.findViewById(R.id.iv_redirect);
             view.setTag(holder);
         }else{
             holder=(VideoViewHolder) view.getTag();
@@ -262,6 +293,10 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
                 mContext.startActivity(intent);
             }
         });
+        
+        boolean isStarred=mDataManager.isStarFeed(feed.getId());
+        holder.mFivStar.setFlipped(isStarred, false);
+        
         return view;
     }
 
@@ -275,6 +310,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             holder=new AlbumViewHolder();
             holder.mTvTitle=(TextView) view.findViewById(R.id.tv_title);
             holder.mIvThumb=(ImageView) view.findViewById(R.id.iv_thumb);
+            holder.mFivStar=(FlipImageView) view.findViewById(R.id.fiv_star);
             holder.mIvRedirect=(ImageView) view.findViewById(R.id.iv_redirect);
             view.setTag(holder);
         }else{
@@ -294,6 +330,8 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             }
         });
         
+        boolean isStarred=mDataManager.isStarFeed(feed.getId());
+        holder.mFivStar.setFlipped(isStarred, false);
         holder.mIvRedirect.setOnClickListener(new OnClickListener() {
             
             @Override

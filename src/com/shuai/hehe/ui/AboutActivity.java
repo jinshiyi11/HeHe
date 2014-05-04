@@ -20,7 +20,7 @@ public class AboutActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 		
-		setContentView(R.layout.about_activity);
+		setContentView(R.layout.activity_about);
 		mIvBack=findViewById(R.id.iv_back);
 		mIvBack.setOnClickListener(new OnClickListener() {
 			

@@ -7,7 +7,7 @@
     android:showDividers="middle" >
 
     <TextView
-        android:id="@+id/tv_myfav"
+        android:id="@+id/tv_star"
         style="@style/MoreMenuItemStyle"
         android:text="@string/my_fav" />
     

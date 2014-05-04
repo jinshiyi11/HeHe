@@ -3,7 +3,7 @@ package com.shuai.hehe.data;
 import com.google.gson.annotations.SerializedName;
 
 /**
- *
+ * 新鲜事
  */
 public class Feed {
 	@SerializedName("id")
