@@ -2,26 +2,35 @@ package com.shuai.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Build;
 import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.WindowManager;
 
 public class DisplayUtils {
-	public static float getScreenWidth(Context context) {
-		Resources res = context.getResources();
-		DisplayMetrics metrics = res.getDisplayMetrics();
-		return metrics.widthPixels;
-	}
+    public static float getScreenWidth(Context context) {
+        DisplayMetrics displayMetrics = getDisplayMetrics(context);
+        return displayMetrics.widthPixels;
+    }
 
-	public static float getScreenHeight(Context context) {
-		Resources res = context.getResources();
-		DisplayMetrics metrics = res.getDisplayMetrics();
-		return metrics.heightPixels;
-	}
+    public static float getScreenHeight(Context context) {
+        DisplayMetrics displayMetrics = getDisplayMetrics(context);
+        return displayMetrics.heightPixels;
+    }
 
-	public static DisplayMetrics getDisplayMetrics(Context context) {
-		Resources res = context.getResources();
-		DisplayMetrics metrics = res.getDisplayMetrics();
-		return metrics;
-	}
+    public static DisplayMetrics getDisplayMetrics(Context context) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        display.getMetrics(displayMetrics);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            //API>=17才有
+            display.getRealMetrics(displayMetrics);
+        }
+
+        return displayMetrics;
+    }
 	
 	/**
 	 * 单位px转换成单位sp(字体)

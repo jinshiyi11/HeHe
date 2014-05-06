@@ -52,7 +52,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
 
     public static class FeedList extends ArrayList<Feed> {
         //用来快速检测对象是否已存在
-        private HashMap<Integer, Feed> mKeys = new HashMap<Integer, Feed>();
+        private HashMap<Long, Feed> mKeys = new HashMap<Long, Feed>();
 
         private boolean exist(Feed object) {
             if (mKeys.get(object.getId()) == null)

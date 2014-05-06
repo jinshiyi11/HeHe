@@ -9,14 +9,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.android.volley.VolleyError;
-import com.android.volley.Response.ErrorListener;
-import com.android.volley.Response.Listener;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.shuai.base.view.BaseActivity;
 import com.shuai.hehe.R;
@@ -24,15 +20,13 @@ import com.shuai.hehe.adapter.FeedAdapter;
 import com.shuai.hehe.adapter.FeedAdapter.FeedList;
 import com.shuai.hehe.base.ParallelAsyncTask;
 import com.shuai.hehe.data.DataManager;
+import com.shuai.hehe.data.DataManager.OnStarFeedChangedListener;
 import com.shuai.hehe.data.Feed;
-import com.shuai.hehe.data.StarFeed;
-import com.shuai.hehe.protocol.GetFeedsRequest;
-import com.shuai.hehe.protocol.ProtocolError;
 
 /**
  * 我的收藏页面
  */
-public class StarActivity extends BaseActivity {
+public class StarActivity extends BaseActivity implements OnStarFeedChangedListener {
     private Context mContext;
     private ViewGroup mNoNetworkContainer;
     private ViewGroup mLoadingContainer;
@@ -65,6 +59,9 @@ public class StarActivity extends BaseActivity {
 
     private View mIvBack;
     private View mTitleContainer;
+    
+    private DataManager mDataManager;
+    private GetStarFeedsTask mDbTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +70,7 @@ public class StarActivity extends BaseActivity {
         
         setContentView(R.layout.activity_star);
         mContext=this;
+        mDataManager=DataManager.getInstance();
         mIvBack=findViewById(R.id.iv_back);
         mIvBack.setOnClickListener(new OnClickListener() {
             
@@ -117,8 +115,16 @@ public class StarActivity extends BaseActivity {
                 getData(false);
             }
         });
+        
+        mDataManager.addStarFeedChangedListener(this);
     }
-    
+
+    @Override
+    protected void onDestroy() {
+        mDataManager.removeStarFeedChangedListener(this);
+        super.onDestroy();
+    }
+
     private void setStatus(Status status) {
         mStatus = status;
         switch (status) {
@@ -154,21 +160,21 @@ public class StarActivity extends BaseActivity {
         int count = PAGE_COUNT * -1;
         if (mFeedAdapter.getCount() > 0) {
             if (isPullDown) {
-                starTime = ((StarFeed)mFeedAdapter.getItem(0)).getStarredTime();
+                starTime = mFeedAdapter.getItem(0).getStarTime();
                 count = PAGE_COUNT;
             } else {
-                starTime = ((StarFeed)mFeedAdapter.getItem(mFeedAdapter.getCount() - 1)).getStarredTime();
+                starTime = mFeedAdapter.getItem(mFeedAdapter.getCount() - 1).getStarTime();
                 count = PAGE_COUNT * -1;
             }
         }
         
-        GetStarFeedsTask task=new GetStarFeedsTask(starTime,count,isPullDown);
+        mDbTask=new GetStarFeedsTask(starTime,count,isPullDown);
         
-        DataManager.getInstance().executeDbTask(task);
+        DataManager.getInstance().executeDbTask(mDbTask);
         
     }
     
-    class GetStarFeedsTask extends ParallelAsyncTask<Void, Void, ArrayList<StarFeed>>{
+    class GetStarFeedsTask extends ParallelAsyncTask<Void, Void, ArrayList<Feed>>{
         private long mStarTime;
         private int mCount;
         private boolean mIsPullDown;
@@ -180,12 +186,12 @@ public class StarActivity extends BaseActivity {
         }
         
         @Override
-        protected ArrayList<StarFeed> doInBackground(Void... params) {
+        protected ArrayList<Feed> doInBackground(Void... params) {
             return DataManager.getInstance().getStarFeeds(mStarTime,mCount);
         }
 
         @Override
-        protected void onPostExecute(ArrayList<StarFeed> feedList) {
+        protected void onPostExecute(ArrayList<Feed> feedList) {
             super.onPostExecute(feedList);
             
             mListView.onRefreshComplete();
@@ -202,6 +208,15 @@ public class StarActivity extends BaseActivity {
                 setStatus(StarActivity.Status.STATUS_GOT_DATA);
             }
         }
+    }
+
+    @Override
+    public void onStarFeedAdded(Feed feed) {
+        
+    }
+
+    @Override
+    public void onStarFeedRemoved(long feedId) {
     }
 
 }

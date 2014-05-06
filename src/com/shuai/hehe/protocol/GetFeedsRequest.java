@@ -52,22 +52,14 @@ public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
 				case FeedType.TYPE_ALBUM: {
 					Gson gson = new Gson();
 					AlbumFeed feed = gson.fromJson(jsonFeedString, AlbumFeed.class);
-
-					JSONObject content = new JSONObject(feed.getContent());
-					feed.setThumbImgUrl(content.getString("thumbImgUrl"));
-					feed.setBigImgUrl(content.getString("bigImgUrl"));
-
+					FeedContentParser.parseAlbumFeedContent(feed, feed.getContent());
 					feedList.add(feed);
 					break;
 				}
 				case FeedType.TYPE_VIDEO: {
 					Gson gson = new Gson();
 					VideoFeed feed = gson.fromJson(jsonFeedString, VideoFeed.class);
-
-					JSONObject content = new JSONObject(feed.getContent());
-					feed.setVideoUrl(content.getString("videoUrl"));
-					feed.setThumbImgUrl(content.getString("thumbImgUrl"));
-
+					FeedContentParser.parseVideoFeedContent(feed, feed.getContent());
 					feedList.add(feed);
 					break;
 				}
