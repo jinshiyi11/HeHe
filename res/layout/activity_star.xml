@@ -6,7 +6,6 @@
     android:orientation="vertical" >
     
     <include
-        android:id="@+id/include1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/activity_title_height"
         layout="@layout/title_bar" />

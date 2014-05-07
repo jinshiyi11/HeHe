@@ -34,6 +34,7 @@
         <activity android:name=".ui.VideoActivity" android:hardwareAccelerated="true"></activity>
         <activity android:name=".ui.WebViewActivity" android:hardwareAccelerated="true" android:screenOrientation="landscape"></activity>
         <activity android:name=".ui.AlbumActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name=".ui.StarActivity"  android:screenOrientation="portrait"></activity>
         <activity android:name=".ui.AboutActivity" android:screenOrientation="portrait"></activity>
         
         <!-- 友盟信息 -->
@@ -83,6 +84,7 @@
 
         <meta-data android:name="UMENG_APPKEY"  android:value="534c9b2d56240b5dda01c687" />
         <meta-data android:name="UMENG_CHANNEL" android:value="360" />
+        
         
     </application>
     

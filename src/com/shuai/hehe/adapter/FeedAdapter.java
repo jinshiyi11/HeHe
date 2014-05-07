@@ -26,6 +26,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.shuai.base.view.FlipImageView;
+import com.shuai.base.view.FlipImageView.OnFlipListener;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.AlbumFeed;
 import com.shuai.hehe.data.Constants;
@@ -223,7 +224,18 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         return view;
     }
     
-    class VideoViewHolder{
+    /**
+     * 新鲜事的收藏状态发生了改变，更新界面
+     * @param feedId
+     */
+    public void updateStarFeedState(long feedId){
+    }
+    
+    class BaseHolder{
+        Feed feed;
+    }
+    
+    class VideoViewHolder extends BaseHolder{
         /**
          * 标题
          */
@@ -243,7 +255,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         ImageView mIvRedirect;
     }
     
-    class AlbumViewHolder{
+    class AlbumViewHolder extends BaseHolder{
         /**
          * 标题
          */
@@ -280,6 +292,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             holder=(VideoViewHolder) view.getTag();
         }
         
+        holder.feed=feed;
         holder.mTvTitle.setText(info.getTitle());
         ImageLoader.getInstance().displayImage(info.getThumbImgUrl(), holder.mIvThumb,mDisplayImageOptions,mImageLoadingListener);
         
@@ -317,6 +330,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             holder=(AlbumViewHolder) view.getTag();
         }
         
+        holder.feed=feed;
         holder.mTvTitle.setText(info.getTitle());
         ImageLoader.getInstance().displayImage(info.getBigImgUrl(), holder.mIvThumb,mDisplayImageOptions,mImageLoadingListener);
         
@@ -332,6 +346,27 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         
         boolean isStarred=mDataManager.isStarFeed(feed.getId());
         holder.mFivStar.setFlipped(isStarred, false);
+        holder.mFivStar.setOnFlipListener(new OnFlipListener() {
+            
+            @Override
+            public void onFlipStart(FlipImageView view) {
+            }
+            
+            @Override
+            public void onFlipEnd(FlipImageView view) {
+            }
+            
+            @Override
+            public void onClick(FlipImageView view) {
+                boolean isStarred=view.isFlipped();
+                if(isStarred){
+                    mDataManager.addStarFeed(info);
+                }else{
+                    mDataManager.removeStarFeed(info.getId());
+                }
+            }
+        });
+        
         holder.mIvRedirect.setOnClickListener(new OnClickListener() {
             
             @Override

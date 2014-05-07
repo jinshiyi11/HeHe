@@ -6,6 +6,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.shuai.hehe.data.DataManager;
 
 import android.app.Application;
 
@@ -35,6 +36,7 @@ public class HeHeApplication extends Application {
         mRequestQueue = Volley.newRequestQueue(this);
         
         initImageLoader();
+        DataManager.init(this);
     }
     
     private void initImageLoader() {

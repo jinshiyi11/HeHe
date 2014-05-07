@@ -1,6 +1,7 @@
 package com.shuai.hehe.ui;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -24,11 +25,13 @@ import com.shuai.hehe.HeHeApplication;
 import com.shuai.hehe.R;
 import com.shuai.hehe.adapter.FeedAdapter;
 import com.shuai.hehe.adapter.FeedAdapter.FeedList;
+import com.shuai.hehe.data.DataManager;
+import com.shuai.hehe.data.DataManager.OnStarFeedChangedListener;
 import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.protocol.GetFeedsRequest;
 import com.shuai.hehe.protocol.ProtocolError;
 
-public class FeedFragment extends Fragment {
+public class FeedFragment extends Fragment implements OnStarFeedChangedListener {
 	private Context mContext;
     private ViewGroup mNoNetworkContainer;
     private ViewGroup mLoadingContainer;
@@ -73,12 +76,14 @@ public class FeedFragment extends Fragment {
      * 异步请求队列
      */
     private RequestQueue mRequestQueue;
+    private DataManager mDataManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_feed, container,false);
         mContext=getActivity();
         mRequestQueue=HeHeApplication.getRequestQueue();
+        mDataManager=DataManager.getInstance();
         
         mNoNetworkContainer=(ViewGroup) view.findViewById(R.id.no_network_container);
         mLoadingContainer=(ViewGroup) view.findViewById(R.id.loading_container);
@@ -110,12 +115,14 @@ public class FeedFragment extends Fragment {
             }
         });
         
+        mDataManager.addStarFeedChangedListener(this);
         mListView.setRefreshing();
         return view;
     }
     
     @Override
 	public void onDestroyView() {
+        mDataManager.removeStarFeedChangedListener(this);
     	mRequestQueue.cancelAll(this);
 		super.onDestroyView();
 	}
@@ -212,6 +219,14 @@ public class FeedFragment extends Fragment {
             listView.setSelection(0);
         }
   
+    }
+
+    @Override
+    public void onStarFeedAdded(Feed feed) {
+    }
+
+    @Override
+    public void onStarFeedRemoved(long feedId) {
     }
 
 }

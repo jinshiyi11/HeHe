@@ -78,16 +78,16 @@ public class DataManager {
         public void onCreate(SQLiteDatabase db) {
             String[] sqls={
                     "CREATE TABLE IF NOT EXISTS star_feed(" +
-                            "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +//该id的目的是记录收藏过多少个新鲜事
-                            "feed_id INT NOT NULL" + //这个才是新鲜事的id
-                            "type INT," +
-                            "title VARCHAR(255) NOT NULL UNIQUE," +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +//该id的目的是记录收藏过多少个新鲜事
+                            "feed_id INTEGER NOT NULL UNIQUE," + //这个才是新鲜事的id
+                            "type INTEGER," +
+                            "title TEXT NOT NULL UNIQUE," +
                             "content TEXT," +
-                            "[from] INT," +
+                            "[from] INTEGER," +
                             //"state INT DEFAULT -1," +
                             //"insert_time TIMESTAMP DEFAULT  CURRENT_TIMESTAMP()," +
                             "show_time TIMESTAMP DEFAULT  0," +
-                            "star_time TIMESTAMP DEFAULT  CURRENT_TIMESTAMP()" +
+                            "star_time INTEGER" +//from 1970
                             ")",
                             
                             };
@@ -139,10 +139,10 @@ public class DataManager {
     }
     
     private void loadStarFeeds(){
-        ParallelAsyncTask<Void, Void, Set<Long>> task=new ParallelAsyncTask<Void, Void, Set<Long>>(){
+        ParallelAsyncTask<Object, Object, Set<Long>> task=new ParallelAsyncTask<Object, Object, Set<Long>>(){
 
             @Override
-            protected Set<Long> doInBackground(Void... params) {
+            protected Set<Long> doInBackground(Object... params) {
                 Set<Long> feedIds=new HashSet<Long>();
                 SQLiteDatabase db = mDbHelper.getReadableDatabase();
                 Cursor cursor = db.rawQuery("select feed_id from star_feed", null);
@@ -187,11 +187,13 @@ public class DataManager {
         }
         
         mStarFeedIds.add((long) feed.getId());
+        //发送通知
+        starFeedAdded(feed);
         
-        ParallelAsyncTask<Void, Void, Void> task=new ParallelAsyncTask<Void, Void, Void>(){
+        ParallelAsyncTask<Object, Object, Object> task=new ParallelAsyncTask<Object, Object, Object>(){
 
             @Override
-            protected Void doInBackground(Void... params) {
+            protected Object doInBackground(Object... params) {
                 SQLiteDatabase database = mDbHelper.getWritableDatabase();
                 ContentValues values=new ContentValues();
                 values.put("feed_id", feed.getId());
@@ -206,13 +208,13 @@ public class DataManager {
             }
 
             @Override
-            protected void onPostExecute(Void result) {
+            protected void onPostExecute(Object result) {
                 super.onPostExecute(result);
                 //添加完成，发送通知
 //                Intent intent=new Intent(Constants.ACTION_ADD_STAR_FEED);
 //                intent.putExtra(Constants.PUT_EXTRA_FEED, feed);
 //                mLocalBroadcastManager.sendBroadcast(intent);
-                starFeedAdded(feed);
+                //starFeedAdded(feed);
             }
         };
         executeDbTask(task);
@@ -229,24 +231,23 @@ public class DataManager {
         }
         
         mStarFeedIds.remove(feedId);
+        //发送通知
+        starFeedRemoved(feedId);
         
-        ParallelAsyncTask<Long, Void, Void> task=new ParallelAsyncTask<Long, Void, Void>(){
+        ParallelAsyncTask<Long, Object, Object> task=new ParallelAsyncTask<Long, Object, Object>(){
 
             @Override
-            protected Void doInBackground(Long... params) {
+            protected Object doInBackground(Long... params) {
                 SQLiteDatabase database = mDbHelper.getWritableDatabase();
                 database.delete("star_feed", "feed_id=?", new String[]{Long.toString(feedId)});
                 return null;
             }
 
             @Override
-            protected void onPostExecute(Void result) {
+            protected void onPostExecute(Object result) {
                 super.onPostExecute(result);
                 //删除完成，发送通知
-//                Intent intent=new Intent(Constants.ACTION_DELETE_STAR_FEED);
-//                intent.putExtra(Constants.PUT_EXTRA_FEED_ID, feedId);
-//                mLocalBroadcastManager.sendBroadcast(intent);
-                starFeedRemoved(feedId);
+                //starFeedRemoved(feedId);
             }
             
         };
@@ -280,11 +281,9 @@ public class DataManager {
             switch (feedType) {
             case FeedType.TYPE_ALBUM:
                 feed=new AlbumFeed();
-                FeedContentParser.parseAlbumFeedContent((AlbumFeed) feed, feed.getContent());
                 break;
             case FeedType.TYPE_VIDEO:
                 feed=new VideoFeed();
-                FeedContentParser.parseVideoFeedContent((VideoFeed) feed, feed.getContent());
                 break;
             default:
                 break;
@@ -298,6 +297,18 @@ public class DataManager {
                 feed.setFrom(cursor.getInt(cursor.getColumnIndex("from")));
                 feed.setShowTime(cursor.getLong(cursor.getColumnIndex("show_time")));
                 feed.setStarTime(cursor.getLong(cursor.getColumnIndex("star_time")));
+                
+                //在设置content之后再解析content内容
+                switch (feedType) {
+                case FeedType.TYPE_ALBUM:
+                    FeedContentParser.parseAlbumFeedContent((AlbumFeed) feed, feed.getContent());
+                    break;
+                case FeedType.TYPE_VIDEO:
+                    FeedContentParser.parseVideoFeedContent((VideoFeed) feed, feed.getContent());
+                    break;
+                default:
+                    break;
+                }
 
                 feeds.add(feed);
             }

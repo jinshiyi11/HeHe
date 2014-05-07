@@ -1,6 +1,7 @@
 package com.shuai.hehe.ui;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
@@ -59,6 +61,7 @@ public class StarActivity extends BaseActivity implements OnStarFeedChangedListe
 
     private View mIvBack;
     private View mTitleContainer;
+    private TextView mTvTitle;
     
     private DataManager mDataManager;
     private GetStarFeedsTask mDbTask;
@@ -80,6 +83,8 @@ public class StarActivity extends BaseActivity implements OnStarFeedChangedListe
             }
         });
         
+        mTvTitle=(TextView) findViewById(R.id.tv_title);
+        mTvTitle.setText(R.string.my_fav);
         mTitleContainer = findViewById(R.id.rl_title);
         mTitleContainer.setOnClickListener(new OnClickListener() {
 
@@ -117,6 +122,7 @@ public class StarActivity extends BaseActivity implements OnStarFeedChangedListe
         });
         
         mDataManager.addStarFeedChangedListener(this);
+        mListView.setRefreshing();
     }
 
     @Override
@@ -174,7 +180,7 @@ public class StarActivity extends BaseActivity implements OnStarFeedChangedListe
         
     }
     
-    class GetStarFeedsTask extends ParallelAsyncTask<Void, Void, ArrayList<Feed>>{
+    class GetStarFeedsTask extends ParallelAsyncTask<Object, Object, ArrayList<Feed>>{
         private long mStarTime;
         private int mCount;
         private boolean mIsPullDown;
@@ -186,7 +192,7 @@ public class StarActivity extends BaseActivity implements OnStarFeedChangedListe
         }
         
         @Override
-        protected ArrayList<Feed> doInBackground(Void... params) {
+        protected ArrayList<Feed> doInBackground(Object... params) {
             return DataManager.getInstance().getStarFeeds(mStarTime,mCount);
         }
 
@@ -212,11 +218,18 @@ public class StarActivity extends BaseActivity implements OnStarFeedChangedListe
 
     @Override
     public void onStarFeedAdded(Feed feed) {
-        
+        mFeedList.add(0, feed);
     }
 
     @Override
     public void onStarFeedRemoved(long feedId) {
+        for(Iterator<Feed> it=mFeedList.iterator();it.hasNext();){
+            Feed item=it.next();
+            if(item.getId()==feedId){
+                it.remove();
+                break;
+            }
+        }
     }
 
 }
