@@ -223,10 +223,12 @@ public class FeedFragment extends Fragment implements OnStarFeedChangedListener 
 
     @Override
     public void onStarFeedAdded(Feed feed) {
+        mFeedAdapter.updateStarFeedState(mListView.getRefreshableView(), feed.getId());
     }
 
     @Override
     public void onStarFeedRemoved(long feedId) {
+        mFeedAdapter.updateStarFeedState(mListView.getRefreshableView(), feedId);
     }
 
 }

@@ -200,7 +200,7 @@ public class DataManager {
                 values.put("type",feed.getType());
                 values.put("title",feed.getTitle());
                 values.put("content",feed.getContent());
-                values.put("from",feed.getFrom());
+                values.put("[from]",feed.getFrom());
                 values.put("show_time",feed.getShowTime());
                 values.put("star_time",System.currentTimeMillis());
                 database.insert("star_feed", null, values);
@@ -234,10 +234,10 @@ public class DataManager {
         //发送通知
         starFeedRemoved(feedId);
         
-        ParallelAsyncTask<Long, Object, Object> task=new ParallelAsyncTask<Long, Object, Object>(){
+        ParallelAsyncTask<Object, Object, Object> task=new ParallelAsyncTask<Object, Object, Object>(){
 
             @Override
-            protected Object doInBackground(Long... params) {
+            protected Object doInBackground(Object... params) {
                 SQLiteDatabase database = mDbHelper.getWritableDatabase();
                 database.delete("star_feed", "feed_id=?", new String[]{Long.toString(feedId)});
                 return null;
@@ -251,7 +251,7 @@ public class DataManager {
             }
             
         };
-        executeDbTask(task);
+        executeDbTask(task,feedId);
     }
 
     /**

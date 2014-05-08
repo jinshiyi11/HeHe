@@ -208,17 +208,23 @@ public class StarActivity extends BaseActivity implements OnStarFeedChangedListe
                 mFeedList.addAll(feedList);
             }
             
-            if (mFeedAdapter.getCount() == 0) {
-                setStatus(StarActivity.Status.STATUS_NO_NETWORK_OR_DATA);
-            }else{
-                setStatus(StarActivity.Status.STATUS_GOT_DATA);
-            }
+            updateStatus();
+        }
+    }
+    
+    private void updateStatus(){
+        if (mFeedAdapter.getCount() == 0) {
+            setStatus(StarActivity.Status.STATUS_NO_NETWORK_OR_DATA);
+        }else{
+            setStatus(StarActivity.Status.STATUS_GOT_DATA);
         }
     }
 
     @Override
     public void onStarFeedAdded(Feed feed) {
         mFeedList.add(0, feed);
+        mFeedAdapter.notifyDataSetChanged();
+        updateStatus();
     }
 
     @Override
@@ -227,6 +233,8 @@ public class StarActivity extends BaseActivity implements OnStarFeedChangedListe
             Feed item=it.next();
             if(item.getId()==feedId){
                 it.remove();
+                mFeedAdapter.notifyDataSetChanged();
+                updateStatus();
                 break;
             }
         }

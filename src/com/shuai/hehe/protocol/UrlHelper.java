@@ -29,7 +29,7 @@ public class UrlHelper {
 		return getUrl("getfeeds", params);
 	}
 
-    public static String getAlbumPicsUrl(int feedId) {
+    public static String getAlbumPicsUrl(long feedId) {
         List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
         params.add(new BasicNameValuePair("feedId", Long.toString(feedId)));
         params.add(new BasicNameValuePair("ver", Constants.PROTOCOL_VERSION));

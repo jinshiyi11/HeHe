@@ -32,7 +32,7 @@ public class GetAlbumPicsRequest extends JsonRequest<ArrayList<PicInfo>> {
      * @param listener
      * @param errorListener
      */
-    public GetAlbumPicsRequest(int feedId, Listener<ArrayList<PicInfo>> listener, ErrorListener errorListener) {
+    public GetAlbumPicsRequest(long feedId, Listener<ArrayList<PicInfo>> listener, ErrorListener errorListener) {
         super(Method.GET, UrlHelper.getAlbumPicsUrl(feedId), null, listener, errorListener);
         if(Constants.DEBUG){
             Log.d(TAG, UrlHelper.getAlbumPicsUrl(feedId));

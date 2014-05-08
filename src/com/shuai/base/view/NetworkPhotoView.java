@@ -17,7 +17,15 @@ public class NetworkPhotoView extends PhotoView {
     private Paint mProgressHintPaint = new Paint();
     private Paint mProgressPaint = new Paint();
     private int mProgressColor = Color.WHITE;
-    private float mRadius=30;
+    /**
+     * 圆形进度条的半径
+     */
+    private float mProgressRadius=30;
+    
+    /**
+     * 圆形进度条的圆圈线的宽度
+     */
+    private float mProgressCircleWidth=1;
     //private float mHintTextSize=15;
 
     public NetworkPhotoView(Context context) {
@@ -37,7 +45,8 @@ public class NetworkPhotoView extends PhotoView {
 
     private void init(Context context, AttributeSet attr) {
         TypedArray a = context.obtainStyledAttributes(attr, R.styleable.NetworkPhotoView);
-        mRadius=a.getDimension(R.styleable.NetworkPhotoView_progressRadius, mRadius);
+        mProgressRadius=a.getDimension(R.styleable.NetworkPhotoView_progressRadius, mProgressRadius);
+        mProgressCircleWidth=a.getDimension(R.styleable.NetworkPhotoView_progressCircleWidth, mProgressCircleWidth);
         mProgressPaint.setColor(mProgressColor);
         mProgressPaint.setAntiAlias(true);
         mProgressPaint.setStyle(Style.FILL);
@@ -58,12 +67,29 @@ public class NetworkPhotoView extends PhotoView {
             
             float centerX=getWidth()/2;
             float centerY=getHeight()/2;
-            RectF rect=new RectF(centerX-mRadius, centerY-mRadius, centerX+mRadius, centerY+mRadius);
+            RectF rect=new RectF(centerX-mProgressRadius, centerY-mProgressRadius, centerX+mProgressRadius, centerY+mProgressRadius);
             mProgressPaint.setStyle(Style.STROKE);
-            canvas.drawCircle(centerX, centerY, mRadius, mProgressPaint);
+            mProgressPaint.setStrokeWidth(mProgressCircleWidth);
+            canvas.drawCircle(centerX, centerY, mProgressRadius, mProgressPaint);
             mProgressPaint.setStyle(Style.FILL);
             canvas.drawArc(rect, -90, sweepAngle, true, mProgressPaint);
         }
+    }
+    
+    /**
+     * 设置圆形进度条的半径
+     * @param progress
+     */
+    public void setProgressRadius(float progressRadius){
+        mProgressRadius=progressRadius;
+        invalidate();
+    }
+    
+    /**
+     * 设置圆形进度条的圆圈线的宽度
+     */
+    public void setProgressCircleWidth(float width){
+        mProgressCircleWidth=width;
     }
 
     public void setProgress(int progress) {

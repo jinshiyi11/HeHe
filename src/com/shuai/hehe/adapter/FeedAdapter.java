@@ -226,13 +226,68 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
     
     /**
      * 新鲜事的收藏状态发生了改变，更新界面
-     * @param feedId
+     * @param parentView 父控件(比如ListView，遍历其子控件并更新相应子控件的收藏状态)
      */
-    public void updateStarFeedState(long feedId){
+    public void updateStarFeedState(ViewGroup parentView, long feedId) {
+        for (int i = 0; i < parentView.getChildCount(); i++) {
+            View view = parentView.getChildAt(i);
+            Object tag = view.getTag();
+            if (tag != null && tag instanceof BaseHolder) {
+                BaseHolder holder = (BaseHolder) tag;
+                if (holder.feed.getId() == feedId) {
+                    updateStarFeedState(holder.mFivStar, holder.feed);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void updateStarFeedState(FlipImageView starView, Feed feed) {
+        if (mDataManager.isStarFeed(feed.getId())) {
+            starView.setFlipped(true, false);
+        } else {
+            starView.setFlipped(false, false);
+        }
+    }
+    
+    class StarChangeListener implements OnFlipListener{
+        Feed info;
+        
+        StarChangeListener(Feed feed){
+            info=feed;
+        }        
+
+        @Override
+        public void onClick(FlipImageView view) {
+            boolean isStarred=view.isFlipped();
+            if(isStarred){
+                mDataManager.addStarFeed(info);
+            }else{
+                mDataManager.removeStarFeed(info.getId());
+            }
+        }
+
+        @Override
+        public void onFlipStart(FlipImageView view) {
+        }
+
+        @Override
+        public void onFlipEnd(FlipImageView view) {
+            
+        }
+        
     }
     
     class BaseHolder{
         Feed feed;
+        /**
+         * 收藏按钮
+         */
+        FlipImageView mFivStar;
+        /**
+         * 转发按钮
+         */
+        ImageView mIvRedirect;
     }
     
     class VideoViewHolder extends BaseHolder{
@@ -244,15 +299,6 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
          * 缩略图
          */
         ImageView mIvThumb;
-        
-        /**
-         * 收藏按钮
-         */
-        FlipImageView mFivStar;
-        /**
-         * 转发按钮
-         */
-        ImageView mIvRedirect;
     }
     
     class AlbumViewHolder extends BaseHolder{
@@ -264,15 +310,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
          * 缩略图
          */
         ImageView mIvThumb;
-        
-        /**
-         * 收藏按钮
-         */
-        FlipImageView mFivStar;
-        /**
-         * 转发按钮
-         */
-        ImageView mIvRedirect;
+ 
     }
 
     private View getVideoView(Feed feed, int position, View convertView, ViewGroup parent) {
@@ -302,14 +340,14 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             public void onClick(View v) {
                 Intent intent=new Intent(mContext, WebViewActivity.class);
                 //Intent intent=new Intent(mContext, VideoActivity.class);
-                intent.putExtra(Constants.VIDEO_URL, info.getVideoUrl());
+                intent.putExtra(Constants.VIDEO_URL, info.getWebVideoUrl());
                 mContext.startActivity(intent);
             }
         });
         
         boolean isStarred=mDataManager.isStarFeed(feed.getId());
         holder.mFivStar.setFlipped(isStarred, false);
-        
+        holder.mFivStar.setOnFlipListener(new StarChangeListener(info));
         return view;
     }
 
@@ -346,26 +384,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         
         boolean isStarred=mDataManager.isStarFeed(feed.getId());
         holder.mFivStar.setFlipped(isStarred, false);
-        holder.mFivStar.setOnFlipListener(new OnFlipListener() {
-            
-            @Override
-            public void onFlipStart(FlipImageView view) {
-            }
-            
-            @Override
-            public void onFlipEnd(FlipImageView view) {
-            }
-            
-            @Override
-            public void onClick(FlipImageView view) {
-                boolean isStarred=view.isFlipped();
-                if(isStarred){
-                    mDataManager.addStarFeed(info);
-                }else{
-                    mDataManager.removeStarFeed(info.getId());
-                }
-            }
-        });
+        holder.mFivStar.setOnFlipListener(new StarChangeListener(info));
         
         holder.mIvRedirect.setOnClickListener(new OnClickListener() {
             

@@ -8,6 +8,7 @@
     
     <declare-styleable name="NetworkPhotoView">
         <attr name="progressRadius" format="integer"></attr>
+        <attr name="progressCircleWidth" format="integer"></attr>
         <attr name="hintTextSize" format="dimension"></attr>
     </declare-styleable>
     

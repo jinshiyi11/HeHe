@@ -39,7 +39,7 @@ public class AlbumActivity extends BaseActivity {
      */
     private ExpandableTextView mEtvDesc;
     AlbumAdapter mAlbumAdapter;
-    private int mFeedId;
+    private long mFeedId;
     private ArrayList<PicInfo> mPicInfos;
     
     /**
@@ -91,7 +91,7 @@ public class AlbumActivity extends BaseActivity {
             }
         });
         Intent intent=getIntent();
-        mFeedId=intent.getIntExtra(Constants.FEED_ID, -1);
+        mFeedId=intent.getLongExtra(Constants.FEED_ID, -1);
         
         getData();
     }

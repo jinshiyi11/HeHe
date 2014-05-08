@@ -19,6 +19,7 @@ import com.nostra13.universalimageloader.core.assist.ImageLoadingProgressListene
 import com.shuai.base.view.NetworkPhotoView;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.PicInfo;
+import com.shuai.utils.DisplayUtils;
 
 public class AlbumAdapter extends PagerAdapter {
     private Context mContext;
@@ -68,6 +69,8 @@ public class AlbumAdapter extends PagerAdapter {
         
         NetworkPhotoView photoView=new NetworkPhotoView(mContext);
         photoView.setBackgroundColor(android.R.color.black);
+        photoView.setProgressRadius(DisplayUtils.dp2px(mContext, 25));
+        photoView.setProgressCircleWidth(DisplayUtils.dp2px(mContext, 2));
         container.addView(photoView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         photoView.setScaleType(ScaleType.CENTER_INSIDE);
         ImageLoader.getInstance().displayImage(info.getBigPicUrl(), photoView,getDisplayImageOptions(),new ImageLoadingListener() {
