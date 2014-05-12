@@ -36,6 +36,7 @@ import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoFeed;
 import com.shuai.hehe.ui.AlbumActivity;
 import com.shuai.hehe.ui.WebViewActivity;
+import com.umeng.socialize.bean.SHARE_MEDIA;
 import com.umeng.socialize.controller.RequestType;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
@@ -398,6 +399,9 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
                 mController.setShareMedia(new UMImage(mContext,info.getBigImgUrl()));
                 
                 mController.getConfig().setSsoHandler( new QZoneSsoHandler((Activity) mContext,Constants.OPEN_QQ_APP_ID) );
+                
+                mController.getConfig().setPlatformOrder(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
+                        SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
                 mController.openShare((Activity) mContext, false);
             }
         });

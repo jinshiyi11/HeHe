@@ -1,7 +1,6 @@
 package com.shuai.utils;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -23,11 +22,20 @@ public class DisplayUtils {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         display.getMetrics(displayMetrics);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            //API>=17才有
-            display.getRealMetrics(displayMetrics);
-        }
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH
+                && Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
+            try {
+                displayMetrics.widthPixels = (Integer) Display.class.getMethod("getRawWidth").invoke(display);
+                displayMetrics.heightPixels = (Integer) Display.class.getMethod("getRawHeight").invoke(display);
+            } catch (Exception ex) {
+            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
+            try {
+                //API>=17才有
+                display.getRealMetrics(displayMetrics);
+            } catch (Exception ex) {
+            }
 
         return displayMetrics;
     }

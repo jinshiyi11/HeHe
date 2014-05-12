@@ -8,10 +8,15 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,14 +36,42 @@ import com.shuai.hehe.protocol.ProtocolError;
 
 public class AlbumActivity extends BaseActivity {
     private Context mContext;
+    private ViewGroup mNoNetworkContainer;
+    private ViewGroup mLoadingContainer;
+    private ViewGroup mMainContainer;
+    enum Status {
+        /**
+         * 正在加载并且还没有任何数据
+         */
+        STATUS_LOADING,
+        /**
+         * 有数据
+         */
+        STATUS_GOT_DATA,
+        /**
+         * 加载失败并且没有任何数据
+         */
+        STATUS_NO_NETWORK_OR_DATA
+    }
+    
+    private Status mStatus;
+    /**
+     * 当前显示的是第几张图片(如：2/9)
+     */
     private TextView mTvPageNum;
+    private LinearLayout mLlPageNum;
     private ViewPager mViewPager;
     
     /**
      * 图片描述
      */
     private ExpandableTextView mEtvDesc;
-    AlbumAdapter mAlbumAdapter;
+    
+    /**
+     * 是否显示当前是第几张图片和图片描述(可通过单击ViewPager显示和隐藏该信息)
+     */
+    private boolean mShowPicInfo=true;
+    private AlbumAdapter mAlbumAdapter;
     private long mFeedId;
     private ArrayList<PicInfo> mPicInfos;
     
@@ -56,6 +89,10 @@ public class AlbumActivity extends BaseActivity {
         setContentView(R.layout.activity_album);
         mRequestQueue=HeHeApplication.getRequestQueue();
         
+        mNoNetworkContainer=(ViewGroup) findViewById(R.id.no_network_container);
+        mLoadingContainer=(ViewGroup) findViewById(R.id.loading_container);
+        mMainContainer=(ViewGroup) findViewById(R.id.main_container);
+        mLlPageNum=(LinearLayout) findViewById(R.id.ll_pagenum);
         mTvPageNum=(TextView) findViewById(R.id.tv_pagenum);
         mTvPageNum.setVisibility(View.INVISIBLE);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -85,9 +122,33 @@ public class AlbumActivity extends BaseActivity {
             
             @Override
             public void onClick(View v) {
-                //TODO:单击隐藏pagenum和图片描述
-                Log.d("ggg", "msg");
-                
+                //单击显示或隐藏当前是第几张图片和图片描述
+                mShowPicInfo=!mShowPicInfo;
+                if(mShowPicInfo){
+                    Animation fromTopAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_in_from_top);
+                    fromTopAnimation.setFillAfter(true);
+                    mLlPageNum.startAnimation(fromTopAnimation);
+                    
+                    Animation fromBottomAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_in_from_bottom);
+                    fromBottomAnimation.setFillAfter(true);
+                    mEtvDesc.startAnimation(fromBottomAnimation);
+                }else{
+                    Animation fromTopAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_out_from_top);
+                    fromTopAnimation.setFillAfter(true);
+                    mLlPageNum.startAnimation(fromTopAnimation);
+                    
+                    Animation fromBottomAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_out_from_bottom);
+                    fromBottomAnimation.setFillAfter(true);
+                    mEtvDesc.startAnimation(fromBottomAnimation);
+                }
+            }
+        });
+        
+        mNoNetworkContainer.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                getData();
             }
         });
         Intent intent=getIntent();
@@ -96,19 +157,49 @@ public class AlbumActivity extends BaseActivity {
         getData();
     }
     
+    private void setStatus(Status status) {
+        mStatus = status;
+        switch (status) {
+        case STATUS_LOADING:
+            mLoadingContainer.setVisibility(View.VISIBLE);
+            mMainContainer.setVisibility(View.GONE);
+            mNoNetworkContainer.setVisibility(View.GONE);
+            break;
+        case STATUS_GOT_DATA:
+            mLoadingContainer.setVisibility(View.GONE);
+            mMainContainer.setVisibility(View.VISIBLE);
+            mNoNetworkContainer.setVisibility(View.GONE);
+            break;
+        case STATUS_NO_NETWORK_OR_DATA:
+            mLoadingContainer.setVisibility(View.GONE);
+            mMainContainer.setVisibility(View.GONE);
+            mNoNetworkContainer.setVisibility(View.VISIBLE);
+            break;
+        default:
+            break;
+        }
+
+    }
+    
     private void getData(){
+        if(mAlbumAdapter==null || mAlbumAdapter.getCount()==0){
+            setStatus(Status.STATUS_LOADING);
+        }
+        
         GetAlbumPicsRequest request=new GetAlbumPicsRequest(mFeedId, new Listener<ArrayList<PicInfo>>() {
 
             @Override
             public void onResponse(ArrayList<PicInfo> response) {
                 mPicInfos = response;
                 if (mPicInfos.size() > 0) {
+                    setStatus(Status.STATUS_GOT_DATA);
                     mTvPageNum.setVisibility(View.VISIBLE);
-                    mEtvDesc.setVisibility(View.VISIBLE);
-                    mAlbumAdapter = new AlbumAdapter(AlbumActivity.this, mPicInfos);
+                    //mEtvDesc.setVisibility(View.VISIBLE);
+                    mAlbumAdapter = new AlbumAdapter(mContext, mPicInfos);
                     mViewPager.setAdapter(mAlbumAdapter);
                     onPageSelected(0);
                 }else{
+                    setStatus(Status.STATUS_NO_NETWORK_OR_DATA);
                     Toast.makeText(mContext, R.string.error_data, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -116,6 +207,7 @@ public class AlbumActivity extends BaseActivity {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+                setStatus(Status.STATUS_NO_NETWORK_OR_DATA);
                 Toast.makeText(AlbumActivity.this, ProtocolError.getErrorMessage(AlbumActivity.this, error), Toast.LENGTH_SHORT).show();
             }
         });
@@ -131,11 +223,17 @@ public class AlbumActivity extends BaseActivity {
     }
     
     private void onPageSelected(int position) {
-        if(mAlbumAdapter!=null && mAlbumAdapter.getCount()>0){
-            mTvPageNum.setText(String.format("%d/%d", position+1,mAlbumAdapter.getCount()));
-            
-            PicInfo info=mPicInfos.get(position);
-            mEtvDesc.setText(Html.fromHtml(info.getPicDescription()));
+        if (mAlbumAdapter != null && mAlbumAdapter.getCount() > 0) {
+            mTvPageNum.setText(String.format("%d/%d", position + 1, mAlbumAdapter.getCount()));
+
+            PicInfo info = mPicInfos.get(position);
+            String desc = info.getPicDescription();
+            if (!TextUtils.isEmpty(desc)) {
+                mEtvDesc.setText(Html.fromHtml(info.getPicDescription()));
+                mEtvDesc.setVisibility(View.VISIBLE);
+            } else {
+                mEtvDesc.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

@@ -19,20 +19,39 @@ public class UrlHelper {
 
 		return builder.toString();
 	}
+	
+	/**
+	 * 增加公共参数，如版本号，防止恶意攻击的hash等
+	 * @param params
+	 */
+	private static void addCommonParameters(List<BasicNameValuePair> params){
+	    params.add(new BasicNameValuePair("ver", Constants.PROTOCOL_VERSION));
+	}
 
+	/**
+	 * 获取新鲜事的url
+	 * @param id
+	 * @param count
+	 * @return
+	 */
 	public static String getFeedsUrl(long id, int count) {
 		List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
 		params.add(new BasicNameValuePair("id", Long.toString(id)));
 		params.add(new BasicNameValuePair("count", Integer.toString(count)));
-		params.add(new BasicNameValuePair("ver", Constants.PROTOCOL_VERSION));
+		addCommonParameters(params);
 
 		return getUrl("getfeeds", params);
 	}
-
+	
+	/**
+	 * 获取相册的url
+	 * @param feedId
+	 * @return
+	 */
     public static String getAlbumPicsUrl(long feedId) {
         List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
         params.add(new BasicNameValuePair("feedId", Long.toString(feedId)));
-        params.add(new BasicNameValuePair("ver", Constants.PROTOCOL_VERSION));
+        addCommonParameters(params);
 
         return getUrl("getalbumpics", params);
     }
