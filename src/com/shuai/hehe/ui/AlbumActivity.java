@@ -33,6 +33,10 @@ import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.PicInfo;
 import com.shuai.hehe.protocol.GetAlbumPicsRequest;
 import com.shuai.hehe.protocol.ProtocolError;
+import com.umeng.socialize.controller.RequestType;
+import com.umeng.socialize.controller.UMServiceFactory;
+import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.sso.UMSsoHandler;
 
 public class AlbumActivity extends BaseActivity {
     private Context mContext;
@@ -155,6 +159,18 @@ public class AlbumActivity extends BaseActivity {
         mFeedId=intent.getLongExtra(Constants.FEED_ID, -1);
         
         getData();
+    }
+    
+    @Override 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share",
+                RequestType.SOCIAL);
+        /**使用SSO授权必须添加如下代码 */
+        UMSsoHandler ssoHandler = mController.getConfig().getSsoHandler(requestCode) ;
+        if(ssoHandler != null){
+           ssoHandler.authorizeCallBack(requestCode, resultCode, data);
+        }
     }
     
     private void setStatus(Status status) {

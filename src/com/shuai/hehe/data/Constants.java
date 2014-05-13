@@ -30,7 +30,9 @@ public class Constants {
     /**
 	 * 
 	 */
-    public static final String OPEN_QQ_APP_ID = "101076410";
+    public static final String APP_ID_QQ = "101076410";
+    
+    public static final String APP_ID_WEIXIN = "101076410";
 
     static {
         if (DEBUG) {
