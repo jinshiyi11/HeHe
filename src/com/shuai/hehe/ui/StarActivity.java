@@ -84,7 +84,7 @@ public class StarActivity extends BaseActivity implements OnStarFeedChangedListe
         });
         
         mTvTitle=(TextView) findViewById(R.id.tv_title);
-        mTvTitle.setText(R.string.my_fav);
+        mTvTitle.setText(R.string.my_star);
         mTitleContainer = findViewById(R.id.rl_title);
         mTitleContainer.setOnClickListener(new OnClickListener() {
 

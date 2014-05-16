@@ -33,13 +33,19 @@ import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.data.FeedType;
+import com.shuai.hehe.data.Stat;
 import com.shuai.hehe.data.VideoFeed;
 import com.shuai.hehe.ui.AlbumActivity;
 import com.shuai.hehe.ui.WebViewActivity;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.socialize.bean.CustomPlatform;
 import com.umeng.socialize.bean.SHARE_MEDIA;
+import com.umeng.socialize.bean.SocializeEntity;
 import com.umeng.socialize.controller.RequestType;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.controller.listener.SocializeListeners.OnCustomPlatformClickListener;
+import com.umeng.socialize.controller.listener.SocializeListeners.SnsPostListener;
 import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.sso.QZoneSsoHandler;
 import com.umeng.socialize.sso.SinaSsoHandler;
@@ -264,8 +270,10 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         public void onClick(FlipImageView view) {
             boolean isStarred=view.isFlipped();
             if(isStarred){
+                MobclickAgent.onEvent(mContext, Stat.EVENT_STAR);
                 mDataManager.addStarFeed(info);
             }else{
+                MobclickAgent.onEvent(mContext, Stat.EVENT_UNSTAR);
                 mDataManager.removeStarFeed(info.getId());
             }
         }
@@ -290,7 +298,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         /**
          * 转发按钮
          */
-        ImageView mIvRedirect;
+        ImageView mIvShare;
     }
     
     class VideoViewHolder extends BaseHolder{
@@ -327,7 +335,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             holder.mTvTitle=(TextView) view.findViewById(R.id.tv_title);
             holder.mIvThumb=(ImageView) view.findViewById(R.id.iv_thumb);
             holder.mFivStar=(FlipImageView) view.findViewById(R.id.fiv_star);
-            holder.mIvRedirect=(ImageView) view.findViewById(R.id.iv_redirect);
+            holder.mIvShare=(ImageView) view.findViewById(R.id.iv_share);
             view.setTag(holder);
         }else{
             holder=(VideoViewHolder) view.getTag();
@@ -365,7 +373,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             holder.mTvTitle=(TextView) view.findViewById(R.id.tv_title);
             holder.mIvThumb=(ImageView) view.findViewById(R.id.iv_thumb);
             holder.mFivStar=(FlipImageView) view.findViewById(R.id.fiv_star);
-            holder.mIvRedirect=(ImageView) view.findViewById(R.id.iv_redirect);
+            holder.mIvShare=(ImageView) view.findViewById(R.id.iv_share);
             view.setTag(holder);
         }else{
             holder=(AlbumViewHolder) view.getTag();
@@ -389,21 +397,29 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         holder.mFivStar.setFlipped(isStarred, false);
         holder.mFivStar.setOnFlipListener(new StarChangeListener(info));
         
-        holder.mIvRedirect.setOnClickListener(new OnClickListener() {
+        holder.mIvShare.setOnClickListener(new OnClickListener() {
             
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, Stat.EVENT_SHARE);
+                
                 final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share",
                         RequestType.SOCIAL);
                 
                 // 微信图文分享必须设置一个url 
-                String contentUrl = "http://www.umeng.com/social";
+                String contentUrl = info.getBigImgUrl();
                 // 添加微信平台，参数1为当前Activity, 参数2为用户申请的AppID, 参数3为点击分享内容跳转到的目标url
                 UMWXHandler wxHandler = mController.getConfig().supportWXPlatform((Activity) mContext,Constants.APP_ID_WEIXIN, contentUrl);
                 wxHandler.setWXTitle(info.getTitle());
                 // 支持微信朋友圈
                 UMWXHandler circleHandler = mController.getConfig().supportWXCirclePlatform((Activity) mContext,Constants.APP_ID_WEIXIN, contentUrl) ;
                 circleHandler.setCircleTitle(info.getTitle());
+                circleHandler.setListener(new OnCustomPlatformClickListener() {
+                    
+                    @Override
+                    public void onClick(CustomPlatform arg0, SocializeEntity arg1, SnsPostListener arg2) {
+                    }
+                });
                 
                 //设置分享内容
                 mController.setShareContent(info.getTitle());

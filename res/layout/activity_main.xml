@@ -23,13 +23,12 @@
             android:textSize="@dimen/activity_title_size"
             android:textStyle="bold" />
 
-        <ImageButton
+        <com.shuai.base.view.PopUpMenuButton
             android:id="@+id/ib_menu_more"
             android:layout_width="48dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="38dp"
             android:background="@drawable/main_menu_btn_bg"
             android:src="@drawable/ic_menu_more" />
 

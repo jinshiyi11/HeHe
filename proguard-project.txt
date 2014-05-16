@@ -10,15 +10,33 @@
 # For more details, see
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
+-dontwarn com.umeng.**
+-dontwarn com.tencent.**
+-dontwarn com.facebook.**
+
 # Add any project specific keep options here:
 
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
 # class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+-keepclassmembers class fqcn.of.javascript.interface.for.webview {
+  public *;
+}
 
+-keep public class * extends android.app.Activity
+-keep public class * extends android.app.Application
+-keep public class * extends android.app.Service
+-keep public class * extends android.content.BroadcastReceiver
+-keep public class * extends android.content.ContentProvider
+-keep public class * extends android.app.Fragment
+
+-keep public class **.R$*
+
+#-libraryjars libs/SocialSDK_QQZone_1.jar
+#-libraryjars libs/SocialSDK_QQZone_2.jar
+-keep interface com.umeng.** {*;}
+-keep class com.umeng.** {*;}
+-keep class com.tencent.** {*;}
 
 #weixin
 -keep class com.tencent.mm.sdk.openapi.WXMediaMessage {*;}

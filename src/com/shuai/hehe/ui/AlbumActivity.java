@@ -9,14 +9,17 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.Menu;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.LinearLayout;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +29,8 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.shuai.base.view.BaseActivity;
 import com.shuai.base.view.ExpandableTextView;
+import com.shuai.base.view.PopUpMenuButton;
+import com.shuai.base.view.PopUpMenuButton.OnMenuListener;
 import com.shuai.hehe.HeHeApplication;
 import com.shuai.hehe.R;
 import com.shuai.hehe.adapter.AlbumAdapter;
@@ -33,6 +38,7 @@ import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.PicInfo;
 import com.shuai.hehe.protocol.GetAlbumPicsRequest;
 import com.shuai.hehe.protocol.ProtocolError;
+import com.shuai.utils.DisplayUtils;
 import com.umeng.socialize.controller.RequestType;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
@@ -63,7 +69,8 @@ public class AlbumActivity extends BaseActivity {
      * 当前显示的是第几张图片(如：2/9)
      */
     private TextView mTvPageNum;
-    private LinearLayout mLlPageNum;
+    private RelativeLayout mRlPageNum;
+    private PopUpMenuButton mIbMenuMore;
     private ViewPager mViewPager;
     
     /**
@@ -84,6 +91,39 @@ public class AlbumActivity extends BaseActivity {
      */
     private RequestQueue mRequestQueue;
     
+    /**
+     * 响应菜单点击
+     */
+    private MenuItemClickListener mMenuItemClickListener=new MenuItemClickListener();
+    
+    private class MenuItemClickListener implements OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            mIbMenuMore.hideMenu();
+            
+            switch (v.getId()) {
+            case R.id.tv_download_pic:
+                //下载图片
+
+                break;
+            case R.id.tv_download_album:
+                //下载相册
+                break;
+            case R.id.tv_star:
+                //收藏或取消收藏
+
+                break;
+            case R.id.tv_share:
+                //分享
+                break;
+
+            default:
+                break;
+            }
+        }
+    }
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mContext=this;
@@ -96,9 +136,10 @@ public class AlbumActivity extends BaseActivity {
         mNoNetworkContainer=(ViewGroup) findViewById(R.id.no_network_container);
         mLoadingContainer=(ViewGroup) findViewById(R.id.loading_container);
         mMainContainer=(ViewGroup) findViewById(R.id.main_container);
-        mLlPageNum=(LinearLayout) findViewById(R.id.ll_pagenum);
+        mRlPageNum=(RelativeLayout) findViewById(R.id.ll_pagenum);
         mTvPageNum=(TextView) findViewById(R.id.tv_pagenum);
         mTvPageNum.setVisibility(View.INVISIBLE);
+        mIbMenuMore=(PopUpMenuButton) findViewById(R.id.ib_menu_more);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mEtvDesc=(ExpandableTextView) findViewById(R.id.etv_desc);
         mEtvDesc.setVisibility(View.INVISIBLE);
@@ -131,19 +172,25 @@ public class AlbumActivity extends BaseActivity {
                 if(mShowPicInfo){
                     Animation fromTopAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_in_from_top);
                     fromTopAnimation.setFillAfter(true);
-                    mLlPageNum.startAnimation(fromTopAnimation);
+                    mRlPageNum.startAnimation(fromTopAnimation);
                     
-                    Animation fromBottomAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_in_from_bottom);
-                    fromBottomAnimation.setFillAfter(true);
-                    mEtvDesc.startAnimation(fromBottomAnimation);
+                    if (!mEtvDesc.isEmpty()) {
+                        Animation fromBottomAnimation = AnimationUtils.loadAnimation(mContext,
+                                R.anim.slide_in_from_bottom);
+                        fromBottomAnimation.setFillAfter(true);
+                        mEtvDesc.startAnimation(fromBottomAnimation);
+                    }
                 }else{
                     Animation fromTopAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_out_from_top);
                     fromTopAnimation.setFillAfter(true);
-                    mLlPageNum.startAnimation(fromTopAnimation);
+                    mRlPageNum.startAnimation(fromTopAnimation);
                     
-                    Animation fromBottomAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_out_from_bottom);
-                    fromBottomAnimation.setFillAfter(true);
-                    mEtvDesc.startAnimation(fromBottomAnimation);
+                    if (!mEtvDesc.isEmpty()) {
+                        Animation fromBottomAnimation = AnimationUtils.loadAnimation(mContext,
+                                R.anim.slide_out_from_bottom);
+                        fromBottomAnimation.setFillAfter(true);
+                        mEtvDesc.startAnimation(fromBottomAnimation);
+                    }
                 }
             }
         });
@@ -155,10 +202,38 @@ public class AlbumActivity extends BaseActivity {
                 getData();
             }
         });
+        
+        mIbMenuMore.setOnMenuListener(new OnMenuListener() {
+
+            @Override
+            public void onCreateMenu(PopupWindow popupWindow) {
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View view = inflater.inflate(R.layout.album_menu, null);
+                popupWindow.setContentView(view);
+                popupWindow.setWidth(DisplayUtils.dp2px(mContext, 150));
+                popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+
+                view.findViewById(R.id.tv_download_pic).setOnClickListener(mMenuItemClickListener);
+                view.findViewById(R.id.tv_download_album).setOnClickListener(mMenuItemClickListener);
+                view.findViewById(R.id.tv_star).setOnClickListener(mMenuItemClickListener);
+                view.findViewById(R.id.tv_share).setOnClickListener(mMenuItemClickListener);
+            }
+
+            @Override
+            public void onUpdateMenu(PopupWindow popupWindow) {
+            }
+
+        });
         Intent intent=getIntent();
         mFeedId=intent.getLongExtra(Constants.FEED_ID, -1);
         
         getData();
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        mIbMenuMore.showMenu();
+        return false;
     }
     
     @Override 

@@ -28,11 +28,14 @@ public class Constants {
     public static final String PUT_EXTRA_FEED="put_extra_feed";
 
     /**
-	 * 
+	 * QQ appid
 	 */
     public static final String APP_ID_QQ = "101076410";
     
-    public static final String APP_ID_WEIXIN = "101076410";
+    /**
+     * 微信appid
+     */
+    public static final String APP_ID_WEIXIN = "wx4d1680ae1b14a8a9";
 
     static {
         if (DEBUG) {

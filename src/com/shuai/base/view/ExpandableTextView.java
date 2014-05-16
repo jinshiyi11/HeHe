@@ -25,6 +25,7 @@ import com.shuai.hehe.R;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.view.View;
@@ -141,5 +142,14 @@ public class ExpandableTextView extends LinearLayout implements OnClickListener 
             return "";
         }
         return mTv.getText();
+    }
+    
+    public boolean isEmpty(){
+        String text=getText().toString();
+        if(TextUtils.isEmpty(text)){
+            return true;
+        }
+        
+        return false;
     }
 }

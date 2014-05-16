@@ -50,7 +50,7 @@ public class UrlHelper {
 	 */
     public static String getAlbumPicsUrl(long feedId) {
         List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-        params.add(new BasicNameValuePair("feedId", Long.toString(feedId)));
+        params.add(new BasicNameValuePair("feedid", Long.toString(feedId)));
         addCommonParameters(params);
 
         return getUrl("getalbumpics", params);

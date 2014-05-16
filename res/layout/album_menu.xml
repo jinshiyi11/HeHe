@@ -7,9 +7,31 @@
     android:showDividers="middle" >
 
     <TextView
+        android:id="@+id/tv_download_pic"
+        style="@style/MoreMenuItemStyle"
+        android:text="@string/download_pic" />
+    
+    <!-- 分割线 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/main_menu_item_split_color" />
+    
+    <TextView
+        android:id="@+id/tv_download_album"
+        style="@style/MoreMenuItemStyle"
+        android:text="@string/download_album" />
+    
+    <!-- 分割线 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/main_menu_item_split_color" />
+    
+    <TextView
         android:id="@+id/tv_star"
         style="@style/MoreMenuItemStyle"
-        android:text="@string/my_star" />
+        android:text="@string/add_star" />
     
     <!-- 分割线 -->
     <View
@@ -18,19 +40,8 @@
         android:background="@color/main_menu_item_split_color" />
     
     <TextView
-        android:id="@+id/tv_feedback"
+        android:id="@+id/tv_share"
         style="@style/MoreMenuItemStyle"
-        android:text="@string/feedback" />
-    
-    <!-- 分割线 -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/main_menu_item_split_color" />
-    
-    <TextView
-        android:id="@+id/tv_about"
-        style="@style/MoreMenuItemStyle"
-        android:text="@string/about" />
+        android:text="@string/share" />
 
 </LinearLayout>

@@ -2,7 +2,6 @@ package com.shuai.hehe.ui;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,11 +9,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.PopupWindow;
-import android.widget.PopupWindow.OnDismissListener;
 
 import com.shuai.base.view.BaseFragmentActivity;
+import com.shuai.base.view.PopUpMenuButton;
+import com.shuai.base.view.PopUpMenuButton.OnMenuListener;
 import com.shuai.hehe.R;
 import com.shuai.utils.DisplayUtils;
 import com.umeng.fb.FeedbackAgent;
@@ -29,14 +28,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 	private Context mContext;
     private View mTitleContainer;
     private FeedFragment mFeedFragment;
-    private ImageButton mIbMenuMore;
-    private PopupWindow mMainMenuWindow;
-    
-    /**
-     * 记录上次主菜单dismiss的时间
-     * 该变量用于处理当菜单已展示时单击显示菜单按钮，菜单先消失然后又展示的问题
-     */
-    private long mMainMenuLastDismissTime=System.currentTimeMillis();
+    private PopUpMenuButton mIbMenuMore;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +40,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 		setContentView(R.layout.activity_main);
 		
 		mTitleContainer=findViewById(R.id.rl_title);
-		mIbMenuMore=(ImageButton) findViewById(R.id.ib_menu_more);
+		mIbMenuMore=(PopUpMenuButton) findViewById(R.id.ib_menu_more);
 		mFeedFragment=(FeedFragment)getSupportFragmentManager().findFragmentById(R.id.feed_fragment);
 		mTitleContainer.setOnClickListener(new OnClickListener() {
             
@@ -59,13 +51,26 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             }
         });
 		
-		mIbMenuMore.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				showMenu();
-			}
-		});
+		mIbMenuMore.setOnMenuListener(new OnMenuListener() {
+		    
+		    @Override
+            public void onCreateMenu(PopupWindow popupWindow) {
+		        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View view = inflater.inflate(R.layout.main_menu, null);
+                popupWindow.setContentView(view);
+                popupWindow.setWidth(DisplayUtils.dp2px(mContext, 150));
+                popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+
+                view.findViewById(R.id.tv_star).setOnClickListener(MainActivity.this);
+                view.findViewById(R.id.tv_feedback).setOnClickListener(MainActivity.this);
+                view.findViewById(R.id.tv_about).setOnClickListener(MainActivity.this);
+            }
+            
+            @Override
+            public void onUpdateMenu(PopupWindow popupWindow) {
+            }
+   
+        });
 	}
 	
 	@Override 
@@ -79,53 +84,16 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 	       ssoHandler.authorizeCallBack(requestCode, resultCode, data);
 	    }
 	}
-	
-	private void showMenu(){
-		//处理当菜单已展示时单击显示菜单按钮，菜单先消失然后又展示的问题
-		//Log.i(TAG, Long.toString(System.currentTimeMillis() - mMainMenuLastDismissTime));
-		if (System.currentTimeMillis() - mMainMenuLastDismissTime <= 200) {
-			return;
-		}
-		
-		if (mMainMenuWindow != null && mMainMenuWindow.isShowing()) {
-			mMainMenuWindow.dismiss();
-		} else {
-			if (mMainMenuWindow == null) {
-				mMainMenuWindow = new PopupWindow(mContext);
-				mMainMenuWindow.setBackgroundDrawable(new BitmapDrawable());
-				mMainMenuWindow.setOutsideTouchable(true);
-				mMainMenuWindow.setOnDismissListener(new OnDismissListener() {
-					
-					@Override
-					public void onDismiss() {
-						mMainMenuLastDismissTime=System.currentTimeMillis();
-					}
-				});
-				LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				View view = inflater.inflate(R.layout.main_menu, null);
-				mMainMenuWindow.setContentView(view);
-				mMainMenuWindow.setWidth(DisplayUtils.dp2px(mContext, 150));
-				mMainMenuWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
-
-				view.findViewById(R.id.tv_star).setOnClickListener(this);
-				view.findViewById(R.id.tv_feedback).setOnClickListener(this);
-				view.findViewById(R.id.tv_about).setOnClickListener(this);
-			}
-			mMainMenuWindow.showAsDropDown(mIbMenuMore);
-		}
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		showMenu();
+	    mIbMenuMore.showMenu();
 		return false;
 	}
 
 	@Override
 	public void onClick(View v) {
-		if(mMainMenuWindow!=null){
-			mMainMenuWindow.dismiss();
-		}
+	    mIbMenuMore.hideMenu();
 		
 		//响应选中菜单项
 		int id=v.getId();

@@ -51,7 +51,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/transparent_black_bg"
-                android:scaleType="centerInside"
+                android:padding="2dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_star_0"
                 fiv:flipDrawable="@drawable/ic_star_1"
                 fiv:flipDuration="500"
@@ -63,12 +64,13 @@
             android:background="#e5e5e5" />
 
             <ImageView
-                android:id="@+id/iv_redirect"
+                android:id="@+id/iv_share"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/transparent_black_bg"
-                android:scaleType="centerInside"
+                android:padding="2dp"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_redirect_normal" />
 
         </LinearLayout>
