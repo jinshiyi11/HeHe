@@ -9,7 +9,9 @@ public class Constants {
      */
     public static final String PROTOCOL_VERSION = "1.0";
 
+    public static final String FEED = "feed";
     public static final String FEED_ID = "feed_id";
+    public static final String FEED_ALBUM = "feed_album";
     public static final String VIDEO_URL = "video_url";
     
     //广播

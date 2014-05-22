@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.shuai.base.view.BaseFragmentActivity;
 import com.shuai.base.view.PopUpMenuButton;
@@ -29,6 +30,10 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
     private View mTitleContainer;
     private FeedFragment mFeedFragment;
     private PopUpMenuButton mIbMenuMore;
+    /**
+     * 上次按下back按钮的时间
+     */
+    private long mLastBackPressedTime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +72,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
             }
             
             @Override
-            public void onUpdateMenu(PopupWindow popupWindow) {
+            public void onPreShowMenu(PopupWindow popupWindow) {
             }
    
         });
@@ -90,8 +95,18 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 	    mIbMenuMore.showMenu();
 		return false;
 	}
-
+	
 	@Override
+    public void onBackPressed() {
+	    if(System.currentTimeMillis()-mLastBackPressedTime>2000){
+	        mLastBackPressedTime=System.currentTimeMillis();
+	        Toast.makeText(mContext, R.string.one_more_exit, Toast.LENGTH_SHORT).show();
+	    }else{
+	        super.onBackPressed();
+	    }
+    }
+
+    @Override
 	public void onClick(View v) {
 	    mIbMenuMore.hideMenu();
 		

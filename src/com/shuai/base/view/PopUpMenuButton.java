@@ -22,7 +22,7 @@ public class PopUpMenuButton extends ImageButton {
     public interface OnMenuListener{
         public void onCreateMenu(PopupWindow popupWindow);
         
-        public void onUpdateMenu(PopupWindow popupWindow);
+        public void onPreShowMenu(PopupWindow popupWindow);
     }
 
     public PopUpMenuButton(Context context) {
@@ -80,9 +80,9 @@ public class PopUpMenuButton extends ImageButton {
                 });
                 mOnMenuListener.onCreateMenu(mPopupMenuWindow);
                 
-            }else {
-                mOnMenuListener.onUpdateMenu(mPopupMenuWindow);
             }
+            
+            mOnMenuListener.onPreShowMenu(mPopupMenuWindow);
             mPopupMenuWindow.showAsDropDown(this);
         }
     }

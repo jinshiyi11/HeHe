@@ -110,7 +110,7 @@ public class Feed implements Parcelable {
         dest.writeLong(mStarTime);
     }
     
-    private Feed(Parcel in){
+    protected Feed(Parcel in){
         mId=in.readLong();
         mType=in.readInt();
         mTitle=in.readString();

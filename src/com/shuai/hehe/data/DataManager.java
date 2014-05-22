@@ -1,7 +1,9 @@
 package com.shuai.hehe.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -18,6 +20,7 @@ import android.util.Log;
 
 import com.shuai.hehe.base.ParallelAsyncTask;
 import com.shuai.hehe.protocol.FeedContentParser;
+import com.umeng.analytics.MobclickAgent;
 
 public class DataManager {
     private static final String TAG="DataManager";
@@ -47,6 +50,11 @@ public class DataManager {
      * 收藏的新鲜事的id集合
      */
     private Set<Long> mStarFeedIds;
+    
+    /**
+     * 记录上次看到相册的第几张图片。如果再次打开相册，自动跳到上次浏览的图片
+     */
+    private Map<Long, Integer> mLastAblumPicPositions=new HashMap<Long, Integer>();
     
     public interface OnStarFeedChangedListener{
         void onStarFeedAdded(Feed feed);
@@ -118,6 +126,32 @@ public class DataManager {
         return task.executeOnExecutor(mDbThread,params);
     }
     
+    /**
+     * 记录上次看到相册的第几张图片
+     * @param feedId
+     * @param picPosition 第几张图片，从0开始
+     */
+    public void setLastAlbumPicPosition(long feedId,int picPosition){
+        if(picPosition==0){
+            mLastAblumPicPositions.remove(feedId);
+            return;
+        }
+        mLastAblumPicPositions.put(feedId, picPosition);
+    }
+    
+    /**
+     * 上次看到相册的第几张图片
+     * @param feedId
+     * @return
+     */
+    public int getLastAlbumPicPosition(long feedId) {
+        Integer picPosition=mLastAblumPicPositions.get(feedId);
+        if(picPosition==null)
+            return 0;
+        else
+            return picPosition;
+    }
+    
     public void addStarFeedChangedListener(OnStarFeedChangedListener listener){
         mStarFeedChangedListeners.add(listener);
     }
@@ -186,6 +220,9 @@ public class DataManager {
             return;
         }
         
+        //统计
+        MobclickAgent.onEvent(mContext, Stat.EVENT_STAR);
+        
         mStarFeedIds.add((long) feed.getId());
         //发送通知
         starFeedAdded(feed);
@@ -229,6 +266,9 @@ public class DataManager {
             //TODO:mStarredFeedIds还没从db加载完成？
             return;
         }
+        
+        //统计
+        MobclickAgent.onEvent(mContext, Stat.EVENT_UNSTAR);
         
         mStarFeedIds.remove(feedId);
         //发送通知

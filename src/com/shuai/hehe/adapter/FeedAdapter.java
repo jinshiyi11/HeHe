@@ -18,6 +18,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nineoldandroids.animation.AnimatorInflater;
 import com.nineoldandroids.animation.AnimatorSet;
@@ -37,6 +38,7 @@ import com.shuai.hehe.data.Stat;
 import com.shuai.hehe.data.VideoFeed;
 import com.shuai.hehe.ui.AlbumActivity;
 import com.shuai.hehe.ui.WebViewActivity;
+import com.shuai.utils.SocialUtils;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.bean.CustomPlatform;
 import com.umeng.socialize.bean.SHARE_MEDIA;
@@ -270,11 +272,11 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         public void onClick(FlipImageView view) {
             boolean isStarred=view.isFlipped();
             if(isStarred){
-                MobclickAgent.onEvent(mContext, Stat.EVENT_STAR);
                 mDataManager.addStarFeed(info);
+                Toast.makeText(mContext, R.string.add_star_tip, Toast.LENGTH_SHORT).show();
             }else{
-                MobclickAgent.onEvent(mContext, Stat.EVENT_UNSTAR);
                 mDataManager.removeStarFeed(info.getId());
+                Toast.makeText(mContext, R.string.remove_star_tip, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -388,7 +390,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(mContext, AlbumActivity.class);
-                intent.putExtra(Constants.FEED_ID, info.getId());
+                intent.putExtra(Constants.FEED_ALBUM, info);
                 mContext.startActivity(intent);
             }
         });
@@ -401,46 +403,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             
             @Override
             public void onClick(View v) {
-                MobclickAgent.onEvent(mContext, Stat.EVENT_SHARE);
-                
-                final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share",
-                        RequestType.SOCIAL);
-                
-                // 微信图文分享必须设置一个url 
-                String contentUrl = info.getBigImgUrl();
-                // 添加微信平台，参数1为当前Activity, 参数2为用户申请的AppID, 参数3为点击分享内容跳转到的目标url
-                UMWXHandler wxHandler = mController.getConfig().supportWXPlatform((Activity) mContext,Constants.APP_ID_WEIXIN, contentUrl);
-                wxHandler.setWXTitle(info.getTitle());
-                // 支持微信朋友圈
-                UMWXHandler circleHandler = mController.getConfig().supportWXCirclePlatform((Activity) mContext,Constants.APP_ID_WEIXIN, contentUrl) ;
-                circleHandler.setCircleTitle(info.getTitle());
-                circleHandler.setListener(new OnCustomPlatformClickListener() {
-                    
-                    @Override
-                    public void onClick(CustomPlatform arg0, SocializeEntity arg1, SnsPostListener arg2) {
-                    }
-                });
-                
-                //设置分享内容
-                mController.setShareContent(info.getTitle());
-                //设置分享图片, 参数2为图片的url地址
-                mController.setShareMedia(new UMImage(mContext,info.getBigImgUrl()));
-                
-                mController.getConfig().setSsoHandler( new QZoneSsoHandler((Activity) mContext,Constants.APP_ID_QQ) );
-                mController.getConfig().setSsoHandler(new SinaSsoHandler());
-                
-                //mController.getConfig().removePlatform(SHARE_MEDIA.DOUBAN,SHARE_MEDIA.EMAIL,SHARE_MEDIA.SMS);
-                
-                mController.getConfig().setPlatforms(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
-                        SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA);
-                mController.getConfig().setPlatformOrder(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
-                        SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA);
-                
-//                mController.getConfig().setPlatforms(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
-//                        SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
-//                mController.getConfig().setPlatformOrder(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
-//                        SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
-                mController.openShare((Activity) mContext, false);
+                SocialUtils.sharePic((Activity) mContext, info.getTitle(), info.getBigImgUrl());
             }
         });
         return view;

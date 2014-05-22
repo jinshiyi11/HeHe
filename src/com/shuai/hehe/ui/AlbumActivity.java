@@ -1,18 +1,32 @@
 package com.shuai.hehe.ui;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import android.R.integer;
+import android.app.Activity;
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Menu;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -27,6 +41,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.shuai.base.view.BaseActivity;
 import com.shuai.base.view.ExpandableTextView;
 import com.shuai.base.view.PopUpMenuButton;
@@ -34,11 +51,16 @@ import com.shuai.base.view.PopUpMenuButton.OnMenuListener;
 import com.shuai.hehe.HeHeApplication;
 import com.shuai.hehe.R;
 import com.shuai.hehe.adapter.AlbumAdapter;
+import com.shuai.hehe.data.AlbumFeed;
 import com.shuai.hehe.data.Constants;
+import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.PicInfo;
 import com.shuai.hehe.protocol.GetAlbumPicsRequest;
 import com.shuai.hehe.protocol.ProtocolError;
 import com.shuai.utils.DisplayUtils;
+import com.shuai.utils.SocialUtils;
+import com.shuai.utils.StorageUtils;
+import com.shuai.utils.WallpaperUtils;
 import com.umeng.socialize.controller.RequestType;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
@@ -46,6 +68,7 @@ import com.umeng.socialize.sso.UMSsoHandler;
 
 public class AlbumActivity extends BaseActivity {
     private Context mContext;
+    private DataManager mDataManager;
     private ViewGroup mNoNetworkContainer;
     private ViewGroup mLoadingContainer;
     private ViewGroup mMainContainer;
@@ -83,7 +106,7 @@ public class AlbumActivity extends BaseActivity {
      */
     private boolean mShowPicInfo=true;
     private AlbumAdapter mAlbumAdapter;
-    private long mFeedId;
+    private AlbumFeed mFeed;
     private ArrayList<PicInfo> mPicInfos;
     
     /**
@@ -96,6 +119,9 @@ public class AlbumActivity extends BaseActivity {
      */
     private MenuItemClickListener mMenuItemClickListener=new MenuItemClickListener();
     
+    /**
+     * 响应菜单类
+     */
     private class MenuItemClickListener implements OnClickListener{
 
         @Override
@@ -103,21 +129,108 @@ public class AlbumActivity extends BaseActivity {
             mIbMenuMore.hideMenu();
             
             switch (v.getId()) {
-            case R.id.tv_download_pic:
-                //下载图片
-
-                break;
-            case R.id.tv_download_album:
-                //下载相册
-                break;
             case R.id.tv_star:
+            {
                 //收藏或取消收藏
-
+                boolean isStarred=mDataManager.isStarFeed(mFeed.getId());
+                if(isStarred){
+                    mDataManager.removeStarFeed(mFeed.getId());
+                    Toast.makeText(mContext, R.string.remove_star_tip, Toast.LENGTH_SHORT).show();
+                }else{
+                    mDataManager.addStarFeed(mFeed);
+                    Toast.makeText(mContext, R.string.add_star_tip, Toast.LENGTH_SHORT).show();
+                }
                 break;
+            }
             case R.id.tv_share:
+            {
                 //分享
+                PicInfo info = mPicInfos.get(mViewPager.getCurrentItem());
+                SocialUtils.sharePic((Activity) mContext, mFeed.getTitle(), info.getBigPicUrl());
                 break;
+            }
+            case R.id.tv_set_as_wallpaper:
+            {
+                //设为壁纸
+                PicInfo info = mPicInfos.get(mViewPager.getCurrentItem());
+                ImageLoader.getInstance().loadImage(info.getBigPicUrl(), new ImageLoadingListener() {
 
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                        Toast.makeText(mContext, R.string.set_wallpaper_failed, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        try {
+                            WallpaperUtils.setWallper(mContext, loadedImage);
+                            Toast.makeText(mContext, R.string.set_wallpaper_success, Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            //TODO:log it
+                            e.printStackTrace();
+                            Toast.makeText(mContext, R.string.set_wallpaper_failed, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+                    }
+                    
+                });
+                break;
+            }
+            case R.id.tv_download_pic:
+            {
+                //下载图片
+                PicInfo info = mPicInfos.get(mViewPager.getCurrentItem());
+                ImageLoader.getInstance().loadImage(info.getBigPicUrl(), new ImageLoadingListener() {
+                    
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+                    }
+                    
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                        Toast.makeText(mContext, getString(R.string.pic_save_failed, failReason.getType().toString()), Toast.LENGTH_SHORT).show();
+                    }
+                    
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        File imageFile = ImageLoader.getInstance().getDiscCache().get(imageUri);
+                        
+                        File saveFile=new File(StorageUtils.getMyPicturesDirectory(),mFeed.getType()+"_"+Uri.parse(imageUri).getLastPathSegment());
+                        try {
+                            StorageUtils.copyFile(imageFile, saveFile);
+                            
+                            Toast.makeText(mContext, getString(R.string.pic_save_success, saveFile.getAbsolutePath()), Toast.LENGTH_SHORT).show();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                            Toast.makeText(mContext, getString(R.string.pic_save_failed, ""), Toast.LENGTH_SHORT).show();
+                        }
+
+                        // Tell the media scanner about the new file so that it is
+                        // immediately available to the user.
+                        MediaScannerConnection.scanFile(mContext, new String[] { saveFile.toString() }, null, null);
+                    }
+                    
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+                    }
+                });
+
+                break;
+            }
+//            case R.id.tv_download_album:
+//            {
+//                //下载相册
+//                break;
+//            }
+            
             default:
                 break;
             }
@@ -127,6 +240,7 @@ public class AlbumActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mContext=this;
+        mDataManager=DataManager.getInstance();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
@@ -213,19 +327,27 @@ public class AlbumActivity extends BaseActivity {
                 popupWindow.setWidth(DisplayUtils.dp2px(mContext, 150));
                 popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
 
-                view.findViewById(R.id.tv_download_pic).setOnClickListener(mMenuItemClickListener);
-                view.findViewById(R.id.tv_download_album).setOnClickListener(mMenuItemClickListener);
                 view.findViewById(R.id.tv_star).setOnClickListener(mMenuItemClickListener);
                 view.findViewById(R.id.tv_share).setOnClickListener(mMenuItemClickListener);
+                view.findViewById(R.id.tv_set_as_wallpaper).setOnClickListener(mMenuItemClickListener);
+                view.findViewById(R.id.tv_download_pic).setOnClickListener(mMenuItemClickListener);
+                //view.findViewById(R.id.tv_download_album).setOnClickListener(mMenuItemClickListener);
             }
 
             @Override
-            public void onUpdateMenu(PopupWindow popupWindow) {
+            public void onPreShowMenu(PopupWindow popupWindow) {
+                View view=popupWindow.getContentView();
+                TextView tvStar=(TextView) view.findViewById(R.id.tv_star);
+                if(mDataManager.isStarFeed(mFeed.getId())){
+                    tvStar.setText(R.string.remove_star);
+                }else{
+                    tvStar.setText(R.string.add_star);
+                }
             }
 
         });
         Intent intent=getIntent();
-        mFeedId=intent.getLongExtra(Constants.FEED_ID, -1);
+        mFeed=intent.getParcelableExtra(Constants.FEED_ALBUM);
         
         getData();
     }
@@ -277,7 +399,7 @@ public class AlbumActivity extends BaseActivity {
             setStatus(Status.STATUS_LOADING);
         }
         
-        GetAlbumPicsRequest request=new GetAlbumPicsRequest(mFeedId, new Listener<ArrayList<PicInfo>>() {
+        GetAlbumPicsRequest request=new GetAlbumPicsRequest(mFeed.getId(), new Listener<ArrayList<PicInfo>>() {
 
             @Override
             public void onResponse(ArrayList<PicInfo> response) {
@@ -288,7 +410,16 @@ public class AlbumActivity extends BaseActivity {
                     //mEtvDesc.setVisibility(View.VISIBLE);
                     mAlbumAdapter = new AlbumAdapter(mContext, mPicInfos);
                     mViewPager.setAdapter(mAlbumAdapter);
-                    onPageSelected(0);
+                    
+                    int picPosition=mDataManager.getLastAlbumPicPosition(mFeed.getId());
+                    if(picPosition<0)
+                        picPosition=0;
+                    else if(picPosition>=mAlbumAdapter.getCount())
+                        picPosition=mAlbumAdapter.getCount()-1;
+                    
+                    mViewPager.setCurrentItem(picPosition, false);
+                    //TODO:如果picPosition为0，onPageSelected不会被触发，所以这里强制触发一次
+                    onPageSelected(picPosition);
                 }else{
                     setStatus(Status.STATUS_NO_NETWORK_OR_DATA);
                     Toast.makeText(mContext, R.string.error_data, Toast.LENGTH_SHORT).show();
@@ -315,6 +446,7 @@ public class AlbumActivity extends BaseActivity {
     
     private void onPageSelected(int position) {
         if (mAlbumAdapter != null && mAlbumAdapter.getCount() > 0) {
+            mDataManager.setLastAlbumPicPosition(mFeed.getId(), position);
             mTvPageNum.setText(String.format("%d/%d", position + 1, mAlbumAdapter.getCount()));
 
             PicInfo info = mPicInfos.get(position);

@@ -6,6 +6,14 @@
     <string name="no_network_hint">无法连接网络，请点击刷新</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="one_more_exit">再按一次退出</string>
+    
+    <string name="add_star_tip">收藏成功</string>
+    <string name="remove_star_tip">收藏已删除</string>
+    <string name="pic_save_success">图片保存到%1$s</string>
+    <string name="pic_save_failed">图片保存失败:%1$s</string>
+    <string name="set_wallpaper_success">壁纸设置成功</string>
+    <string name="set_wallpaper_failed">壁纸设置失败</string>
     
     <!-- 主菜单 -->
     <string name="my_star">我的收藏</string>
@@ -13,8 +21,9 @@
     <string name="about">关于</string>
     
     <!-- 相册菜单 -->
-    <string name="download_album">下载相册</string>
     <string name="download_pic">下载图片</string>
+    <string name="download_album">下载相册</string>
+    <string name="set_as_wallpaper">设为壁纸</string>
     <string name="add_star">收藏</string>
     <string name="remove_star">取消收藏</string>
     <string name="share">分享</string>
