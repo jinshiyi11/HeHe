@@ -6,19 +6,20 @@
     android:orientation="vertical" >
 
     <!-- 无缓存无网络时的显示界面 -->
+
     <LinearLayout
         android:id="@+id/no_network_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible" >
 
         <ImageView
             android:id="@+id/btn_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_refresh" />
+            android:background="@drawable/ic_info" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,13 +32,14 @@
     </LinearLayout>
 
     <!-- 正在加载界面 -->
-    <LinearLayout
+
+    <LinearLayout
         android:id="@+id/loading_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="visible" >
+        android:visibility="gone" >
 
         <ProgressBar
             android:id="@+id/pb_loading"

@@ -26,10 +26,12 @@ import com.shuai.hehe.R;
 import com.shuai.hehe.adapter.FeedAdapter;
 import com.shuai.hehe.adapter.FeedAdapter.FeedList;
 import com.shuai.hehe.data.DataManager;
+import com.shuai.hehe.data.Stat;
 import com.shuai.hehe.data.DataManager.OnStarFeedChangedListener;
 import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.protocol.GetFeedsRequest;
 import com.shuai.hehe.protocol.ProtocolError;
+import com.umeng.analytics.MobclickAgent;
 
 public class FeedFragment extends Fragment implements OnStarFeedChangedListener {
 	private Context mContext;
@@ -152,6 +154,15 @@ public class FeedFragment extends Fragment implements OnStarFeedChangedListener 
     }
     
 	private void getData(final boolean isPullDown){
+	    //如果是首次加载，先读cache
+	    if (mIsStartRequest && mFeedAdapter.getCount()==0){
+	        ArrayList<Feed> feedList = GetFeedsRequest.loadCache(mContext);
+	        if(feedList!=null &&feedList.size()>0){
+	            mFeedList.addAll(0, feedList);
+	            mFeedAdapter.notifyDataSetChanged();
+	        }
+	    }
+	    
 	    if(mFeedAdapter.getCount()==0){
 	        setStatus(Status.STATUS_LOADING);
 	    }else{
@@ -175,25 +186,35 @@ public class FeedFragment extends Fragment implements OnStarFeedChangedListener 
 			@Override
 			public void onResponse(ArrayList<Feed> feedList) {
 				mListView.onRefreshComplete();
-				setStatus(Status.STATUS_GOT_DATA);
 				if(mIsStartRequest){
 				    mIsStartRequest=false;
 					//成功完成首次请求，clear启动时加载的cache数据
 					mFeedAdapter.clear();
 				}
 				
-				if(isPullDown){
-					mFeedList.addAll(0, feedList);
-				}else{
+                if (isPullDown) {
+                    if (feedList.size() > 0) {
+                        mFeedList.addAll(0, feedList);
+                        //保存最新的n条新鲜事
+                        GetFeedsRequest.saveCache(mContext, mFeedList);
+                    } else {
+                        Toast.makeText(mContext, R.string.no_new_data, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
 					mFeedList.addAll(feedList);
 				}
 				
+                if (feedList.size() > 0)
+                    mFeedAdapter.notifyDataSetChanged();	
+
+                setStatus(Status.STATUS_GOT_DATA);
 			}
     		
     	}, new ErrorListener(){
 
 			@Override
 			public void onErrorResponse(VolleyError error) {
+			    MobclickAgent.onEvent(mContext, Stat.EVENT_GET_FEED_ERROR);
 				mListView.onRefreshComplete();
 				
                 if (mFeedAdapter.getCount() == 0) {

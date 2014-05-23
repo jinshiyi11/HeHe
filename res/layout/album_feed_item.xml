@@ -50,9 +50,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/transparent_black_bg"
-                android:padding="2dp"
-                android:scaleType="fitCenter"
+                android:background="#0000"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_star_0"
                 fiv:flipDrawable="@drawable/ic_star_1"
                 fiv:flipDuration="500"
@@ -69,8 +68,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/transparent_black_bg"
-                android:padding="2dp"
-                android:scaleType="fitCenter"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_redirect_normal" />
 
         </LinearLayout>

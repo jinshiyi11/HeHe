@@ -92,7 +92,7 @@
         </activity>
 
         <meta-data android:name="UMENG_APPKEY"  android:value="534c9b2d56240b5dda01c687" />
-        <meta-data android:name="UMENG_CHANNEL" android:value="360" />
+        <meta-data android:name="UMENG_CHANNEL" android:value="default" />
         
         
     </application>

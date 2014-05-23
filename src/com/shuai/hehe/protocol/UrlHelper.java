@@ -8,6 +8,9 @@ import org.apache.http.message.BasicNameValuePair;
 
 import com.shuai.hehe.data.Constants;
 
+/**
+ * 协议url辅助拼接类
+ */
 public class UrlHelper {
 	
 	private static String getUrl(String relativePath, List<BasicNameValuePair> params) {
