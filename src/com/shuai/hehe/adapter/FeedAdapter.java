@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
@@ -13,13 +15,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.Response.Listener;
+import com.android.volley.VolleyError;
 import com.nineoldandroids.animation.AnimatorInflater;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -28,30 +36,19 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
 import com.shuai.base.view.FlipImageView;
 import com.shuai.base.view.FlipImageView.OnFlipListener;
+import com.shuai.hehe.HeHeApplication;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.AlbumFeed;
 import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.data.FeedType;
-import com.shuai.hehe.data.Stat;
 import com.shuai.hehe.data.VideoFeed;
+import com.shuai.hehe.protocol.HideFeedRequest;
+import com.shuai.hehe.protocol.ProtocolError;
 import com.shuai.hehe.ui.AlbumActivity;
 import com.shuai.hehe.ui.WebViewActivity;
 import com.shuai.utils.SocialUtils;
-import com.umeng.analytics.MobclickAgent;
-import com.umeng.socialize.bean.CustomPlatform;
-import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.umeng.socialize.bean.SocializeEntity;
-import com.umeng.socialize.controller.RequestType;
-import com.umeng.socialize.controller.UMServiceFactory;
-import com.umeng.socialize.controller.UMSocialService;
-import com.umeng.socialize.controller.listener.SocializeListeners.OnCustomPlatformClickListener;
-import com.umeng.socialize.controller.listener.SocializeListeners.SnsPostListener;
-import com.umeng.socialize.media.UMImage;
-import com.umeng.socialize.sso.QZoneSsoHandler;
-import com.umeng.socialize.sso.SinaSsoHandler;
-import com.umeng.socialize.sso.UMWXHandler;
 
 public class FeedAdapter extends ArrayAdapter<Feed> {
     private Context mContext;
@@ -61,6 +58,10 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
     private ImageLoadingListener mImageLoadingListener;
     private int mLastPosition=-1;
     private DataManager mDataManager=DataManager.getInstance();
+    /**
+     * 异步请求队列
+     */
+    private RequestQueue mRequestQueue;
 
     public static class FeedList extends ArrayList<Feed> {
         //用来快速检测对象是否已存在
@@ -137,6 +138,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         mContext = context;
         mFeeds = objects;
         mInflater=(LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mRequestQueue=HeHeApplication.getRequestQueue();
         init();
     }
     
@@ -323,6 +325,8 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
          * 缩略图
          */
         ImageView mIvThumb;
+        
+        LinearLayout mLlFeedContainer;
  
     }
 
@@ -376,6 +380,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             holder.mIvThumb=(ImageView) view.findViewById(R.id.iv_thumb);
             holder.mFivStar=(FlipImageView) view.findViewById(R.id.fiv_star);
             holder.mIvShare=(ImageView) view.findViewById(R.id.iv_share);
+            holder.mLlFeedContainer=(LinearLayout) view.findViewById(R.id.ll_feed_container);
             view.setTag(holder);
         }else{
             holder=(AlbumViewHolder) view.getTag();
@@ -406,6 +411,45 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
                 SocialUtils.sharePic((Activity) mContext, info.getTitle(), info.getBigImgUrl());
             }
         });
+        
+        if (mDataManager.isAdmin()) {
+            holder.mIvThumb.setOnLongClickListener(new OnLongClickListener() {
+
+                @Override
+                public boolean onLongClick(View v) {
+                    AlertDialog dialog = new AlertDialog.Builder(mContext).setMessage(R.string.hide_feed).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            HideFeedRequest request=new HideFeedRequest(info.getId(), new Listener<String>() {
+
+                                @Override
+                                public void onResponse(String response) {
+                                    Toast.makeText(mContext, R.string.hide_feed_success, Toast.LENGTH_SHORT).show();
+                                }
+                            }, new Response.ErrorListener() {
+
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(mContext, ProtocolError.getErrorMessage(mContext, error), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            
+                            mRequestQueue.add(request);
+                        }
+                    }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).create();
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.show();
+                    return true;
+                }
+            });
+        }
         return view;
     }
     

@@ -54,5 +54,29 @@
         android:id="@+id/tv_download_pic"
         style="@style/MoreMenuItemStyle"
         android:text="@string/download_pic" />
+    
+    <!-- 分割线 -->
+    <View
+        android:id="@+id/to_first_pic_split"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/main_menu_item_split_color" />
+    
+    <TextView
+        android:id="@+id/tv_to_first_pic"
+        style="@style/MoreMenuItemStyle"
+        android:text="@string/to_first_pic" />
+    
+    <!-- 分割线 -->
+    <View
+        android:id="@+id/to_last_pic_split"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/main_menu_item_split_color" />
+    
+    <TextView
+        android:id="@+id/tv_to_last_pic"
+        style="@style/MoreMenuItemStyle"
+        android:text="@string/to_last_pic" />
 
 </LinearLayout>

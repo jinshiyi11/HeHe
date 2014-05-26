@@ -1,5 +1,7 @@
 package com.shuai.hehe.data;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +22,7 @@ import android.util.Log;
 
 import com.shuai.hehe.base.ParallelAsyncTask;
 import com.shuai.hehe.protocol.FeedContentParser;
+import com.shuai.utils.StorageUtils;
 import com.umeng.analytics.MobclickAgent;
 
 public class DataManager {
@@ -27,6 +30,15 @@ public class DataManager {
     private static DataManager mDataManager;
     private Context mContext;
     private LocalBroadcastManager mLocalBroadcastManager;
+    /**
+     * 当前安装的版本是否是管理员版，管理员可以删除新鲜事
+     */
+    private boolean mIsAdmin;
+    /**
+     * 管理员的认证信息，在向服务器发送指令时需要带上该消息
+     */
+    private String mAdminKey;
+    
     private DatabaseHelper mDbHelper;
     
     /**
@@ -120,6 +132,35 @@ public class DataManager {
         mLocalBroadcastManager=LocalBroadcastManager.getInstance(mContext);
         
         loadStarFeeds();
+        loadAdminKey();
+    }
+    
+    private void loadAdminKey(){
+        try {
+            InputStream stream = mContext.getAssets().open("admin.txt");
+            String key = StorageUtils.inputStreamToString(stream);
+            if(key!=null && key.length()!=0){
+                mIsAdmin=true;
+                mAdminKey=key;
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * 当前安装的版本是否是管理员版，管理员可以删除新鲜事
+     */
+    public boolean isAdmin(){
+        return mIsAdmin;
+    }
+    
+    /**
+     * 管理员的认证信息，在向服务器发送指令时需要带上该消息
+     */
+    public String getAdminKey(){
+        return mAdminKey;
     }
     
     public ParallelAsyncTask executeDbTask(ParallelAsyncTask task,Object... params ){

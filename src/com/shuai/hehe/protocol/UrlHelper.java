@@ -7,6 +7,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.shuai.hehe.data.Constants;
+import com.shuai.hehe.data.DataManager;
 
 /**
  * 协议url辅助拼接类
@@ -57,6 +58,15 @@ public class UrlHelper {
         addCommonParameters(params);
 
         return getUrl("getalbumpics", params);
+    }
+    
+    public static String getHideFeedUrl(long feedId) {
+        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+        params.add(new BasicNameValuePair("feedid", Long.toString(feedId)));
+        params.add(new BasicNameValuePair("adminkey", DataManager.getInstance().getAdminKey()));
+        addCommonParameters(params);
+
+        return getUrl("hideFeed", params);
     }
 
 }

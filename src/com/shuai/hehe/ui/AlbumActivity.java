@@ -231,6 +231,16 @@ public class AlbumActivity extends BaseActivity {
 //                break;
 //            }
             
+            case R.id.tv_to_first_pic:
+            {
+                mViewPager.setCurrentItem(0);
+                break;
+            }
+            case R.id.tv_to_last_pic:
+            {
+                mViewPager.setCurrentItem(mAlbumAdapter.getCount()-1);
+                break;
+            }
             default:
                 break;
             }
@@ -332,6 +342,15 @@ public class AlbumActivity extends BaseActivity {
                 view.findViewById(R.id.tv_set_as_wallpaper).setOnClickListener(mMenuItemClickListener);
                 view.findViewById(R.id.tv_download_pic).setOnClickListener(mMenuItemClickListener);
                 //view.findViewById(R.id.tv_download_album).setOnClickListener(mMenuItemClickListener);
+                view.findViewById(R.id.tv_to_first_pic).setOnClickListener(mMenuItemClickListener);
+                view.findViewById(R.id.tv_to_last_pic).setOnClickListener(mMenuItemClickListener);
+                
+                if(mAlbumAdapter.getCount()<=5){
+                    view.findViewById(R.id.to_first_pic_split).setVisibility(View.GONE);
+                    view.findViewById(R.id.tv_to_first_pic).setVisibility(View.GONE);
+                    view.findViewById(R.id.to_last_pic_split).setVisibility(View.GONE);
+                    view.findViewById(R.id.tv_to_last_pic).setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -430,7 +449,7 @@ public class AlbumActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 setStatus(Status.STATUS_NO_NETWORK_OR_DATA);
-                Toast.makeText(AlbumActivity.this, ProtocolError.getErrorMessage(AlbumActivity.this, error), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, ProtocolError.getErrorMessage(mContext, error), Toast.LENGTH_SHORT).show();
             }
         });
         
