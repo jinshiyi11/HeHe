@@ -118,7 +118,7 @@ public class FeedFragment extends Fragment implements OnStarFeedChangedListener 
         });
         
         mDataManager.addStarFeedChangedListener(this);
-        mListView.setRefreshing();
+        mListView.setRefreshing(false);
         return view;
     }
     

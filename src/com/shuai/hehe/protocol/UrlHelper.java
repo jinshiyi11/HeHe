@@ -66,7 +66,7 @@ public class UrlHelper {
         params.add(new BasicNameValuePair("adminkey", DataManager.getInstance().getAdminKey()));
         addCommonParameters(params);
 
-        return getUrl("hideFeed", params);
+        return getUrl("hidefeed", params);
     }
 
 }

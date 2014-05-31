@@ -426,6 +426,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
                                 @Override
                                 public void onResponse(String response) {
                                     Toast.makeText(mContext, R.string.hide_feed_success, Toast.LENGTH_SHORT).show();
+                                    remove(info);
                                 }
                             }, new Response.ErrorListener() {
 

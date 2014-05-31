@@ -122,7 +122,7 @@ public class StarActivity extends BaseActivity implements OnStarFeedChangedListe
         });
         
         mDataManager.addStarFeedChangedListener(this);
-        mListView.setRefreshing();
+        mListView.setRefreshing(false);
     }
 
     @Override
