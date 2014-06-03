@@ -227,11 +227,11 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             break;
         }
         
-        if(view!=null && position>mLastPosition){
-            AnimatorSet animator = (AnimatorSet) AnimatorInflater.loadAnimator(mContext, R.animator.feed_item_in);
-            animator.setTarget(view);
-            animator.start();
-        }
+//        if(view!=null && position>mLastPosition){
+//            AnimatorSet animator = (AnimatorSet) AnimatorInflater.loadAnimator(mContext, R.animator.feed_item_in);
+//            animator.setTarget(view);
+//            animator.start();
+//        }
         
         mLastPosition=position;
         return view;
