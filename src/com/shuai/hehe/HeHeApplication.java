@@ -1,5 +1,7 @@
 package com.shuai.hehe;
 
+import android.app.Application;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
@@ -8,8 +10,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.shuai.hehe.data.DataManager;
-
-import android.app.Application;
 
 public class HeHeApplication extends Application {
 
@@ -32,7 +32,6 @@ public class HeHeApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         //初始化网络异步请求对象
         mRequestQueue = Volley.newRequestQueue(this);
         

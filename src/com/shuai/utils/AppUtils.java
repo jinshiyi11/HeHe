@@ -25,14 +25,15 @@ public class AppUtils {
     }
 	
 	public static String getVersionName(Context context) {
+	    String versionName="";
 		try {
 			String packageName = context.getPackageName();
-			String versionName = context.getPackageManager().getPackageInfo(packageName, 0).versionName;
+			versionName = context.getPackageManager().getPackageInfo(packageName, 0).versionName;
 			return versionName;
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return versionName;
 	}
 	
 	/**
