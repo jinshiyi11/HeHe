@@ -1,13 +1,13 @@
 package com.shuai.hehe.data;
 
 public class Constants {
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
     public static final String SERVER_ADDRESS;
 
     /**
      * 协议版本号
      */
-    public static final String PROTOCOL_VERSION = "1.0";
+    public static final String PROTOCOL_VERSION = "1.1";
 
     public static final String FEED = "feed";
     public static final String FEED_ID = "feed_id";

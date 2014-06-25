@@ -28,7 +28,7 @@ import com.shuai.hehe.data.Feed;
 /**
  * 我的收藏页面
  */
-public class StarActivity extends BaseActivity implements OnStarFeedChangedListener {
+public class FavActivity extends BaseActivity implements OnStarFeedChangedListener {
     private Context mContext;
     private ViewGroup mNoNetworkContainer;
     private ViewGroup mLoadingContainer;
@@ -214,9 +214,9 @@ public class StarActivity extends BaseActivity implements OnStarFeedChangedListe
     
     private void updateStatus(){
         if (mFeedAdapter.getCount() == 0) {
-            setStatus(StarActivity.Status.STATUS_NO_NETWORK_OR_DATA);
+            setStatus(FavActivity.Status.STATUS_NO_NETWORK_OR_DATA);
         }else{
-            setStatus(StarActivity.Status.STATUS_GOT_DATA);
+            setStatus(FavActivity.Status.STATUS_GOT_DATA);
         }
     }
 

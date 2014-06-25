@@ -32,10 +32,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.VideoActivity" android:hardwareAccelerated="true"></activity>
+        <activity android:name=".ui.VideoActivity" android:hardwareAccelerated="true" android:screenOrientation="landscape"></activity>
         <activity android:name=".ui.WebViewActivity" android:hardwareAccelerated="true" android:screenOrientation="landscape"></activity>
         <activity android:name=".ui.AlbumActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ui.StarActivity"  android:screenOrientation="portrait"></activity>
+        <activity android:name=".ui.FavActivity"  android:screenOrientation="portrait"></activity>
         <activity android:name=".ui.AboutActivity" android:screenOrientation="portrait"></activity>
         
         <!-- 友盟信息 -->

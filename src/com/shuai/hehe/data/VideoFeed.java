@@ -7,14 +7,14 @@ public class VideoFeed extends Feed {
     private transient String mWebVideoUrl;
 
     /**
-	 * 视频地址
+	 * flash格式视频的url
 	 */
-	private transient String mVideoUrl;
+	private transient String mFlashVideoUrl;
 
 	/**
 	 * 视频预览图片地址
 	 */
-	private transient String mThumbImgUrl;
+	private transient String mVideoThumbUrl;
 
 	public VideoFeed() {
 	}
@@ -27,20 +27,20 @@ public class VideoFeed extends Feed {
         this.mWebVideoUrl = webVideoUrl;
     }
 
-	public String getVideoUrl() {
-		return mVideoUrl;
+	public String getFlashVideoUrl() {
+		return mFlashVideoUrl;
 	}
 
-	public void setVideoUrl(String videoUrl) {
-		this.mVideoUrl = videoUrl;
+	public void setFlashVideoUrl(String videoUrl) {
+		this.mFlashVideoUrl = videoUrl;
 	}
 
 	public String getThumbImgUrl() {
-		return mThumbImgUrl;
+		return mVideoThumbUrl;
 	}
 
 	public void setThumbImgUrl(String thumbImgUrl) {
-		this.mThumbImgUrl = thumbImgUrl;
+		this.mVideoThumbUrl = thumbImgUrl;
 	}
 	
 	

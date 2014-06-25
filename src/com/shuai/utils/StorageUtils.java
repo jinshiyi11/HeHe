@@ -6,12 +6,24 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 
+import android.content.Context;
 import android.os.Environment;
 
 public class StorageUtils {
+    
+    /**
+     * 将assets下的资源文件读入字符串
+     * @param context
+     * @param assetFilePath
+     * @return
+     * @throws IOException
+     */
+    public static String loadAssetFileData(Context context,String assetFilePath) throws IOException{
+        InputStream stream = context.getAssets().open(assetFilePath);
+        return inputStreamToString(stream);
+    }
     
     public static String inputStreamToString(InputStream input){
         String result=null;

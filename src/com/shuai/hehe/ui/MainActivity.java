@@ -115,7 +115,7 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 		switch (id) {
 		//我的收藏
         case R.id.tv_star: {
-            Intent intent = new Intent(mContext, StarActivity.class);
+            Intent intent = new Intent(mContext, FavActivity.class);
             startActivity(intent);
             break;
         }
