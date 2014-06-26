@@ -146,7 +146,7 @@ public class AlbumActivity extends BaseActivity {
             {
                 //分享
                 PicInfo info = mPicInfos.get(mViewPager.getCurrentItem());
-                SocialUtils.sharePic((Activity) mContext, mFeed.getTitle(), info.getBigPicUrl());
+                SocialUtils.sharePic((Activity) mContext, mFeed.getTitle(),info.getPicDescription(), info.getBigPicUrl());
                 break;
             }
             case R.id.tv_set_as_wallpaper:

@@ -133,6 +133,49 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         }
 
     }
+    
+    private class HideFeedListener implements OnLongClickListener{
+        Feed mFeed;
+        
+        HideFeedListener(Feed info){
+            mFeed=info;
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            AlertDialog dialog = new AlertDialog.Builder(mContext).setMessage(R.string.hide_feed).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    HideFeedRequest request=new HideFeedRequest(mFeed.getId(), new Listener<String>() {
+
+                        @Override
+                        public void onResponse(String response) {
+                            Toast.makeText(mContext, R.string.hide_feed_success, Toast.LENGTH_SHORT).show();
+                            remove(mFeed);
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(mContext, ProtocolError.getErrorMessage(mContext, error), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    
+                    mRequestQueue.add(request);
+                }
+            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).create();
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+            return true;
+        }
+    }
 
     public FeedAdapter(Context context, FeedList objects) {
         super(context, 0, objects);
@@ -365,6 +408,19 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         boolean isStarred=mDataManager.isStarFeed(feed.getId());
         holder.mFivStar.setFlipped(isStarred, false);
         holder.mFivStar.setOnFlipListener(new StarChangeListener(info));
+        
+        holder.mIvShare.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                SocialUtils.shareVideo((Activity) mContext,info.getTitle(),info.getThumbImgUrl(),info.getWebVideoUrl());
+            }
+            
+        });
+        
+        if (mDataManager.isAdmin()) {
+            holder.mIvThumb.setOnLongClickListener(new HideFeedListener(info));
+        }     
         return view;
     }
 
@@ -408,48 +464,12 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             
             @Override
             public void onClick(View v) {
-                SocialUtils.sharePic((Activity) mContext, info.getTitle(), info.getBigImgUrl());
+                SocialUtils.sharePic((Activity) mContext, info.getTitle(), "", info.getBigImgUrl());
             }
         });
         
         if (mDataManager.isAdmin()) {
-            holder.mIvThumb.setOnLongClickListener(new OnLongClickListener() {
-
-                @Override
-                public boolean onLongClick(View v) {
-                    AlertDialog dialog = new AlertDialog.Builder(mContext).setMessage(R.string.hide_feed).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                        
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            HideFeedRequest request=new HideFeedRequest(info.getId(), new Listener<String>() {
-
-                                @Override
-                                public void onResponse(String response) {
-                                    Toast.makeText(mContext, R.string.hide_feed_success, Toast.LENGTH_SHORT).show();
-                                    remove(info);
-                                }
-                            }, new Response.ErrorListener() {
-
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    Toast.makeText(mContext, ProtocolError.getErrorMessage(mContext, error), Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            
-                            mRequestQueue.add(request);
-                        }
-                    }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).create();
-                    dialog.setCanceledOnTouchOutside(true);
-                    dialog.show();
-                    return true;
-                }
-            });
+            holder.mIvThumb.setOnLongClickListener(new HideFeedListener(info));
         }
         return view;
     }
