@@ -3,6 +3,7 @@
     xmlns:pulltorefresh="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/default_bg_color"
     android:orientation="vertical" >
     
     <include
@@ -11,14 +12,14 @@
         layout="@layout/title_bar" />
     
     <!-- 无数据时的显示界面 -->
+
     <LinearLayout
         android:id="@+id/no_data_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone"
-        >
+        android:visibility="gone" >
 
         <ImageView
             android:id="@+id/btn_refresh"
@@ -37,6 +38,7 @@
     </LinearLayout>
 
     <!-- 正在加载界面 -->
+
     <LinearLayout
         android:id="@+id/loading_container"
         android:layout_width="match_parent"
@@ -54,13 +56,12 @@
     </LinearLayout>
 
     <!-- 主界面 -->
+
     <LinearLayout
         android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        
-         >
+        android:orientation="vertical" >
 
         <com.handmark.pulltorefresh.library.PullToRefreshListView
             android:id="@+id/listview"
