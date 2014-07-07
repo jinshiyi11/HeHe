@@ -47,6 +47,10 @@ public class VideoActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT){
+//            WebView.setWebContentsDebuggingEnabled(true);
+//        }
+        
         mContext=this;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -70,9 +74,14 @@ public class VideoActivity extends BaseActivity {
         });
 
         mWebView.getSettings().setJavaScriptEnabled(true);
-        //mWebView.getSettings().setAllowFileAccess(true);
-        //mWebView.getSettings().setAppCacheEnabled(true);
-        mWebView.getSettings().setBuiltInZoomControls(true);
+        mWebView.getSettings().setAllowFileAccess(true);
+        mWebView.getSettings().setAppCacheEnabled(true); 
+        String appCachePath = getCacheDir().getAbsolutePath();  
+        mWebView.getSettings().setAppCachePath(appCachePath); 
+        mWebView.getSettings().setDatabaseEnabled(true);
+     
+        mWebView.getSettings().setDomStorageEnabled(true);
+        //mWebView.getSettings().setBuiltInZoomControls(true);
         mWebView.getSettings().setSaveFormData(true);
         //mWebView.getSettings().setPluginState(PluginState.ON);
         //mWebView.getSettings().setLoadWithOverviewMode(true);

@@ -395,6 +395,8 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             holder.mIvThumb=(ImageView) view.findViewById(R.id.iv_thumb);
             holder.mFivStar=(FlipImageView) view.findViewById(R.id.fiv_star);
             holder.mIvShare=(ImageView) view.findViewById(R.id.iv_share);
+            view.setTag(holder);
+            
             //因为会根据缩略图的宽高比改变ImageView的高度，所以要保存ImageView的高度
             if(mVideoThumbViewHeight==0)
                 mVideoThumbViewHeight=holder.mIvThumb.getLayoutParams().height;

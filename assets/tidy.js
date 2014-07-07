@@ -79,8 +79,7 @@
 		
 		document.querySelector("div#cover_m_player").click();
 		document.querySelector("div#bar_m_player_fsbtn").click();
-		
-		alert(location.href);
+
 	}
 
 	function iqiyi() {
