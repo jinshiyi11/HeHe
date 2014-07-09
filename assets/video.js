@@ -11,6 +11,8 @@
 			iqiyi();
 		} else if (hostname.search(/qq.com/i) != -1) {
 			qq();
+		} else if (hostname.search(/tudou.com/i) != -1) {
+			tudou();
 		}
 	}
 	
@@ -95,6 +97,20 @@
 
 	function qq() {
 		removeElements(document.querySelectorAll(".site_header"));
+		
+		document.querySelector(".tvp_overlay_play").click();
+		document.querySelector(".tvp_fullscreen_button").click();
+	}
+	
+	function tudou() {
+		removeElements(document.querySelectorAll("#gTop"));
+		removeElements(document.querySelectorAll("#appRecom"));
+		
+		removeElements(document.querySelectorAll(".act-view"));
+		removeElements(document.querySelectorAll(".tab-view"));
+		removeElements(document.querySelectorAll(".cont-view"));
+		removeElements(document.querySelectorAll("#appRecom"));
+		removeElements(document.querySelectorAll("#gBot"));
 		
 		document.querySelector(".tvp_overlay_play").click();
 		document.querySelector(".tvp_fullscreen_button").click();

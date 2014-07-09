@@ -3,11 +3,18 @@ package com.shuai.hehe.data;
 public class Constants {
     public static boolean DEBUG = false;
     public static final String SERVER_ADDRESS;
+    /**
+     * 用来去除视频网页中非视频元素的javascript
+     */
+    public static final String VIDEO_JS_URL;
+    public static final String VIDEO_JS_FILENAME="video.js";
 
     /**
      * 协议版本号
      */
     public static final String PROTOCOL_VERSION = "1.1";
+    
+    public static final String PREF_NAME="preferences";
 
     public static final String FEED = "feed";
     public static final String FEED_ID = "feed_id";
@@ -42,9 +49,11 @@ public class Constants {
     static {
         if (DEBUG) {
             SERVER_ADDRESS = "http://10.0.2.2:8080/hehe_server";
+            VIDEO_JS_URL = "http://10.0.2.2:8080/hehe_server/js/"+VIDEO_JS_FILENAME;
         } else {
             //SERVER_ADDRESS = "http://hehe1.sinaapp.com";
         	SERVER_ADDRESS = "http://hehedream.duapp.com";
+        	VIDEO_JS_URL= "http://hehedream.duapp.com/js/"+VIDEO_JS_FILENAME;
         }
     }
 

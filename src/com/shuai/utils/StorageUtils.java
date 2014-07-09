@@ -12,6 +12,15 @@ import android.content.Context;
 import android.os.Environment;
 
 public class StorageUtils {
+    /**
+     * 目录或文件是否存在
+     * @param filePath
+     * @return
+     */
+    public static boolean fileExists(String filePath){
+        File file=new File(filePath);
+        return file.exists();
+    }
     
     /**
      * 将assets下的资源文件读入字符串
@@ -20,9 +29,18 @@ public class StorageUtils {
      * @return
      * @throws IOException
      */
-    public static String loadAssetFileData(Context context,String assetFilePath) throws IOException{
+    public static String getAssetFileData(Context context,String assetFilePath) throws IOException{
         InputStream stream = context.getAssets().open(assetFilePath);
-        return inputStreamToString(stream);
+        String result=inputStreamToString(stream);
+        stream.close();
+        return result;
+    }
+    
+    public static String getFileData(Context context,String filePath) throws IOException{
+        InputStream stream = new FileInputStream(filePath);
+        String result=inputStreamToString(stream);
+        stream.close();
+        return result;
     }
     
     public static String inputStreamToString(InputStream input){

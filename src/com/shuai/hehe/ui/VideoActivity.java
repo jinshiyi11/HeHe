@@ -1,9 +1,15 @@
 package com.shuai.hehe.ui;
 
+import java.io.File;
 import java.io.IOException;
+
+import org.apache.http.Header;
+import org.apache.http.message.BasicHeader;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +21,8 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.FileAsyncHttpResponseHandler;
 import com.shuai.base.view.BaseActivity;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
@@ -44,6 +52,11 @@ public class VideoActivity extends BaseActivity {
     private Status mStatus;
     private String mVideoUrl;
     private WebView mWebView;
+    
+    /**
+     * 从服务端同步的用来去除视频网页中非视频元素的javascript文件路径
+     */
+    private String mVideoJsPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +77,15 @@ public class VideoActivity extends BaseActivity {
         mLoadingContainer=(ViewGroup) findViewById(R.id.loading_container);
         mMainContainer=(ViewGroup) findViewById(R.id.main_container);
         mWebView = (WebView) findViewById(R.id.webView1);
+        removeSearchBoxJavaBridge(mWebView);
+        
+        String jsDirPath=mContext.getFilesDir().getAbsolutePath()+File.separator+"js";
+        File jsDir=new File(jsDirPath);
+        if(!jsDir.exists()){
+            jsDir.mkdirs();
+        }
+        mVideoJsPath=jsDirPath+File.separator+Constants.VIDEO_JS_FILENAME;
+        syncVideoJsFile();
         
         mNoNetworkContainer.setOnClickListener(new OnClickListener() {
 
@@ -93,12 +115,12 @@ public class VideoActivity extends BaseActivity {
             private boolean mReceivedError=false;
             
             
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                //return super.shouldOverrideUrlLoading(view, url);
-                mWebView.loadUrl(url);
-                return true;
-            }
+//            @Override
+//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                //return super.shouldOverrideUrlLoading(view, url);
+//                mWebView.loadUrl(url);
+//                return true;
+//            }
 
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -120,17 +142,13 @@ public class VideoActivity extends BaseActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
 
-                try {
-                    String js = StorageUtils.loadAssetFileData(mContext, "tidy.js");
-                    view.loadUrl("javascript:" + js);
+                String js = getVideoJsData();
+                view.loadUrl("javascript:" + js);
                     
                     //view.loadUrl("javascript:alert('sss');");
                     
 //                    view.loadUrl("javascript:(function() { "
 //                            + "document.getElementsByTagName('body')[0].style.color = 'red'; " + "})()");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
                 if(!mReceivedError)
                     setStatus(Status.STATUS_GOT_DATA);
@@ -149,8 +167,18 @@ public class VideoActivity extends BaseActivity {
         //mWebView.loadUrl("http://video.sina.com.cn/v/b/122612988-3655800732.html?bsh_bid\u003d330154687");
         //qq
         //mWebView.loadUrl("http://v.qq.com/page/a/x/p/a0013dleoxp.html?_out\u003d2");
+        //土豆
+        //mWebView.loadUrl("http://www.tudou.com/programs/view/DEKMOIHBM_8/?bid\u003d03\u0026pid\u003d3\u0026resourceId\u003d0_03_05_03");
         
         mWebView.loadUrl(mVideoUrl);
+    }
+    
+    private void removeSearchBoxJavaBridge(WebView webView) {
+        try {
+            mWebView.removeJavascriptInterface("searchBoxJavaBridge_");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -165,6 +193,12 @@ public class VideoActivity extends BaseActivity {
         mWebView.onResume();
     }
     
+    @Override
+    protected void onDestroy() {
+        mWebView.destroy();
+        super.onDestroy();
+    }
+
     private void setStatus(Status status) {
         mStatus = status;
         switch (status) {
@@ -187,6 +221,71 @@ public class VideoActivity extends BaseActivity {
             break;
         }
 
+    }
+    
+    /**
+     * 同步js文件
+     */
+    private void syncVideoJsFile(){
+        AsyncHttpClient client = new AsyncHttpClient();
+        Header[] headers=null;
+        SharedPreferences pref = mContext.getSharedPreferences(Constants.PREF_NAME, 0);
+        String eTag=pref.getString("ETag", null);
+        if(eTag!=null){
+            headers=new Header[1];
+            headers[0]=new BasicHeader("If-None-Match", eTag);
+        }
+        
+        client.get(null,Constants.VIDEO_JS_URL,headers,null, new FileAsyncHttpResponseHandler(mContext) {
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
+                
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, File file) {
+                if(statusCode==200){
+                    try {
+                        File dest=new File(mVideoJsPath);
+                        StorageUtils.copyFile(file, dest);
+                        
+                        for(Header head:headers){
+                            if(head.getName().equals("ETag")){
+                                SharedPreferences pref = mContext.getSharedPreferences(Constants.PREF_NAME, 0);
+                                Editor edit = pref.edit();
+                                edit.putString("ETag", head.getValue());
+                                edit.commit();
+                            }
+                        }
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+            
+        });
+    }
+
+    /**
+     * 读取最新的js文件
+     * @return
+     */
+    private String getVideoJsData() {
+        String data=null;
+
+        try {
+            if (StorageUtils.fileExists(mVideoJsPath)) {
+                data = StorageUtils.getFileData(mContext, mVideoJsPath);
+            } else {
+                data = StorageUtils.getAssetFileData(mContext, Constants.VIDEO_JS_FILENAME);
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return data;
     }
 
 }
