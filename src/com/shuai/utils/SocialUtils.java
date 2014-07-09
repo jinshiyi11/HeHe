@@ -48,20 +48,18 @@ public class SocialUtils {
         //设置分享图片, 参数2为图片的url地址
         mController.setShareMedia(new UMImage(context, imageUrl));
 
+        //人人网分享时，如果不设置website，点击¨应用名称¨或者¨图片¨将跳转到人人主页；如果设置website将跳转到此website的页面
+        mController.setAppWebSite(SHARE_MEDIA.RENREN, "http://hehedream.duapp.com/");
+        
         mController.getConfig().setSsoHandler(new QZoneSsoHandler(context, Constants.APP_ID_QQ));
         mController.getConfig().setSsoHandler(new SinaSsoHandler());
 
         //mController.getConfig().removePlatform(SHARE_MEDIA.DOUBAN,SHARE_MEDIA.EMAIL,SHARE_MEDIA.SMS);
 
-        mController.getConfig().setPlatforms(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.QZONE,
-                SHARE_MEDIA.QQ, SHARE_MEDIA.SINA);
-        mController.getConfig().setPlatformOrder(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.QZONE,
-                SHARE_MEDIA.QQ, SHARE_MEDIA.SINA);
-
-        //        mController.getConfig().setPlatforms(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
-        //                SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
-        //        mController.getConfig().setPlatformOrder(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
-        //                SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
+        mController.getConfig().setPlatforms(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
+                SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
+        mController.getConfig().setPlatformOrder(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
+                SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
         mController.openShare(context, false);
     }
 
@@ -87,20 +85,19 @@ public class SocialUtils {
         umVideo.setTitle(title);
         mController.setShareMedia(umVideo);
 
+        //人人网分享时，如果不设置website，点击¨应用名称¨或者¨图片¨将跳转到人人主页；如果设置website将跳转到此website的页面
+        mController.setAppWebSite(SHARE_MEDIA.RENREN, "http://hehedream.duapp.com/");
+        
         mController.getConfig().setSsoHandler(new QZoneSsoHandler(context, Constants.APP_ID_QQ));
         mController.getConfig().setSsoHandler(new SinaSsoHandler());
 
         //mController.getConfig().removePlatform(SHARE_MEDIA.DOUBAN,SHARE_MEDIA.EMAIL,SHARE_MEDIA.SMS);
 
-        mController.getConfig().setPlatforms(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.QZONE,
-                SHARE_MEDIA.QQ, SHARE_MEDIA.SINA);
-        mController.getConfig().setPlatformOrder(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE, SHARE_MEDIA.QZONE,
-                SHARE_MEDIA.QQ, SHARE_MEDIA.SINA);
-
-        //        mController.getConfig().setPlatforms(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
-        //                SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
-        //        mController.getConfig().setPlatformOrder(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
-        //                SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
+        mController.getConfig().setPlatforms(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
+                SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
+        mController.getConfig().setPlatformOrder(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
+                SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
+        
         mController.openShare(context, false);
     }
 

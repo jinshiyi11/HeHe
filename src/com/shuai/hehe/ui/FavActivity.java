@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,6 +25,10 @@ import com.shuai.hehe.base.ParallelAsyncTask;
 import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.DataManager.OnStarFeedChangedListener;
 import com.shuai.hehe.data.Feed;
+import com.umeng.socialize.controller.RequestType;
+import com.umeng.socialize.controller.UMServiceFactory;
+import com.umeng.socialize.controller.UMSocialService;
+import com.umeng.socialize.sso.UMSsoHandler;
 
 /**
  * 我的收藏页面
@@ -129,6 +134,18 @@ public class FavActivity extends BaseActivity implements OnStarFeedChangedListen
     protected void onDestroy() {
         mDataManager.removeStarFeedChangedListener(this);
         super.onDestroy();
+    }
+    
+    @Override 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share",
+                RequestType.SOCIAL);
+        /**使用SSO授权必须添加如下代码 */
+        UMSsoHandler ssoHandler = mController.getConfig().getSsoHandler(requestCode) ;
+        if(ssoHandler != null){
+           ssoHandler.authorizeCallBack(requestCode, resultCode, data);
+        }
     }
 
     private void setStatus(Status status) {

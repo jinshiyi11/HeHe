@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="visible" >
+        android:visibility="gone" >
 
         <ImageView
             android:id="@+id/btn_refresh"
@@ -57,7 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone" >
+        android:visibility="visible" >
 
         <com.handmark.pulltorefresh.library.PullToRefreshListView
             android:id="@+id/listview"
@@ -69,8 +69,8 @@
             android:divider="@null"
             android:dividerHeight="6dp"
             android:fadingEdge="none"
-            android:fastScrollEnabled="true"
             android:scrollbars="vertical"
+            android:fastScrollEnabled="true"
             pulltorefresh:ptrShowIndicator="false"
              />
     </LinearLayout>
