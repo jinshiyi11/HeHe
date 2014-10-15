@@ -1,9 +1,11 @@
 package com.shuai.hehe.adapter;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import pl.droidsonroids.gif.GifDrawable;
 import uk.co.senab.photoview.PhotoViewAttacher;
-import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
 import uk.co.senab.photoview.PhotoViewAttacher.OnViewTapListener;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView.ScaleType;
 
+import com.nostra13.universalimageloader.cache.disc.DiscCacheAware;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -25,6 +28,7 @@ import com.shuai.base.view.NetworkPhotoView;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.PicInfo;
 import com.shuai.utils.DisplayUtils;
+import pl.droidsonroids.gif.GifDrawable;;
 
 public class AlbumAdapter extends PagerAdapter {
     private Context mContext;
@@ -106,6 +110,19 @@ public class AlbumAdapter extends PagerAdapter {
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 if(view!=null){
                     NetworkPhotoView photoView=(NetworkPhotoView) view;
+                    //判断是否是gif图片
+                    if(isGif(imageUri)){
+                        DiscCacheAware discCache = ImageLoader.getInstance().getDiscCache();
+                        File file = discCache.get(imageUri);
+                        if(file!=null && file.exists()){
+                            try {
+                                photoView.setImageDrawable(new GifDrawable(file));
+                            } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+                        }
+                    }
                     photoView.onLoadingComplete();
                     photoView.setScaleType(ScaleType.FIT_CENTER);
                 }
@@ -144,5 +161,10 @@ public class AlbumAdapter extends PagerAdapter {
         });
         
         return photoView;
+    }
+
+    //该url对应的是否是gif图
+    private boolean isGif(String imageUri) {
+        return imageUri.toLowerCase().endsWith(".gif");
     }
 }
