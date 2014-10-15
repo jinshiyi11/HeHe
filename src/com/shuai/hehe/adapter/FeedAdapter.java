@@ -3,6 +3,7 @@ package com.shuai.hehe.adapter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -59,20 +60,12 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
     private ImageLoadingListener mImageLoadingListener;
     private int mLastPosition=-1;
     private DataManager mDataManager=DataManager.getInstance();
+    //缓存item高度，防止上下滑动的时候出现闪动
+    private Map<String, Integer> mHeightCache=new HashMap<String,Integer>();
     /**
      * 异步请求队列
      */
     private RequestQueue mRequestQueue;
-    
-    /**
-     * 因为会根据缩略图的宽高比改变ImageView的高度，所以要保存ImageView的高度
-     */
-    private int mAlbumThumbViewHeight;
-    
-    /**
-     * 因为会根据缩略图的宽高比改变ImageView的高度，所以要保存ImageView的高度
-     */
-    private int mVideoThumbViewHeight;
 
     public static class FeedList extends ArrayList<Feed> {
         //用来快速检测对象是否已存在
@@ -208,7 +201,13 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             
             @Override
             public void onLoadingStarted(String imageUri, View view) {
-                
+                //如果记录过item的展示高度，直接设置其高度，防止加载完成后高度变化导致闪动
+                Integer height=mHeightCache.get(imageUri);
+                if(height!=null){
+                    LayoutParams layoutParams = view.getLayoutParams();
+                    layoutParams.height=height;
+                    view.setLayoutParams(layoutParams);
+                }
             }
             
             @Override
@@ -219,16 +218,25 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 //修改imageview的高度，使上下不出现空白
+                final float RATIO=1.0f;
                 LayoutParams layoutParams = view.getLayoutParams();
                 int viewWidth = layoutParams.width;
-                int viewHeight = layoutParams.height;
+                int oldHeight = layoutParams.height;            
+
+                int newHeight;
+                if (((double)loadedImage.getWidth()) / loadedImage.getHeight() > RATIO) {
+                    newHeight=(int) (loadedImage.getHeight() *viewWidth/ (double)loadedImage.getWidth());
+                }else{
+                    newHeight=(int) (viewWidth/RATIO);
+                }
                 
-                if(viewWidth>0 && viewHeight>0){
-                    if (((double)loadedImage.getWidth()) / loadedImage.getHeight() > ((double)viewWidth) / viewHeight) {
-                        int newHeight=(int) (loadedImage.getHeight() *viewWidth/ (double)loadedImage.getWidth());
-                        layoutParams.height=newHeight;
-                        view.setLayoutParams(layoutParams);
-                    }       
+                if(oldHeight!=newHeight){
+                    layoutParams.height=newHeight;
+                    view.setLayoutParams(layoutParams);
+                }
+                
+                if(!mHeightCache.containsKey(imageUri)){
+                    mHeightCache.put(imageUri, newHeight);
                 }
 
             }
@@ -396,18 +404,8 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             holder.mFivStar=(FlipImageView) view.findViewById(R.id.fiv_star);
             holder.mIvShare=(ImageView) view.findViewById(R.id.iv_share);
             view.setTag(holder);
-            
-            //因为会根据缩略图的宽高比改变ImageView的高度，所以要保存ImageView的高度
-            if(mVideoThumbViewHeight==0)
-                mVideoThumbViewHeight=holder.mIvThumb.getLayoutParams().height;
         }else{
             holder=(VideoViewHolder) view.getTag();
-        }
-        
-        if(holder.mIvThumb.getLayoutParams().height!=mVideoThumbViewHeight){
-            LayoutParams layoutParams = holder.mIvThumb.getLayoutParams();
-            holder.mIvThumb.getLayoutParams().height=mVideoThumbViewHeight;
-            holder.mIvThumb.setLayoutParams(layoutParams);
         }
         
         holder.feed=feed;
@@ -457,19 +455,10 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             holder.mIvShare=(ImageView) view.findViewById(R.id.iv_share);
             holder.mLlFeedContainer=(LinearLayout) view.findViewById(R.id.ll_feed_container);
             view.setTag(holder);
-            
-            //因为会根据缩略图的宽高比改变ImageView的高度，所以要保存ImageView的高度
-            if(mAlbumThumbViewHeight==0)
-                mAlbumThumbViewHeight=holder.mIvThumb.getLayoutParams().height;
         }else{
             holder=(AlbumViewHolder) view.getTag();
         }
         
-        if(holder.mIvThumb.getLayoutParams().height!=mAlbumThumbViewHeight){
-            LayoutParams layoutParams = holder.mIvThumb.getLayoutParams();
-            holder.mIvThumb.getLayoutParams().height=mAlbumThumbViewHeight;
-            holder.mIvThumb.setLayoutParams(layoutParams);
-        }
         holder.feed=feed;
         holder.mTvTitle.setText(info.getTitle());
         ImageLoader.getInstance().displayImage(info.getBigImgUrl(), holder.mIvThumb,mDisplayImageOptions,mImageLoadingListener);
