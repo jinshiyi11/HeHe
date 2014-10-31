@@ -12,6 +12,7 @@
     <string name="no_new_data">休息一下，等下再刷新试试</string>
     <string name="hide_feed">不展示该条新鲜事</string>
     <string name="hide_feed_success">新鲜事已被隐藏</string>
+    <string name="loading_video">正在加载视频...</string>
     
     <string name="add_star_tip">收藏成功</string>
     <string name="remove_star_tip">收藏已删除</string>
