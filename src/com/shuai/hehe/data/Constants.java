@@ -53,7 +53,7 @@ public class Constants {
         } else {
             //SERVER_ADDRESS = "http://hehe1.sinaapp.com";
         	SERVER_ADDRESS = "http://hehedream.duapp.com";
-        	VIDEO_JS_URL= "http://hehedream.duapp.com/js/"+VIDEO_JS_FILENAME;
+        	VIDEO_JS_URL= "http://bcs.duapp.com/hehe-data/"+VIDEO_JS_FILENAME;
         }
     }
 

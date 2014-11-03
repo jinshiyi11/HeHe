@@ -24,7 +24,7 @@ import android.widget.FrameLayout;
 
 import com.shuai.hehe.R;
 
-public class HTML5WebView extends WebView {
+public class HTML5WebViewWrapper extends FrameLayout {
 	
 	private Context 							mContext;
 	private MyWebChromeClient					mWebChromeClient;
@@ -32,29 +32,27 @@ public class HTML5WebView extends WebView {
 	private FrameLayout							mCustomViewContainer;
 	private WebChromeClient.CustomViewCallback 	mCustomViewCallback;
 	
-	private FrameLayout							mContentView;
 	private FrameLayout							mBrowserFrameLayout;
-	private FrameLayout							mLayout;
+	
+	private WebView mWebView;
 	
     static final String LOGTAG = "HTML5WebView";
 	    
 	private void init(Context context) {
 		mContext = context;		
-		mLayout = new FrameLayout(context);
 		
 		mBrowserFrameLayout = (FrameLayout) LayoutInflater.from(mContext).inflate(R.layout.custom_screen, null);
-		mContentView = (FrameLayout) mBrowserFrameLayout.findViewById(R.id.main_content);
 		mCustomViewContainer = (FrameLayout) mBrowserFrameLayout.findViewById(R.id.fullscreen_custom_content);
+		addView(mBrowserFrameLayout, COVER_SCREEN_PARAMS);
 		
-		mLayout.addView(mBrowserFrameLayout, COVER_SCREEN_PARAMS);
-
+		mWebView=(WebView) findViewById(R.id.webview);		
 		mWebChromeClient = new MyWebChromeClient();
-	    setWebChromeClient(mWebChromeClient);
+		mWebView.setWebChromeClient(mWebChromeClient);
 	    
-	    setWebViewClient(new MyWebViewClient());
+		mWebView.setWebViewClient(new MyWebViewClient());
 	       
 	    // Configure the webview
-	    WebSettings s = getSettings();
+	    WebSettings s = mWebView.getSettings();
 	    s.setJavaScriptEnabled(true);
 	    s.setAllowFileAccess(true);
         s.setAppCacheEnabled(true); 
@@ -75,41 +73,25 @@ public class HTML5WebView extends WebView {
 	    //s.setGeolocationEnabled(true);
 	    //s.setGeolocationDatabasePath("/data/data/org.itri.html5webview/databases/");
    
-        
-        //TODO:待优化，暂时使用延时调用处理inflate过程中webview already added的问题
-        post(new Runnable() {
-            
-            @Override
-            public void run() {
-                View self=HTML5WebView.this;
-                ViewGroup parent=(ViewGroup) self.getParent();
-                ViewGroup.LayoutParams layoutParams = self.getLayoutParams();
-                if(parent!=mContentView){
-                    parent.removeView(self);
-                    mContentView.addView(self);
-                    parent.addView(mLayout, layoutParams);
-                }
-            }
-        });
 	}
 	
-    public HTML5WebView(Context context) {
+    public HTML5WebViewWrapper(Context context) {
 		super(context);
 		init(context);
 	}
 
-	public HTML5WebView(Context context, AttributeSet attrs) {
+	public HTML5WebViewWrapper(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init(context);
 	}
 
-	public HTML5WebView(Context context, AttributeSet attrs, int defStyle) {
+	public HTML5WebViewWrapper(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init(context);
 	}
 	
-	public FrameLayout getLayout() {
-		return mLayout;
+	public WebView getWebView() {
+		return mWebView;
 	}
 	
     public boolean inCustomView() {
@@ -123,8 +105,8 @@ public class HTML5WebView extends WebView {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	if (keyCode == KeyEvent.KEYCODE_BACK) {
-    		if ((mCustomView == null) && canGoBack()){
-    			goBack();
+    		if ((mCustomView == null) && mWebView.canGoBack()){
+    		    mWebView.goBack();
     			return true;
     		}
     	}
@@ -139,7 +121,7 @@ public class HTML5WebView extends WebView {
 		public void onShowCustomView(View view, WebChromeClient.CustomViewCallback callback)
 		{
 			//Log.i(LOGTAG, "here in on ShowCustomView");
-	        HTML5WebView.this.setVisibility(View.GONE);
+    	    mWebView.setVisibility(View.GONE);
 	        
 	        // if a view already exists then immediately terminate the new one
 	        if (mCustomView != null) {
@@ -168,7 +150,7 @@ public class HTML5WebView extends WebView {
 			mCustomViewContainer.setVisibility(View.GONE);
 			mCustomViewCallback.onCustomViewHidden();
 			
-			HTML5WebView.this.setVisibility(View.VISIBLE);
+			mWebView.setVisibility(View.VISIBLE);
 			
 	        //Log.i(LOGTAG, "set it to webVew");
 		}

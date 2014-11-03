@@ -66,6 +66,8 @@
 		removeElements(document.querySelectorAll("header"));
 		
 		removeElements(document.querySelectorAll(".topBanner"));
+		removeElements(document.querySelectorAll(".topBanner2"));
+		removeElements(document.querySelectorAll(".switch_tab"));
 		removeElements(document.querySelectorAll(".video_desc"));
 		removeElements(document.querySelectorAll("div#uploadedBy"));
 		removeElements(document.querySelectorAll(".share_layer"));
@@ -82,11 +84,6 @@
 		
 		document.querySelector("div#cover_m_player").click();
 		document.querySelector("div#bar_m_player_fsbtn").click();
-		
-		document.querySelector("div#player_wrapper").style.height="100%"
-		document.querySelector("div#m_player").style.height="100%"
-		document.querySelector("body").style.margin = "0px"
-
 	}
 
 	function iqiyi() {

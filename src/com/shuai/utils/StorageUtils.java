@@ -1,12 +1,17 @@
 package com.shuai.utils;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.channels.FileChannel;
+
+import org.apache.commons.io.input.BOMInputStream;
 
 import android.content.Context;
 import android.os.Environment;
@@ -29,18 +34,47 @@ public class StorageUtils {
      * @return
      * @throws IOException
      */
-    public static String getAssetFileData(Context context,String assetFilePath) throws IOException{
+    public static String getAssetUTF8FileData(Context context,String assetFilePath) throws IOException{
+        String result=getAssetFileData(context,assetFilePath,"UTF-8");
+        return result;
+    }
+    
+    public static String getAssetFileData(Context context,String assetFilePath,final String charsetName) throws IOException{
         InputStream stream = context.getAssets().open(assetFilePath);
-        String result=inputStreamToString(stream);
+        
+        BOMInputStream bomIn = new BOMInputStream(stream);
+        String result=inputStreamToString(bomIn);
         stream.close();
         return result;
     }
     
-    public static String getFileData(Context context,String filePath) throws IOException{
+    public static String getUTF8FileData(Context context,String filePath) throws IOException{
+        String result=getFileData(context,filePath,"UTF-8");
+        return result;
+    }
+    
+    public static String getFileData(Context context,String filePath,final String charsetName) throws IOException{
         InputStream stream = new FileInputStream(filePath);
-        String result=inputStreamToString(stream);
+        InputStreamReader in=new InputStreamReader(stream, charsetName);
+        String result=inputStreamToString(in);
         stream.close();
         return result;
+    }
+    
+    public static String inputStreamToString(Reader in){
+        StringBuilder sb=new StringBuilder();
+        
+        BufferedReader br = new BufferedReader(in);
+        try {
+            String str;
+            while ((str = br.readLine()) != null) {
+                sb.append(str);
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return sb.toString();
     }
     
     public static String inputStreamToString(InputStream input){

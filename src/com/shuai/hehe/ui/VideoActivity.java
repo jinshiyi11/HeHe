@@ -26,7 +26,7 @@ import android.webkit.WebViewClient;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 import com.shuai.base.view.BaseActivity;
-import com.shuai.base.view.HTML5WebView;
+import com.shuai.base.view.HTML5WebViewWrapper;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
 import com.shuai.utils.StorageUtils;
@@ -54,7 +54,8 @@ public class VideoActivity extends BaseActivity {
     
     private Status mStatus;
     private String mVideoUrl;
-    private HTML5WebView mWebView;
+    private HTML5WebViewWrapper mWebViewWrapper;
+    private WebView mWebView;
     
     /**
      * 从服务端同步的用来去除视频网页中非视频元素的javascript文件路径
@@ -63,9 +64,9 @@ public class VideoActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT){
-//            WebView.setWebContentsDebuggingEnabled(true);
-//        }
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT){
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
         
         mContext=this;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -79,7 +80,8 @@ public class VideoActivity extends BaseActivity {
         mNoNetworkContainer=(ViewGroup) findViewById(R.id.no_network_container);
         mLoadingContainer=(ViewGroup) findViewById(R.id.loading_container);
         mMainContainer=(ViewGroup) findViewById(R.id.main_container);
-        mWebView = (HTML5WebView) findViewById(R.id.webView1);
+        mWebViewWrapper=(HTML5WebViewWrapper) findViewById(R.id.webView1);
+        mWebView = mWebViewWrapper.getWebView();
         removeSearchBoxJavaBridge(mWebView);
         
         String jsDirPath=mContext.getFilesDir().getAbsolutePath()+File.separator+"js";
@@ -99,7 +101,7 @@ public class VideoActivity extends BaseActivity {
         });
 
         //TODO:mWebView.new MyWebViewClient() 这样写不好
-        mWebView.setWebViewClient( mWebView.new MyWebViewClient() {
+        mWebView.setWebViewClient( mWebViewWrapper.new MyWebViewClient() {
             private boolean mReceivedError=false;
             
             
@@ -135,7 +137,7 @@ public class VideoActivity extends BaseActivity {
                 String js = getVideoJsData();
                 view.loadUrl("javascript:" + js);
                     
-                    //view.loadUrl("javascript:alert('sss');");
+                   // view.loadUrl("javascript:(function() { test(); function test() {alert('sss');}}());");
                     
 //                    view.loadUrl("javascript:(function() { "
 //                            + "document.getElementsByTagName('body')[0].style.color = 'red'; " + "})()");
@@ -278,11 +280,12 @@ public class VideoActivity extends BaseActivity {
         String data=null;
 
         try {
-            if (StorageUtils.fileExists(mVideoJsPath)) {
-                data = StorageUtils.getFileData(mContext, mVideoJsPath);
-            } else {
-                data = StorageUtils.getAssetFileData(mContext, Constants.VIDEO_JS_FILENAME);
-            }
+//            if (StorageUtils.fileExists(mVideoJsPath)) {
+//                data = StorageUtils.getFileData(mContext, mVideoJsPath);
+//            } else {
+//                data = StorageUtils.getAssetFileData(mContext, Constants.VIDEO_JS_FILENAME);
+//            }
+            data = StorageUtils.getAssetUTF8FileData(mContext, Constants.VIDEO_JS_FILENAME);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
