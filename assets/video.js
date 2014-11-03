@@ -82,7 +82,6 @@
 		removeElements(document.querySelectorAll("#down_app_centre"));
 		removeElements(document.querySelectorAll("footer"));
 		
-		document.querySelector("div#cover_m_player").click();
 		document.querySelector("div#bar_m_player_fsbtn").click();
 	}
 
