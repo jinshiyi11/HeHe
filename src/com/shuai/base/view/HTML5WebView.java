@@ -40,11 +40,9 @@ public class HTML5WebView extends WebView {
 	    
 	private void init(Context context) {
 		mContext = context;		
-		Activity a = (Activity) mContext;
-		
 		mLayout = new FrameLayout(context);
 		
-		mBrowserFrameLayout = (FrameLayout) LayoutInflater.from(a).inflate(R.layout.custom_screen, null);
+		mBrowserFrameLayout = (FrameLayout) LayoutInflater.from(mContext).inflate(R.layout.custom_screen, null);
 		mContentView = (FrameLayout) mBrowserFrameLayout.findViewById(R.id.main_content);
 		mCustomViewContainer = (FrameLayout) mBrowserFrameLayout.findViewById(R.id.fullscreen_custom_content);
 		
@@ -57,25 +55,45 @@ public class HTML5WebView extends WebView {
 	       
 	    // Configure the webview
 	    WebSettings s = getSettings();
-	    s.setBuiltInZoomControls(true);
-	    s.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
-	    s.setUseWideViewPort(true);
-	    s.setLoadWithOverviewMode(true);
-	    s.setSavePassword(true);
-	    s.setSaveFormData(true);
 	    s.setJavaScriptEnabled(true);
-	    
+	    s.setAllowFileAccess(true);
+        s.setAppCacheEnabled(true); 
+        String appCachePath = mContext.getCacheDir().getAbsolutePath();  
+        s.setAppCachePath(appCachePath); 
+        s.setDatabaseEnabled(true);
+     
+        s.setDomStorageEnabled(true);
+        //s.setBuiltInZoomControls(true);
+        s.setSaveFormData(true);
+        s.setSavePassword(true);
+        //s.setPluginState(PluginState.ON);
+        s.setLoadWithOverviewMode(true);
+        s.setUseWideViewPort(true);
+	   
+	    //s.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
 	    // enable navigator.geolocation 
-	    s.setGeolocationEnabled(true);
-	    s.setGeolocationDatabasePath("/data/data/org.itri.html5webview/databases/");
-	    
-	    // enable Web Storage: localStorage, sessionStorage
-	    s.setDomStorageEnabled(true);
-	    
-	    mContentView.addView(this);
+	    //s.setGeolocationEnabled(true);
+	    //s.setGeolocationDatabasePath("/data/data/org.itri.html5webview/databases/");
+   
+        
+        //TODO:待优化，暂时使用延时调用处理inflate过程中webview already added的问题
+        post(new Runnable() {
+            
+            @Override
+            public void run() {
+                View self=HTML5WebView.this;
+                ViewGroup parent=(ViewGroup) self.getParent();
+                ViewGroup.LayoutParams layoutParams = self.getLayoutParams();
+                if(parent!=mContentView){
+                    parent.removeView(self);
+                    mContentView.addView(self);
+                    parent.addView(mLayout, layoutParams);
+                }
+            }
+        });
 	}
-
-	public HTML5WebView(Context context) {
+	
+    public HTML5WebView(Context context) {
 		super(context);
 		init(context);
 	}
@@ -192,7 +210,7 @@ public class HTML5WebView extends WebView {
          }
     }
 	
-	private class MyWebViewClient extends WebViewClient {
+	public class MyWebViewClient extends WebViewClient {
 	    @Override
 	    public boolean shouldOverrideUrlLoading(WebView view, String url) {
 	    	Log.i(LOGTAG, "shouldOverrideUrlLoading: "+url);

@@ -62,6 +62,7 @@
 		removeElements(document.querySelectorAll("div.header_bg"));
 		removeElements(document.querySelectorAll("header nav"));
 		removeElements(document.querySelectorAll("header input"));
+		removeElements(document.querySelectorAll("header div"));
 		removeElements(document.querySelectorAll("header"));
 		
 		removeElements(document.querySelectorAll(".topBanner"));
@@ -81,6 +82,10 @@
 		
 		document.querySelector("div#cover_m_player").click();
 		document.querySelector("div#bar_m_player_fsbtn").click();
+		
+		document.querySelector("div#player_wrapper").style.height="100%"
+		document.querySelector("div#m_player").style.height="100%"
+		document.querySelector("body").style.margin = "0px"
 
 	}
 

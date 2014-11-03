@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,12 +19,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings.PluginState;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 import com.shuai.base.view.BaseActivity;
+import com.shuai.base.view.HTML5WebView;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
 import com.shuai.utils.StorageUtils;
@@ -51,7 +54,7 @@ public class VideoActivity extends BaseActivity {
     
     private Status mStatus;
     private String mVideoUrl;
-    private WebView mWebView;
+    private HTML5WebView mWebView;
     
     /**
      * 从服务端同步的用来去除视频网页中非视频元素的javascript文件路径
@@ -76,7 +79,7 @@ public class VideoActivity extends BaseActivity {
         mNoNetworkContainer=(ViewGroup) findViewById(R.id.no_network_container);
         mLoadingContainer=(ViewGroup) findViewById(R.id.loading_container);
         mMainContainer=(ViewGroup) findViewById(R.id.main_container);
-        mWebView = (WebView) findViewById(R.id.webView1);
+        mWebView = (HTML5WebView) findViewById(R.id.webView1);
         removeSearchBoxJavaBridge(mWebView);
         
         String jsDirPath=mContext.getFilesDir().getAbsolutePath()+File.separator+"js";
@@ -95,23 +98,8 @@ public class VideoActivity extends BaseActivity {
             }
         });
 
-        mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.getSettings().setAllowFileAccess(true);
-        mWebView.getSettings().setAppCacheEnabled(true); 
-        String appCachePath = getCacheDir().getAbsolutePath();  
-        mWebView.getSettings().setAppCachePath(appCachePath); 
-        mWebView.getSettings().setDatabaseEnabled(true);
-     
-        mWebView.getSettings().setDomStorageEnabled(true);
-        //mWebView.getSettings().setBuiltInZoomControls(true);
-        mWebView.getSettings().setSaveFormData(true);
-        //mWebView.getSettings().setPluginState(PluginState.ON);
-        //mWebView.getSettings().setLoadWithOverviewMode(true);
-        //mWebView.getSettings().setUseWideViewPort(true);
-
-        mWebView.setWebChromeClient(new WebChromeClient());
-
-        mWebView.setWebViewClient(new WebViewClient() {
+        //TODO:mWebView.new MyWebViewClient() 这样写不好
+        mWebView.setWebViewClient( mWebView.new MyWebViewClient() {
             private boolean mReceivedError=false;
             
             
@@ -132,10 +120,12 @@ public class VideoActivity extends BaseActivity {
 
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
                 //TODO:检查http status code不是2xx的情况
                 //mWebView.loadUrl("file:///android_asset/html/error.html");
                 setStatus(Status.STATUS_NO_NETWORK_OR_DATA);
                 mReceivedError=true;
+                
             }
             
             @Override
@@ -185,6 +175,18 @@ public class VideoActivity extends BaseActivity {
     public void onPause() {
         super.onPause();
         mWebView.onPause();
+    }
+    
+//    @Override
+//    public void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        mWebView.saveState(outState);
+//    }
+    
+    @Override
+    public void onStop() {
+        super.onStop();
+        mWebView.stopLoading();
     }
 
     @Override
