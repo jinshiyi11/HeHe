@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import pl.droidsonroids.gif.GifDrawable;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import uk.co.senab.photoview.PhotoViewAttacher.OnViewTapListener;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -77,7 +78,7 @@ public class AlbumAdapter extends PagerAdapter {
         PicInfo info=mPicInfos.get(position);
         
         NetworkPhotoView photoView=new NetworkPhotoView(mContext);
-        photoView.setBackgroundColor(android.R.color.black);
+        photoView.setBackgroundColor(mContext.getResources().getColor(R.color.black_color));
         photoView.setProgressRadius(DisplayUtils.dp2px(mContext, 25));
         photoView.setProgressCircleWidth(DisplayUtils.dp2px(mContext, 2));
         //设置双击图片时的缩放策略
@@ -149,6 +150,7 @@ public class AlbumAdapter extends PagerAdapter {
         
         photoView.setOnViewTapListener(new OnViewTapListener() {
             
+            @SuppressLint("NewApi")
             @Override
             public void onViewTap(View view, float x, float y) {
                 ViewGroup parentViewPager = (ViewGroup) view.getParent();

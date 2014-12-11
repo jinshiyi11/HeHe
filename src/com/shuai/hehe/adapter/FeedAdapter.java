@@ -43,11 +43,13 @@ import com.shuai.hehe.data.AlbumFeed;
 import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.Feed;
+import com.shuai.hehe.data.BlogFeed;
 import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoFeed;
 import com.shuai.hehe.protocol.HideFeedRequest;
 import com.shuai.hehe.protocol.ProtocolError;
 import com.shuai.hehe.ui.AlbumActivity;
+import com.shuai.hehe.ui.BlogActivity;
 import com.shuai.hehe.ui.VideoActivity;
 import com.shuai.hehe.ui.WebViewActivity;
 import com.shuai.utils.SocialUtils;
@@ -261,6 +263,9 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         case FeedType.TYPE_VIDEO:
             type = 1;
             break;
+        case FeedType.TYPE_BLOG:
+            type=2;
+            break;
         }
 
         return type;
@@ -268,7 +273,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -284,6 +289,9 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         case FeedType.TYPE_VIDEO:
             view=getVideoView(feed,position,convertView,parent);
             break;
+        case FeedType.TYPE_BLOG:
+            view=getBlogView(feed,position,convertView,parent);
+            break;
         default:
             break;
         }
@@ -297,7 +305,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         mLastPosition=position;
         return view;
     }
-    
+
     /**
      * 新鲜事的收藏状态发生了改变，更新界面
      * @param parentView 父控件(比如ListView，遍历其子控件并更新相应子控件的收藏状态)
@@ -390,13 +398,27 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         LinearLayout mLlFeedContainer;
  
     }
+    
+    class BlogViewHolder extends BaseHolder{
+        /**
+         * 标题
+         */
+        TextView mTvTitle;
+        
+        /**
+         * 日志摘要
+         */
+        TextView mTvSummary;
+        
+        LinearLayout mLlFeedContainer;
+    }
 
     private View getVideoView(Feed feed, int position, View convertView, ViewGroup parent) {
         final VideoFeed info=(VideoFeed) feed;
         View view=convertView;
         VideoViewHolder holder;
         if(view==null){
-            view=mInflater.inflate(R.layout.video_feed_item, parent, false);
+            view=mInflater.inflate(R.layout.feed_video, parent, false);
             
             holder=new VideoViewHolder();
             holder.mTvTitle=(TextView) view.findViewById(R.id.tv_title);
@@ -446,7 +468,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         View view=convertView;
         AlbumViewHolder holder;
         if(view==null){
-            view=mInflater.inflate(R.layout.album_feed_item, parent, false);
+            view=mInflater.inflate(R.layout.feed_album, parent, false);
             
             holder=new AlbumViewHolder();
             holder.mTvTitle=(TextView) view.findViewById(R.id.tv_title);
@@ -491,6 +513,54 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
         return view;
     }
     
-    
+    private View getBlogView(Feed feed, int position, View convertView, ViewGroup parent) {
+        final BlogFeed info=(BlogFeed) feed;
+        View view=convertView;
+        BlogViewHolder holder;
+        if(view==null){
+            view=mInflater.inflate(R.layout.feed_blog, parent, false);
+            
+            holder=new BlogViewHolder();
+            holder.mTvTitle=(TextView) view.findViewById(R.id.tv_title);
+            holder.mTvSummary=(TextView) view.findViewById(R.id.tv_summary);
+            holder.mFivStar=(FlipImageView) view.findViewById(R.id.fiv_star);
+            holder.mIvShare=(ImageView) view.findViewById(R.id.iv_share);
+            holder.mLlFeedContainer=(LinearLayout) view.findViewById(R.id.ll_feed_container);
+            view.setTag(holder);
+        }else{
+            holder=(BlogViewHolder) view.getTag();
+        }
+        
+        holder.feed=feed;
+        holder.mTvTitle.setText(info.getTitle());
+        holder.mTvSummary.setText(info.getSummary());
+        
+        holder.mLlFeedContainer.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(mContext, BlogActivity.class);
+                intent.putExtra(Constants.FEED_BLOG, info);
+                mContext.startActivity(intent);
+            }
+        });
+        
+        boolean isStarred=mDataManager.isStarFeed(feed.getId());
+        holder.mFivStar.setFlipped(isStarred, false);
+        holder.mFivStar.setOnFlipListener(new StarChangeListener(info));
+        
+        holder.mIvShare.setOnClickListener(new OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                SocialUtils.shareBlog((Activity) mContext, info.getTitle(), info.getSummary(), info.getWebUrl());
+            }
+        });
+        
+        if (mDataManager.isAdmin()) {
+            holder.mLlFeedContainer.setOnLongClickListener(new HideFeedListener(info));
+        }
+        return view;
+    }
 
 }

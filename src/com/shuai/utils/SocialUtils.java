@@ -101,4 +101,7 @@ public class SocialUtils {
         mController.openShare(context, false);
     }
 
+    public static void shareBlog(Activity mContext, String title, String summary, String webUrl) {
+    }
+
 }

@@ -42,6 +42,9 @@ public class UrlHelper {
 		List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
 		params.add(new BasicNameValuePair("id", Long.toString(id)));
 		params.add(new BasicNameValuePair("count", Integer.toString(count)));
+		if(Constants.DEBUG){
+		    params.add(new BasicNameValuePair(Constants.ADMIN_KEY, DataManager.getInstance().getAdminKey()));
+		}
 		addCommonParameters(params);
 
 		return getUrl("getfeeds", params);
@@ -63,10 +66,24 @@ public class UrlHelper {
     public static String getHideFeedUrl(long feedId) {
         List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
         params.add(new BasicNameValuePair("feedid", Long.toString(feedId)));
-        params.add(new BasicNameValuePair("adminkey", DataManager.getInstance().getAdminKey()));
+        params.add(new BasicNameValuePair(Constants.ADMIN_KEY, DataManager.getInstance().getAdminKey()));
         addCommonParameters(params);
 
         return getUrl("hidefeed", params);
+    }
+
+    /**
+     * 
+     * @param feedId
+     * @param getHtml 请求返回html还是json数据
+     * @return
+     */
+    public static String getBlogUrl(long feedId,boolean getHtml) {
+        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+        params.add(new BasicNameValuePair("feedid", Long.toString(feedId)));
+        addCommonParameters(params);
+
+        return getUrl("getblog", params);
     }
 
 }

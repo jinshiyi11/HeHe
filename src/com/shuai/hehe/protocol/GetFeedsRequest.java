@@ -29,6 +29,7 @@ import com.google.gson.reflect.TypeToken;
 import com.shuai.hehe.data.AlbumFeed;
 import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.Feed;
+import com.shuai.hehe.data.BlogFeed;
 import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoFeed;
 
@@ -168,6 +169,13 @@ public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
                 Gson gson = new Gson();
                 VideoFeed feed = gson.fromJson(jsonFeedString, VideoFeed.class);
                 FeedContentParser.parseVideoFeedContent(feed, feed.getContent());
+                feedList.add(feed);
+                break;
+            }
+            case FeedType.TYPE_BLOG: {
+                Gson gson = new Gson();
+                BlogFeed feed = gson.fromJson(jsonFeedString, BlogFeed.class);
+                FeedContentParser.parseBlogFeedContent(feed, feed.getContent());
                 feedList.add(feed);
                 break;
             }

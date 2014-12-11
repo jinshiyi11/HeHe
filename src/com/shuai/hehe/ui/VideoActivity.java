@@ -26,7 +26,7 @@ import android.webkit.WebViewClient;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 import com.shuai.base.view.BaseActivity;
-import com.shuai.base.view.HTML5WebViewWrapper;
+import com.shuai.base.view.WebViewWrapper;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
 import com.shuai.utils.StorageUtils;
@@ -54,7 +54,7 @@ public class VideoActivity extends BaseActivity {
     
     private Status mStatus;
     private String mVideoUrl;
-    private HTML5WebViewWrapper mWebViewWrapper;
+    private WebViewWrapper mWebViewWrapper;
     private WebView mWebView;
     
     /**
@@ -80,7 +80,7 @@ public class VideoActivity extends BaseActivity {
         mNoNetworkContainer=(ViewGroup) findViewById(R.id.no_network_container);
         mLoadingContainer=(ViewGroup) findViewById(R.id.loading_container);
         mMainContainer=(ViewGroup) findViewById(R.id.main_container);
-        mWebViewWrapper=(HTML5WebViewWrapper) findViewById(R.id.webView1);
+        mWebViewWrapper=(WebViewWrapper) findViewById(R.id.webView1);
         mWebView = mWebViewWrapper.getWebView();
         removeSearchBoxJavaBridge(mWebView);
         

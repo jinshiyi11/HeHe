@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.shuai.hehe.data.AlbumFeed;
+import com.shuai.hehe.data.BlogFeed;
 import com.shuai.hehe.data.VideoFeed;
 
 public class FeedContentParser {
@@ -20,5 +21,11 @@ public class FeedContentParser {
         feed.setWebVideoUrl(json.getString("webVideoUrl"));
         feed.setThumbImgUrl(json.getString("videoThumbUrl"));
         
+    }
+
+    public static void parseBlogFeedContent(BlogFeed feed, String content) throws JSONException {
+        JSONObject json = new JSONObject(content);
+        feed.setSummary(json.getString("summary"));
+        feed.setWebUrl(json.getString("webUrl"));
     }
 }

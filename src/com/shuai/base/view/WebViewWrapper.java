@@ -6,8 +6,10 @@ package com.shuai.base.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -16,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.GeolocationPermissions;
+import android.webkit.JsPromptResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -24,7 +27,8 @@ import android.widget.FrameLayout;
 
 import com.shuai.hehe.R;
 
-public class HTML5WebViewWrapper extends FrameLayout {
+public class WebViewWrapper extends FrameLayout {
+    private static final String TAG = WebViewWrapper.class.getSimpleName();
 	
 	private Context 							mContext;
 	private MyWebChromeClient					mWebChromeClient;
@@ -34,9 +38,7 @@ public class HTML5WebViewWrapper extends FrameLayout {
 	
 	private FrameLayout							mBrowserFrameLayout;
 	
-	private WebView mWebView;
-	
-    static final String LOGTAG = "HTML5WebView";
+	private WebViewEx mWebView;
 	    
 	private void init(Context context) {
 		mContext = context;		
@@ -45,7 +47,7 @@ public class HTML5WebViewWrapper extends FrameLayout {
 		mCustomViewContainer = (FrameLayout) mBrowserFrameLayout.findViewById(R.id.fullscreen_custom_content);
 		addView(mBrowserFrameLayout, COVER_SCREEN_PARAMS);
 		
-		mWebView=(WebView) findViewById(R.id.webview);		
+		mWebView=(WebViewEx) findViewById(R.id.webview);		
 		mWebChromeClient = new MyWebChromeClient();
 		mWebView.setWebChromeClient(mWebChromeClient);
 	    
@@ -75,17 +77,17 @@ public class HTML5WebViewWrapper extends FrameLayout {
    
 	}
 	
-    public HTML5WebViewWrapper(Context context) {
+    public WebViewWrapper(Context context) {
 		super(context);
 		init(context);
 	}
 
-	public HTML5WebViewWrapper(Context context, AttributeSet attrs) {
+	public WebViewWrapper(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init(context);
 	}
 
-	public HTML5WebViewWrapper(Context context, AttributeSet attrs, int defStyle) {
+	public WebViewWrapper(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init(context);
 	}
@@ -93,6 +95,10 @@ public class HTML5WebViewWrapper extends FrameLayout {
 	public WebView getWebView() {
 		return mWebView;
 	}
+	
+	public void loadUrl(String url) {
+        mWebView.loadUrl(url);
+    }
 	
     public boolean inCustomView() {
 		return (mCustomView != null);
@@ -186,18 +192,40 @@ public class HTML5WebViewWrapper extends FrameLayout {
         	 ((Activity) mContext).getWindow().setFeatureInt(Window.FEATURE_PROGRESS, newProgress*100);
          }
          
-         @Override
-         public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-             callback.invoke(origin, true, false);
-         }
+        @Override
+        public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+            callback.invoke(origin, true, false);
+        }
+
+        //通过prompt实现安全回调
+        @Override
+        public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+            if (view instanceof WebViewEx) {
+                WebViewEx webview = (WebViewEx) view;
+                if (webview.handleJsInterface(view, url, message, defaultValue, result)) {
+                    return true;
+                }
+            }
+
+            return super.onJsPrompt(view, url, message, defaultValue, result);
+        }
+         
     }
 	
+    //TODO:onReceivedError,onPageFinished,onPageStarted
 	public class MyWebViewClient extends WebViewClient {
 	    @Override
 	    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-	    	Log.i(LOGTAG, "shouldOverrideUrlLoading: "+url);
+	    	Log.i(TAG, "shouldOverrideUrlLoading: "+url);
 	    	// don't override URL so that stuff within iframe can work properly
 	        // view.loadUrl(url);
+	    	
+	    	if (url.startsWith("tel:")) {
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(url));
+                mContext.startActivity(intent);
+                return true;
+            }
+	    	
 	        return false;
 	    }
 	}

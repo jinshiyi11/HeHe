@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.shuai.hehe"
     android:versionCode="1"
-    android:versionName="1.2.0.9001" >
+    android:versionName="1.3.0.9001" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -35,6 +35,7 @@
         <activity android:name=".ui.VideoActivity" android:hardwareAccelerated="true" android:screenOrientation="landscape"></activity>
         <activity android:name=".ui.WebViewActivity" android:hardwareAccelerated="true" android:screenOrientation="landscape"></activity>
         <activity android:name=".ui.AlbumActivity" android:screenOrientation="portrait"></activity>
+        <activity android:name=".ui.BlogActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".ui.FavActivity"  android:screenOrientation="portrait"></activity>
         <activity android:name=".ui.AboutActivity" android:screenOrientation="portrait"></activity>
         

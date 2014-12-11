@@ -2,56 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fiv="http://schemas.android.com/apk/res/com.shuai.hehe"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/transparent_color"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/ll_feed_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:background="@drawable/feed_item_bg"
-        android:orientation="vertical"
-        android:paddingBottom="8dp" >
+        android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/feed_title_margin_bottom"
-            android:layout_marginLeft="@dimen/feed_title_margin_left"
-            android:layout_marginRight="@dimen/feed_title_margin_right"
-            android:layout_marginTop="@dimen/feed_title_margin_top"
-            android:lineSpacingExtra="2.5dp"
-            android:text="TextView"
-            android:textColor="@color/feed_title_color"
-            android:textSize="@dimen/feed_title_size" />
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/feed_title_margin_bottom"
+        android:layout_marginLeft="@dimen/feed_title_margin_left"
+        android:layout_marginRight="@dimen/feed_title_margin_right"
+        android:layout_marginTop="@dimen/feed_title_margin_top"
+        android:ellipsize="end"
+        android:lineSpacingExtra="2.5dp"
+        android:maxLines="3"
+        android:text="童年那些牛叉的顺口溜"
+        android:textColor="@color/feed_title_color"
+        android:textSize="@dimen/feed_title_size" />
 
-        
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp" >
-
-            <ImageView
-                android:id="@+id/iv_thumb"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
-                android:layout_centerInParent="true"
-                android:scaleType="fitCenter" />
-
-            <ImageButton
-                android:id="@+id/ib_video"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:background="@null"
-                android:clickable="false"
-                android:src="@drawable/ic_btn_video" />
-
-        </RelativeLayout>
+    <TextView
+        android:id="@+id/tv_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="@dimen/feed_title_margin_left"
+        android:layout_marginRight="@dimen/feed_title_margin_right"
+        android:ellipsize="end"
+        android:lineSpacingExtra="2.5dp"
+        android:maxLines="5"
+        android:text="1、太阳当空照，花儿对我笑，小鸟说早早早，你为什么背上炸药包？我去炸学校，老师不知道，一拉线我就跑，轰的一声，学校炸飞了！2、星期天的早上大雪茫茫，捡破烂的老头排成一行行，警察一指挥，冲向垃圾堆，破鞋破袜子直往兜里塞。"
+        android:textColor="#666666" />
         
         <View 
             android:layout_width="match_parent"

@@ -22,11 +22,12 @@ public class HeHeApplication extends Application {
     }
 
     public static RequestQueue getRequestQueue() {
-        if (mRequestQueue == null) {
+        if(mRequestQueue!=null)
+            return mRequestQueue;
+        else {
             //不应该为null
             throw new NullPointerException("mRequestQueue is null!");
         }
-        return mRequestQueue;
     }
 
     @Override

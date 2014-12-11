@@ -1,7 +1,7 @@
 package com.shuai.hehe.data;
 
 public class Constants {
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
     public static final String SERVER_ADDRESS;
     /**
      * 用来去除视频网页中非视频元素的javascript
@@ -12,13 +12,16 @@ public class Constants {
     /**
      * 协议版本号
      */
-    public static final String PROTOCOL_VERSION = "1.1";
+    public static final String PROTOCOL_VERSION = "1.3";
+    
+    public static final String ADMIN_KEY="admin";
     
     public static final String PREF_NAME="preferences";
 
     public static final String FEED = "feed";
     public static final String FEED_ID = "feed_id";
     public static final String FEED_ALBUM = "feed_album";
+    public static final String FEED_BLOG = "feed_blog";
     public static final String VIDEO_URL = "video_url";
     
     //广播
