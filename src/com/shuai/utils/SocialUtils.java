@@ -11,6 +11,7 @@ import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
 import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.media.UMVideo;
+import com.umeng.socialize.media.UMWebPage;
 import com.umeng.socialize.sso.QZoneSsoHandler;
 import com.umeng.socialize.sso.SinaSsoHandler;
 import com.umeng.socialize.sso.UMWXHandler;
@@ -101,7 +102,40 @@ public class SocialUtils {
         mController.openShare(context, false);
     }
 
-    public static void shareBlog(Activity mContext, String title, String summary, String webUrl) {
+    public static void shareBlog(Activity context, String title, String summary, String webUrl) {
+        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share", RequestType.SOCIAL);
+        
+        // 微信图文分享必须设置一个url 
+        String contentUrl = webUrl;
+        // 添加微信平台，参数1为当前Activity, 参数2为用户申请的AppID, 参数3为点击分享内容跳转到的目标url
+        UMWXHandler wxHandler = mController.getConfig().supportWXPlatform(context,Constants.APP_ID_WEIXIN, contentUrl);
+        wxHandler.setWXTitle(title);
+        // 支持微信朋友圈
+        UMWXHandler circleHandler = mController.getConfig().supportWXCirclePlatform(context,Constants.APP_ID_WEIXIN, contentUrl) ;
+        circleHandler.setCircleTitle(title);
+        
+        //设置分享内容
+        mController.setShareContent(title);
+
+        // 设置分享视频
+        UMWebPage umObj = new UMWebPage(webUrl);
+        //umObj.setTargetUrl(arg0)
+        mController.setShareMedia(umObj);
+
+        //人人网分享时，如果不设置website，点击¨应用名称¨或者¨图片¨将跳转到人人主页；如果设置website将跳转到此website的页面
+        mController.setAppWebSite(SHARE_MEDIA.RENREN, "http://hehedream.duapp.com/");
+        
+        mController.getConfig().setSsoHandler(new QZoneSsoHandler(context, Constants.APP_ID_QQ));
+        mController.getConfig().setSsoHandler(new SinaSsoHandler());
+
+        //mController.getConfig().removePlatform(SHARE_MEDIA.DOUBAN,SHARE_MEDIA.EMAIL,SHARE_MEDIA.SMS);
+
+        mController.getConfig().setPlatforms(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
+                SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
+        mController.getConfig().setPlatformOrder(SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
+                SHARE_MEDIA.QZONE,SHARE_MEDIA.QQ, SHARE_MEDIA.SINA,SHARE_MEDIA.RENREN);
+        
+        mController.openShare(context, false);
     }
 
 }

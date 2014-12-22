@@ -366,6 +366,9 @@ public class DataManager {
             case FeedType.TYPE_VIDEO:
                 feed=new VideoFeed();
                 break;
+            case FeedType.TYPE_BLOG:
+                feed=new BlogFeed();
+                break;
             default:
                 break;
             }
@@ -386,6 +389,9 @@ public class DataManager {
                     break;
                 case FeedType.TYPE_VIDEO:
                     FeedContentParser.parseVideoFeedContent((VideoFeed) feed, feed.getContent());
+                    break;
+                case FeedType.TYPE_BLOG:
+                    FeedContentParser.parseBlogFeedContent((BlogFeed) feed, feed.getContent());
                     break;
                 default:
                     break;

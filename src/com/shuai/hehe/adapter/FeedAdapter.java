@@ -48,6 +48,7 @@ import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoFeed;
 import com.shuai.hehe.protocol.HideFeedRequest;
 import com.shuai.hehe.protocol.ProtocolError;
+import com.shuai.hehe.protocol.UrlHelper;
 import com.shuai.hehe.ui.AlbumActivity;
 import com.shuai.hehe.ui.BlogActivity;
 import com.shuai.hehe.ui.VideoActivity;
@@ -553,7 +554,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             
             @Override
             public void onClick(View v) {
-                SocialUtils.shareBlog((Activity) mContext, info.getTitle(), info.getSummary(), info.getWebUrl());
+                SocialUtils.shareBlog((Activity) mContext, info.getTitle(), info.getSummary(), UrlHelper.getBlogUrl(info.getId(), true));
             }
         });
         
