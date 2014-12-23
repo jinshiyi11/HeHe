@@ -18,14 +18,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings.PluginState;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 import com.shuai.base.view.BaseActivity;
+import com.shuai.base.view.WebViewEx;
 import com.shuai.base.view.WebViewWrapper;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
@@ -55,7 +53,7 @@ public class VideoActivity extends BaseActivity {
     private Status mStatus;
     private String mVideoUrl;
     private WebViewWrapper mWebViewWrapper;
-    private WebView mWebView;
+    private WebViewEx mWebView;
     
     /**
      * 从服务端同步的用来去除视频网页中非视频元素的javascript文件路径
@@ -82,7 +80,6 @@ public class VideoActivity extends BaseActivity {
         mMainContainer=(ViewGroup) findViewById(R.id.main_container);
         mWebViewWrapper=(WebViewWrapper) findViewById(R.id.webView1);
         mWebView = mWebViewWrapper.getWebView();
-        removeSearchBoxJavaBridge(mWebView);
         
         String jsDirPath=mContext.getFilesDir().getAbsolutePath()+File.separator+"js";
         File jsDir=new File(jsDirPath);
@@ -163,14 +160,6 @@ public class VideoActivity extends BaseActivity {
         //mWebView.loadUrl("http://www.tudou.com/programs/view/DEKMOIHBM_8/?bid\u003d03\u0026pid\u003d3\u0026resourceId\u003d0_03_05_03");
         
         mWebView.loadUrl(mVideoUrl);
-    }
-    
-    private void removeSearchBoxJavaBridge(WebView webView) {
-        try {
-            mWebView.removeJavascriptInterface("searchBoxJavaBridge_");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

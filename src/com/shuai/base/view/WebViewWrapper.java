@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.GeolocationPermissions;
@@ -27,7 +28,7 @@ import android.widget.FrameLayout;
 
 import com.shuai.hehe.R;
 
-public class WebViewWrapper extends FrameLayout {
+public class WebViewWrapper extends FrameLayout implements OnClickListener {
     private static final String TAG = WebViewWrapper.class.getSimpleName();
 	
 	private Context 							mContext;
@@ -36,46 +37,12 @@ public class WebViewWrapper extends FrameLayout {
 	private FrameLayout							mCustomViewContainer;
 	private WebChromeClient.CustomViewCallback 	mCustomViewCallback;
 	
-	private FrameLayout							mBrowserFrameLayout;
+	private FrameLayout							mRootLayout;
 	
 	private WebViewEx mWebView;
-	    
-	private void init(Context context) {
-		mContext = context;		
-		
-		mBrowserFrameLayout = (FrameLayout) LayoutInflater.from(mContext).inflate(R.layout.custom_screen, null);
-		mCustomViewContainer = (FrameLayout) mBrowserFrameLayout.findViewById(R.id.fullscreen_custom_content);
-		addView(mBrowserFrameLayout, COVER_SCREEN_PARAMS);
-		
-		mWebView=(WebViewEx) findViewById(R.id.webview);		
-		mWebChromeClient = new MyWebChromeClient();
-		mWebView.setWebChromeClient(mWebChromeClient);
-	    
-		mWebView.setWebViewClient(new MyWebViewClient());
-	       
-	    // Configure the webview
-	    WebSettings s = mWebView.getSettings();
-	    s.setJavaScriptEnabled(true);
-	    s.setAllowFileAccess(true);
-        s.setAppCacheEnabled(true); 
-        String appCachePath = mContext.getCacheDir().getAbsolutePath();  
-        s.setAppCachePath(appCachePath); 
-        s.setDatabaseEnabled(true);
-     
-        s.setDomStorageEnabled(true);
-        //s.setBuiltInZoomControls(true);
-        s.setSaveFormData(true);
-        s.setSavePassword(true);
-        //s.setPluginState(PluginState.ON);
-        s.setLoadWithOverviewMode(true);
-        s.setUseWideViewPort(true);
-	   
-	    //s.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
-	    // enable navigator.geolocation 
-	    //s.setGeolocationEnabled(true);
-	    //s.setGeolocationDatabasePath("/data/data/org.itri.html5webview/databases/");
-   
-	}
+	
+	private ViewGroup mNetworkErrorContainer;
+	
 	
     public WebViewWrapper(Context context) {
 		super(context);
@@ -92,7 +59,46 @@ public class WebViewWrapper extends FrameLayout {
 		init(context);
 	}
 	
-	public WebView getWebView() {
+	private void init(Context context) {
+        mContext = context;     
+        
+        mRootLayout = (FrameLayout) LayoutInflater.from(mContext).inflate(R.layout.webview_wrapper, null);
+        mCustomViewContainer = (FrameLayout) mRootLayout.findViewById(R.id.fullscreen_container);
+        addView(mRootLayout, COVER_SCREEN_PARAMS);
+        
+        mWebView=(WebViewEx) findViewById(R.id.webview); 
+        mNetworkErrorContainer=(ViewGroup) findViewById(R.id.ll_network_error);
+        mNetworkErrorContainer.setOnClickListener(this);
+        mWebChromeClient = new MyWebChromeClient();
+        mWebView.setWebChromeClient(mWebChromeClient);
+        
+        mWebView.setWebViewClient(new MyWebViewClient());
+           
+        // Configure the webview
+        WebSettings s = mWebView.getSettings();
+        s.setJavaScriptEnabled(true);
+        s.setAllowFileAccess(true);
+        s.setAppCacheEnabled(true); 
+        String appCachePath = mContext.getCacheDir().getAbsolutePath();  
+        s.setAppCachePath(appCachePath); 
+        s.setDatabaseEnabled(true);
+     
+        s.setDomStorageEnabled(true);
+        //s.setBuiltInZoomControls(true);
+        s.setSaveFormData(true);
+        s.setSavePassword(true);
+        //s.setPluginState(PluginState.ON);
+        s.setLoadWithOverviewMode(true);
+        s.setUseWideViewPort(true);
+       
+        //s.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+        // enable navigator.geolocation 
+        //s.setGeolocationEnabled(true);
+        //s.setGeolocationDatabasePath("/data/data/org.itri.html5webview/databases/");
+   
+    }
+	
+	public WebViewEx getWebView() {
 		return mWebView;
 	}
 	
@@ -228,8 +234,33 @@ public class WebViewWrapper extends FrameLayout {
 	    	
 	        return false;
 	    }
+
+        @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            //隐藏webview默认的错误提示
+            //view.loadUrl("about:blank");//该方法会修改当前的url以及更新url history.在刷新或者goBack()时逻辑不对
+            //view.clearView();//该方法无法隐藏默认的提示信息
+            view.loadUrl("javascript:document.body.innerHTML=\"\"");
+            view.setVisibility(View.GONE);
+            mNetworkErrorContainer.setVisibility(View.VISIBLE);
+        }
+	    
 	}
 	
 	static final FrameLayout.LayoutParams COVER_SCREEN_PARAMS =
         new FrameLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+        case R.id.ll_network_error:
+            //网络异常，点击刷新
+            mWebView.reload();
+            mWebView.setVisibility(View.VISIBLE);
+            mNetworkErrorContainer.setVisibility(View.GONE);
+            break;        
+        }
+    }
 }

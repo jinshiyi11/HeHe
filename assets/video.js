@@ -13,6 +13,10 @@
 			qq();
 		} else if (hostname.search(/tudou.com/i) != -1) {
 			tudou();
+		} else if (hostname.search(/sohu.com/i) != -1) {
+			sohu();
+		} else if (hostname.search(/yinyuetai.com/i) != -1) {
+			yinyuetai();
 		}
 	}
 	
@@ -115,6 +119,27 @@
 		
 		document.querySelector(".tvp_overlay_play").click();
 		document.querySelector(".tvp_fullscreen_button").click();
+	}
+	
+	function sohu() {
+		removeElements(document.querySelectorAll(".fixed_pinner"));
+		removeElements(document.querySelectorAll("header"));
+		removeElements(document.querySelectorAll(".js_sh_app_dl"));
+		removeElements(document.querySelectorAll(".back2top"));
+		
+		removeElements(document.querySelectorAll("section.js_appbar"));
+		removeElements(document.querySelectorAll("section.detail_section"));
+		removeElements(document.querySelectorAll(".user_favor"));
+		removeElements(document.querySelectorAll("footer"));
+	}
+	
+	function yinyuetai() {
+		removeElements(document.querySelectorAll("div.topbar"));
+		removeElements(document.querySelectorAll("section.app-install"));
+		removeElements(document.querySelectorAll("section.mv-info aside"));
+		removeElements(document.querySelectorAll("div.content"));
+		removeElements(document.querySelectorAll("div.video_box"));
+		removeElements(document.querySelectorAll("div.footer"));
 	}
 
 }());

@@ -5,12 +5,16 @@
 
 
 DONE:
-1.gif图片展示
-2.下载整个相册
-3.播放视频没有全屏
+.gif图片展示
+.下载整个相册
+.播放视频没有全屏
 
 TODO:
-4.分享多张图片
+.分享多张图片
+.全屏播放问题
+.WebViewWrapper加载进度，loading状态展示
+.进入视频全屏播放时正在加载状态的优化
+.webview播放视频白屏，log显示nativeOnDraw failed; clearing to background color.
 
 WebViewWrapper完善
 
