@@ -1,4 +1,5 @@
 ﻿(function() {
+	//alert("sadfasd");
 	tidy();
 
 	function tidy() {
@@ -51,8 +52,11 @@
 	}
 
 	function youku() {
+		//搜索框
 		removeElements(document.querySelectorAll(".yk-header"));
+		//app下载提示
 		removeElements(document.querySelectorAll(".app-download"));
+		//评论
 		removeElements(document.querySelectorAll(".yk-vcontent"));
 		removeElements(document.querySelectorAll(".sidebar"));
 		removeElements(document.querySelectorAll(".yk-footer"));
@@ -63,12 +67,14 @@
 	}
 
 	function web56() {
+		//http://www.56.com/u75/v_OTQ3NDE4MzI.html
 		removeElements(document.querySelectorAll("div.header_bg"));
 		removeElements(document.querySelectorAll("header nav"));
 		removeElements(document.querySelectorAll("header input"));
 		removeElements(document.querySelectorAll("header div"));
 		removeElements(document.querySelectorAll("header"));
 		
+		removeElements(document.querySelectorAll("div#gotop"));
 		removeElements(document.querySelectorAll(".topBanner"));
 		removeElements(document.querySelectorAll(".topBanner2"));
 		removeElements(document.querySelectorAll(".switch_tab"));
@@ -76,6 +82,9 @@
 		removeElements(document.querySelectorAll("div#uploadedBy"));
 		removeElements(document.querySelectorAll(".share_layer"));
 		removeElements(document.querySelectorAll("#herderOutside h1"));
+		removeElements(document.querySelectorAll("div #footerSign"));
+		removeElements(document.querySelectorAll("div #footerFixed"));
+		removeElements(document.querySelectorAll("div .popWin"));
 
 		removeElements(document.querySelectorAll("div#bottomNvaBtn"));
 		removeElements(document.querySelectorAll("div#bottomNva"));
@@ -134,12 +143,16 @@
 	}
 	
 	function yinyuetai() {
+		//http://m.yinyuetai.com/video/839320
 		removeElements(document.querySelectorAll("div.topbar"));
 		removeElements(document.querySelectorAll("section.app-install"));
 		removeElements(document.querySelectorAll("section.mv-info aside"));
 		removeElements(document.querySelectorAll("div.content"));
 		removeElements(document.querySelectorAll("div.video_box"));
 		removeElements(document.querySelectorAll("div.footer"));
+		
+		document.querySelectorAll("div.wrapper")[0].style.paddingTop="0px";
+		removeElements(document.querySelectorAll("body img[height='1']"));
 	}
 
 }());

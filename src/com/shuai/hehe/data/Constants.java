@@ -1,7 +1,7 @@
 package com.shuai.hehe.data;
 
 public class Constants {
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     public static final String SERVER_ADDRESS;
     /**
      * 用来去除视频网页中非视频元素的javascript

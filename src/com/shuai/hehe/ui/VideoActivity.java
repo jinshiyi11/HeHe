@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebView;
-
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
 import com.shuai.base.view.BaseActivity;
@@ -28,6 +27,7 @@ import com.shuai.base.view.WebViewWrapper;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
 import com.shuai.utils.StorageUtils;
+import com.shuai.utils.Utils;
 
 public class VideoActivity extends BaseActivity {
 
@@ -275,6 +275,7 @@ public class VideoActivity extends BaseActivity {
 //                data = StorageUtils.getAssetFileData(mContext, Constants.VIDEO_JS_FILENAME);
 //            }
             data = StorageUtils.getAssetUTF8FileData(mContext, Constants.VIDEO_JS_FILENAME);
+            data=Utils.removeComment(data);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
