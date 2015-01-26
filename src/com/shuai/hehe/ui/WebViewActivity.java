@@ -66,7 +66,7 @@ public class WebViewActivity extends Activity {
         
         
         Intent intent=getIntent();
-        mVideoUrl=intent.getStringExtra(Constants.VIDEO_URL);
+        mVideoUrl=intent.getStringExtra(Constants.WEB_VIDEO_URL);
         
         mWebView.loadUrl(mVideoUrl);
     }

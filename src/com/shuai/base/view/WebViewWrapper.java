@@ -125,7 +125,7 @@ public class WebViewWrapper extends FrameLayout implements OnClickListener {
     	return super.onKeyDown(keyCode, event);
     }
 
-    private class MyWebChromeClient extends WebChromeClient {
+    public class MyWebChromeClient extends WebChromeClient {
 		private Bitmap 		mDefaultVideoPoster;
 		private View 		mVideoProgressView;
     	

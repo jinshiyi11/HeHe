@@ -86,4 +86,17 @@ public class UrlHelper {
         return getUrl("getblog", params);
     }
 
+    /**
+     * 根据视频的web url获取对应的视频信息
+     * @param webUrl
+     * @return
+     */
+    public static String getVideoUrl(String webUrl) {
+        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
+        params.add(new BasicNameValuePair("web_url", webUrl));
+        addCommonParameters(params);
+        
+        return getUrl("get_video_url", params);
+    }
+
 }

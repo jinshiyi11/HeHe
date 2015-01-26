@@ -1,7 +1,18 @@
 package com.shuai.hehe.data;
 
 public class Constants {
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
+    
+    /**
+     * jsoup的USER_AGENT
+     */
+    public static final String USER_AGENT="Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36";
+    
+    /**
+     * jsoup访问网络的超时时间，单位ms
+     */
+    public static final int JSOUP_TIMEOUT=30*1000;
+    
     public static final String SERVER_ADDRESS;
     /**
      * 用来去除视频网页中非视频元素的javascript
@@ -22,7 +33,10 @@ public class Constants {
     public static final String FEED_ID = "feed_id";
     public static final String FEED_ALBUM = "feed_album";
     public static final String FEED_BLOG = "feed_blog";
-    public static final String VIDEO_URL = "video_url";
+    /**
+     * 视频对应的网页url
+     */
+    public static final String WEB_VIDEO_URL = "web_video_url";
     
     //广播
     /**

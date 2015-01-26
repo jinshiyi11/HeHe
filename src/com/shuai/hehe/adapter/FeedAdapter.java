@@ -14,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
@@ -29,8 +28,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.nineoldandroids.animation.AnimatorInflater;
-import com.nineoldandroids.animation.AnimatorSet;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -40,10 +37,10 @@ import com.shuai.base.view.FlipImageView.OnFlipListener;
 import com.shuai.hehe.HeHeApplication;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.AlbumFeed;
+import com.shuai.hehe.data.BlogFeed;
 import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.Feed;
-import com.shuai.hehe.data.BlogFeed;
 import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoFeed;
 import com.shuai.hehe.protocol.HideFeedRequest;
@@ -52,7 +49,6 @@ import com.shuai.hehe.protocol.UrlHelper;
 import com.shuai.hehe.ui.AlbumActivity;
 import com.shuai.hehe.ui.BlogActivity;
 import com.shuai.hehe.ui.VideoActivity;
-import com.shuai.hehe.ui.WebViewActivity;
 import com.shuai.utils.SocialUtils;
 
 public class FeedAdapter extends ArrayAdapter<Feed> {
@@ -440,7 +436,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(mContext, VideoActivity.class);
-                intent.putExtra(Constants.VIDEO_URL, info.getWebVideoUrl());
+                intent.putExtra(Constants.WEB_VIDEO_URL, info.getWebVideoUrl());
                 mContext.startActivity(intent);
             }
         });
