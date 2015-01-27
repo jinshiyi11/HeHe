@@ -2,6 +2,7 @@ package com.shuai.hehe.ui;
 
 import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
+import io.vov.vitamio.MediaPlayer.OnBufferingUpdateListener;
 import io.vov.vitamio.MediaPlayer.OnPreparedListener;
 import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -24,6 +26,7 @@ import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.shuai.base.view.BaseActivity;
+import com.shuai.base.view.MediaControllerEx;
 import com.shuai.hehe.HeHeApplication;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
@@ -31,7 +34,7 @@ import com.shuai.hehe.data.VideoInfo;
 import com.shuai.hehe.protocol.GetVideoUrlRequest;
 import com.shuai.utils.DisplayUtils;
 
-public class VideoActivity extends BaseActivity {
+public class VideoActivity extends BaseActivity implements OnClickListener {
     public static final String TAG=VideoActivity.class.getSimpleName();
     private Context mContext;
     private ViewGroup mNoNetworkContainer;
@@ -55,7 +58,12 @@ public class VideoActivity extends BaseActivity {
     private Status mStatus;
     private RequestQueue mRequestQueue;
     private String mWebVideoUrl;
+    private View mIvBack;
+    private TextView mTvTitle;
     private VideoView mVideoView;
+    //缓冲进度提示
+    private ViewGroup mMediaBufferingIndicator;
+    private TextView mTvMediaBufferingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,11 +88,21 @@ public class VideoActivity extends BaseActivity {
             public void onClick(View v) {
                 getVideoUrl();
             }
-        });
+        });       
         
         Intent intent = getIntent();
         mWebVideoUrl = intent.getStringExtra(Constants.WEB_VIDEO_URL);
+        String title=intent.getStringExtra(Constants.VIDEO_TITLE);
+        
+        
+        mIvBack=findViewById(R.id.iv_back);
+        mIvBack.setOnClickListener(this);
+        mTvTitle=(TextView) findViewById(R.id.tv_title);
+        mTvTitle.setText(title);
+        
         mVideoView=(VideoView) findViewById(R.id.videoView);
+        mMediaBufferingIndicator=(ViewGroup) findViewById(R.id.ll_buffering_indicator);
+        mTvMediaBufferingIndicator=(TextView) findViewById(R.id.tv_buffering_indicator);
         
         //mWebVideoUrl="http://124.126.126.141/103/8/93/letv-uts/14/ver_00_22-303073903-avc-960567-aac-64005-269000-34753068-e12f25fa8c6c43899ca598abbae2c6a2-1421791274793.letv?crypt=63aa7f2e350&b=1033&nlh=3072&nlt=45&bf=27&p2p=1&video_type=mp4&termid=1&tss=no&geo=CN-1-0-1&tm=1422250800&key=1c2168c4ac6e73eed245af3c185df693&platid=1&splatid=101&its=0&keyitem=platid,splatid,its&ntm=1422250800&nkey=1c2168c4ac6e73eed245af3c185df693&proxy=1032384066,1780933154&mmsid=26269843&playid=0&vtype=22&cvid=1079171371978&hwtype=un&ostype=Windows7&tag=letv&sign=letv&pay=0&rateid=1300&errc=0&gn=603&buss=100&qos=4&cips=218.30.116.7";
         //mWebVideoUrl="http://k.youku.com/player/getFlvPath/sid/742181013102912ad57bb_00/st/flv/fileid/030001030054BDFCAA142E06A9C1DB82D8FC79-02BE-2437-A72E-7F35F020A8F9?K=3109d3689d6b94bf241215b0&ctype=12&ev=1&oip=2095616453&token=8869&ep=dSaWG0GMVs8D5CPdgT8bNnjncyVdXP4J9h%2BFgNJhALshTJrL702gtpy0TIpCEIgQASNyYuPz39iRGUcdYfBB2x0Q3UqrPvqR%2BfKW5aolx5V2Zhs2A8WhvVSWSzb4";
@@ -105,7 +123,16 @@ public class VideoActivity extends BaseActivity {
             
         });
         //mVideoView.setVideoURI(Uri.parse(mWebVideoUrl));
-        mVideoView.setMediaController(new MediaController(this));
+        mVideoView.setMediaController(new MediaControllerEx(this));
+        mVideoView.setMediaBufferingIndicator(mMediaBufferingIndicator);
+        mVideoView.setOnBufferingUpdateListener(new OnBufferingUpdateListener() {
+            
+            @Override
+            public void onBufferingUpdate(MediaPlayer mp, int percent) {
+                //显示缓冲进度
+                mTvMediaBufferingIndicator.setText(getResources().getString(R.string.buffering_percent, percent));
+            }
+        });
         mVideoView.requestFocus();
         getVideoUrl();
     }
@@ -195,6 +222,16 @@ public class VideoActivity extends BaseActivity {
             break;
         }
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id=v.getId();
+        switch(id){
+        case R.id.iv_back:
+            finish();
+            break;
+        }
     }
     
     

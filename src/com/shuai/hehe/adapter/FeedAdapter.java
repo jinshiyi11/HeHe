@@ -436,6 +436,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(mContext, VideoActivity.class);
+                intent.putExtra(Constants.VIDEO_TITLE, info.getTitle());
                 intent.putExtra(Constants.WEB_VIDEO_URL, info.getWebVideoUrl());
                 mContext.startActivity(intent);
             }

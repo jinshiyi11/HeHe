@@ -1,7 +1,7 @@
 package com.shuai.hehe.data;
 
 public class Constants {
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     
     /**
      * jsoup的USER_AGENT
@@ -37,6 +37,7 @@ public class Constants {
      * 视频对应的网页url
      */
     public static final String WEB_VIDEO_URL = "web_video_url";
+    public static final String VIDEO_TITLE = "video_title";
     
     //广播
     /**

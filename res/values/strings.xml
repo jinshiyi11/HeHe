@@ -42,5 +42,8 @@
     <!-- 数据格式没问题，但是返回的数据还是不对，比如内容为空 -->
     <string name="error_data">数据异常</string>
     <string name="no_star_hint">没有任何收藏</string>
+    
+    <!-- 视频播放 -->
+    <string name="buffering_percent">正在缓冲:%1$d%%</string>
 
 </resources>
