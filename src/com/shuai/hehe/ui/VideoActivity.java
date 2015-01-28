@@ -4,7 +4,8 @@ import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.MediaPlayer.OnBufferingUpdateListener;
 import io.vov.vitamio.MediaPlayer.OnPreparedListener;
-import io.vov.vitamio.widget.MediaController;
+import io.vov.vitamio.widget.MediaController.OnHiddenListener;
+import io.vov.vitamio.widget.MediaController.OnShownListener;
 import io.vov.vitamio.widget.VideoView;
 import android.content.Context;
 import android.content.Intent;
@@ -14,10 +15,12 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,9 +61,11 @@ public class VideoActivity extends BaseActivity implements OnClickListener {
     private Status mStatus;
     private RequestQueue mRequestQueue;
     private String mWebVideoUrl;
+    private ViewGroup mVgTitle;
     private View mIvBack;
     private TextView mTvTitle;
     private VideoView mVideoView;
+    private MediaControllerEx mMediaController;
     //缓冲进度提示
     private ViewGroup mMediaBufferingIndicator;
     private TextView mTvMediaBufferingIndicator;
@@ -94,7 +99,7 @@ public class VideoActivity extends BaseActivity implements OnClickListener {
         mWebVideoUrl = intent.getStringExtra(Constants.WEB_VIDEO_URL);
         String title=intent.getStringExtra(Constants.VIDEO_TITLE);
         
-        
+        mVgTitle=(ViewGroup) findViewById(R.id.ll_title);
         mIvBack=findViewById(R.id.iv_back);
         mIvBack.setOnClickListener(this);
         mTvTitle=(TextView) findViewById(R.id.tv_title);
@@ -123,7 +128,8 @@ public class VideoActivity extends BaseActivity implements OnClickListener {
             
         });
         //mVideoView.setVideoURI(Uri.parse(mWebVideoUrl));
-        mVideoView.setMediaController(new MediaControllerEx(this));
+        mMediaController=new MediaControllerEx(this);
+        mVideoView.setMediaController(mMediaController);
         mVideoView.setMediaBufferingIndicator(mMediaBufferingIndicator);
         mVideoView.setOnBufferingUpdateListener(new OnBufferingUpdateListener() {
             
@@ -135,6 +141,26 @@ public class VideoActivity extends BaseActivity implements OnClickListener {
         });
         mVideoView.requestFocus();
         getVideoUrl();
+        
+        mMediaController.setOnHiddenListener(new OnHiddenListener() {
+            
+            @Override
+            public void onHidden() {
+                Animation fromTopAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_out_from_top);
+                fromTopAnimation.setFillAfter(true);
+                mVgTitle.startAnimation(fromTopAnimation);
+            }
+        });
+        
+        mMediaController.setOnShownListener(new OnShownListener() {
+            
+            @Override
+            public void onShown() {
+                Animation fromTopAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_in_from_top);
+                fromTopAnimation.setFillAfter(true);
+                mVgTitle.startAnimation(fromTopAnimation);
+            }
+        });
     }
     
     @Override

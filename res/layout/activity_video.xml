@@ -66,7 +66,7 @@
         <!-- 标题栏 -->
 
         <LinearLayout
-            android:id="@+id/ll_video_top"
+            android:id="@+id/ll_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
