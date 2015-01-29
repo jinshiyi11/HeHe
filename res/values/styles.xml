@@ -26,5 +26,10 @@
         <item name="android:textSize">16sp</item>
         <item name="android:background">@drawable/transparent_black_bg</item>
     </style>
+    
+    <style name="MediaControlAnimation" parent="android:Animation">         
+        <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom</item>    
+        <item name="android:windowExitAnimation">@anim/slide_out_from_bottom</item>    
+    </style>  
 
 </resources>

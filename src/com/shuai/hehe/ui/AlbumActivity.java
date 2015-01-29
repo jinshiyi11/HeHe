@@ -57,6 +57,7 @@ import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.PicInfo;
 import com.shuai.hehe.protocol.GetAlbumPicsRequest;
 import com.shuai.hehe.protocol.ProtocolError;
+import com.shuai.utils.AnimUtils;
 import com.shuai.utils.DisplayUtils;
 import com.shuai.utils.SocialUtils;
 import com.shuai.utils.StorageUtils;
@@ -294,25 +295,19 @@ public class AlbumActivity extends BaseActivity {
                 //单击显示或隐藏当前是第几张图片和图片描述
                 mShowPicInfo=!mShowPicInfo;
                 if(mShowPicInfo){
-                    Animation fromTopAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_in_from_top);
-                    fromTopAnimation.setFillAfter(true);
+                    Animation fromTopAnimation = AnimUtils.slideAnimation(mContext, AnimUtils.SlideType.SLIDE_IN_FROM_TOP,mRlPageNum);
                     mRlPageNum.startAnimation(fromTopAnimation);
                     
                     if (!mEtvDesc.isEmpty()) {
-                        Animation fromBottomAnimation = AnimationUtils.loadAnimation(mContext,
-                                R.anim.slide_in_from_bottom);
-                        fromBottomAnimation.setFillAfter(true);
+                        Animation fromBottomAnimation = AnimUtils.slideAnimation(mContext, AnimUtils.SlideType.SLIDE_IN_FROM_BOTTOM,mEtvDesc);
                         mEtvDesc.startAnimation(fromBottomAnimation);
                     }
                 }else{
-                    Animation fromTopAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_out_from_top);
-                    fromTopAnimation.setFillAfter(true);
+                    Animation fromTopAnimation = AnimUtils.slideAnimation(mContext, AnimUtils.SlideType.SLIDE_OUT_FROM_TOP,mRlPageNum);
                     mRlPageNum.startAnimation(fromTopAnimation);
                     
                     if (!mEtvDesc.isEmpty()) {
-                        Animation fromBottomAnimation = AnimationUtils.loadAnimation(mContext,
-                                R.anim.slide_out_from_bottom);
-                        fromBottomAnimation.setFillAfter(true);
+                        Animation fromBottomAnimation = AnimUtils.slideAnimation(mContext, AnimUtils.SlideType.SLIDE_OUT_FROM_BOTTOM,mEtvDesc);
                         mEtvDesc.startAnimation(fromBottomAnimation);
                     }
                 }
@@ -470,8 +465,8 @@ public class AlbumActivity extends BaseActivity {
 
             PicInfo info = mPicInfos.get(position);
             String desc = info.getPicDescription();
-            if (!TextUtils.isEmpty(desc)) {
-                mEtvDesc.setText(Html.fromHtml(info.getPicDescription()));
+            mEtvDesc.setText(Html.fromHtml(desc));
+            if (!TextUtils.isEmpty(desc) && mShowPicInfo) {
                 mEtvDesc.setVisibility(View.VISIBLE);
             } else {
                 mEtvDesc.setVisibility(View.INVISIBLE);

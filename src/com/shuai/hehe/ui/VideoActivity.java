@@ -16,11 +16,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +36,7 @@ import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.VideoInfo;
 import com.shuai.hehe.protocol.GetVideoUrlRequest;
+import com.shuai.utils.AnimUtils;
 import com.shuai.utils.DisplayUtils;
 
 public class VideoActivity extends BaseActivity implements OnClickListener {
@@ -129,6 +131,7 @@ public class VideoActivity extends BaseActivity implements OnClickListener {
         });
         //mVideoView.setVideoURI(Uri.parse(mWebVideoUrl));
         mMediaController=new MediaControllerEx(this);
+        mMediaController.setAnimationStyle(R.style.MediaControlAnimation);
         mVideoView.setMediaController(mMediaController);
         mVideoView.setMediaBufferingIndicator(mMediaBufferingIndicator);
         mVideoView.setOnBufferingUpdateListener(new OnBufferingUpdateListener() {
@@ -146,9 +149,8 @@ public class VideoActivity extends BaseActivity implements OnClickListener {
             
             @Override
             public void onHidden() {
-                Animation fromTopAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_out_from_top);
-                fromTopAnimation.setFillAfter(true);
-                mVgTitle.startAnimation(fromTopAnimation);
+                Animation animation = AnimUtils.slideAnimation(mContext, AnimUtils.SlideType.SLIDE_OUT_FROM_TOP,mVgTitle);
+                mVgTitle.startAnimation(animation);
             }
         });
         
@@ -156,9 +158,8 @@ public class VideoActivity extends BaseActivity implements OnClickListener {
             
             @Override
             public void onShown() {
-                Animation fromTopAnimation = AnimationUtils.loadAnimation(mContext, R.anim.slide_in_from_top);
-                fromTopAnimation.setFillAfter(true);
-                mVgTitle.startAnimation(fromTopAnimation);
+                Animation animation = AnimUtils.slideAnimation(mContext, AnimUtils.SlideType.SLIDE_IN_FROM_TOP,mVgTitle);
+                mVgTitle.startAnimation(animation);
             }
         });
     }
