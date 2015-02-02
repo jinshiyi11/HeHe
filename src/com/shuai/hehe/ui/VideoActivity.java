@@ -41,7 +41,6 @@ import com.shuai.utils.DisplayUtils;
 
 public class VideoActivity extends BaseActivity implements OnClickListener {
     public static final String TAG=VideoActivity.class.getSimpleName();
-    private Context mContext;
     private ViewGroup mNoNetworkContainer;
     private ViewGroup mLoadingContainer;
     private ViewGroup mMainContainer;
@@ -74,7 +73,6 @@ public class VideoActivity extends BaseActivity implements OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mContext=this;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
@@ -175,7 +173,7 @@ public class VideoActivity extends BaseActivity implements OnClickListener {
      */
     private void getVideoUrl(){
         setStatus(Status.STATUS_LOADING);
-        GetVideoUrlRequest request=new GetVideoUrlRequest(mWebVideoUrl, new Listener<VideoInfo>(){
+        GetVideoUrlRequest request=new GetVideoUrlRequest(mContext,mWebVideoUrl, new Listener<VideoInfo>(){
 
             @Override
             public void onResponse(VideoInfo response) {

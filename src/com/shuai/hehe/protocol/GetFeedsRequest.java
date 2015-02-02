@@ -43,10 +43,10 @@ public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
     public final static int FEED_CACHE_COUNT = 20;
     private final static String FEED_CACHE_FILENAME = "feed_cache.json";
 
-    public GetFeedsRequest(long id, int count, Listener<ArrayList<Feed>> listener, ErrorListener errorListener) {
-        super(Method.GET, UrlHelper.getFeedsUrl(id, count), null, listener, errorListener);
+    public GetFeedsRequest(Context context,long id, int count, Listener<ArrayList<Feed>> listener, ErrorListener errorListener) {
+        super(Method.GET, UrlHelper.getFeedsUrl(context,id, count), null, listener, errorListener);
         if (Constants.DEBUG) {
-            Log.d(TAG, UrlHelper.getFeedsUrl(id, count));
+            Log.d(TAG, UrlHelper.getFeedsUrl(context,id, count));
         }
     }
 

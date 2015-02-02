@@ -18,10 +18,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
+import com.shuai.base.view.BaseActivity;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
 
-public class WebViewActivity extends Activity {
+public class WebViewActivity extends BaseActivity {
 	private static final String TAG="WebViewActivity";
 	private WebView mWebView;
 	private String mVideoUrl;

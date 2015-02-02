@@ -40,8 +40,6 @@ import com.shuai.utils.Utils;
 public class ExpVideoActivity extends BaseActivity {
     private static final String TAG=ExpVideoActivity.class.getSimpleName();
     
-    private Context mContext;
-    
     /**
      * 异步请求队列
      */
@@ -92,7 +90,6 @@ public class ExpVideoActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mContext=this;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);

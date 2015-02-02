@@ -2,6 +2,7 @@ package com.shuai.hehe.protocol;
 
 import java.io.UnsupportedEncodingException;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
@@ -18,11 +19,11 @@ import com.shuai.hehe.data.Constants;
 public class GetBlogInfoRequest extends JsonRequest<BlogInfo> {
     private final static String TAG = GetBlogInfoRequest.class.getSimpleName();
 
-    public GetBlogInfoRequest(long feedId, Listener<BlogInfo> listener,
+    public GetBlogInfoRequest(Context context,long feedId, Listener<BlogInfo> listener,
             ErrorListener errorListener) {
-        super(Method.GET, UrlHelper.getBlogUrl(feedId,false), null, listener, errorListener);
+        super(Method.GET, UrlHelper.getBlogUrl(context,feedId,false), null, listener, errorListener);
         if (Constants.DEBUG) {
-            Log.d(TAG, UrlHelper.getBlogUrl(feedId,false));
+            Log.d(TAG, UrlHelper.getBlogUrl(context,feedId,false));
         }
     }
 

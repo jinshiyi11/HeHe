@@ -33,8 +33,6 @@ import com.shuai.utils.Utils;
  * 播放网页中的视频，并通过js脚本屏蔽非视频相关的html元素
  */
 public class WebVideoActivity extends BaseActivity {
-
-    private Context mContext;
     private ViewGroup mNoNetworkContainer;
     private ViewGroup mLoadingContainer;
     private ViewGroup mMainContainer;
@@ -69,7 +67,6 @@ public class WebVideoActivity extends BaseActivity {
             WebView.setWebContentsDebuggingEnabled(true);
         }
         
-        mContext=this;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);

@@ -26,7 +26,6 @@ import com.umeng.update.UmengUpdateAgent;
 
 public class MainActivity extends BaseFragmentActivity implements OnClickListener {
 	private static final String TAG="MainActivity";
-	private Context mContext;
     private View mTitleContainer;
     private FeedFragment mFeedFragment;
     private PopUpMenuButton mIbMenuMore;
@@ -38,7 +37,6 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mContext=this;
 		//检查升级
 		UmengUpdateAgent.update(this);
 		getWindow().requestFeature(Window.FEATURE_NO_TITLE);		

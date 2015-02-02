@@ -17,6 +17,7 @@ TODO:
 .webview播放视频白屏，log显示nativeOnDraw failed; clearing to background color.
 .视频暂停时自动缓冲
 .缓冲播放过的视频以及清理视频缓存
+.视频播放库大概增加apk大小8M，减小视频播放库的大小
 .同步收藏
 
 WebViewWrapper完善

@@ -1,5 +1,6 @@
 package com.shuai.hehe.ui;
 
+import com.shuai.base.view.BaseActivity;
 import com.shuai.base.view.WebViewWrapper;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
@@ -19,7 +20,7 @@ import android.widget.TextView;
 /**
  * 日志展示页面
  */
-public class BlogActivity extends Activity {
+public class BlogActivity extends BaseActivity {
     private BlogFeed mFeed;
     
     private View mIvBack;
@@ -59,7 +60,7 @@ public class BlogActivity extends Activity {
         });
         
         mWebView=(WebViewWrapper) findViewById(R.id.wv_web);
-        mWebView.loadUrl(UrlHelper.getBlogUrl(mFeed.getId(),true));
+        mWebView.loadUrl(UrlHelper.getBlogUrl(mContext,mFeed.getId(),true));
 
     } 
 

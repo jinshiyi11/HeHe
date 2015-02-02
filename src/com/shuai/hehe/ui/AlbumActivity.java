@@ -68,7 +68,6 @@ import com.umeng.socialize.controller.UMSocialService;
 import com.umeng.socialize.sso.UMSsoHandler;
 
 public class AlbumActivity extends BaseActivity {
-    private Context mContext;
     private DataManager mDataManager;
     private ViewGroup mNoNetworkContainer;
     private ViewGroup mLoadingContainer;
@@ -250,7 +249,6 @@ public class AlbumActivity extends BaseActivity {
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mContext=this;
         mDataManager=DataManager.getInstance();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -413,7 +411,7 @@ public class AlbumActivity extends BaseActivity {
             setStatus(Status.STATUS_LOADING);
         }
         
-        GetAlbumPicsRequest request=new GetAlbumPicsRequest(mFeed.getId(), new Listener<ArrayList<PicInfo>>() {
+        GetAlbumPicsRequest request=new GetAlbumPicsRequest(mContext,mFeed.getId(), new Listener<ArrayList<PicInfo>>() {
 
             @Override
             public void onResponse(ArrayList<PicInfo> response) {

@@ -34,7 +34,6 @@ import com.umeng.socialize.sso.UMSsoHandler;
  * 我的收藏页面
  */
 public class FavActivity extends BaseActivity implements OnStarFeedChangedListener {
-    private Context mContext;
     private ViewGroup mNoNetworkContainer;
     private ViewGroup mLoadingContainer;
     private ViewGroup mMainContainer;
@@ -77,7 +76,6 @@ public class FavActivity extends BaseActivity implements OnStarFeedChangedListen
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         
         setContentView(R.layout.activity_star);
-        mContext=this;
         mDataManager=DataManager.getInstance();
         mIvBack=findViewById(R.id.iv_back);
         mIvBack.setOnClickListener(new OnClickListener() {

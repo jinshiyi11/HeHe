@@ -2,6 +2,7 @@ package com.shuai.hehe.protocol;
 
 import java.io.UnsupportedEncodingException;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
@@ -27,11 +28,11 @@ public class GetVideoUrlRequest extends JsonRequest<VideoInfo> {
      * @param listener
      * @param errorListener
      */
-    public GetVideoUrlRequest(String webUrl, Listener<VideoInfo> listener,
+    public GetVideoUrlRequest(Context context,String webUrl, Listener<VideoInfo> listener,
             ErrorListener errorListener) {
-        super(Method.GET, UrlHelper.getVideoUrl(webUrl), null, listener, errorListener);
+        super(Method.GET, UrlHelper.getVideoUrl(context,webUrl), null, listener, errorListener);
         if (Constants.DEBUG) {
-            Log.d(TAG, UrlHelper.getVideoUrl(webUrl));
+            Log.d(TAG, UrlHelper.getVideoUrl(context,webUrl));
         }
     }
 

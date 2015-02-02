@@ -181,7 +181,7 @@ public class FeedFragment extends Fragment implements OnStarFeedChangedListener 
             }
         }
 		
-		GetFeedsRequest request=new GetFeedsRequest(id,count, new Listener<ArrayList<Feed>>(){
+		GetFeedsRequest request=new GetFeedsRequest(mContext,id,count, new Listener<ArrayList<Feed>>(){
 
 			@Override
 			public void onResponse(ArrayList<Feed> feedList) {

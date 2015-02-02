@@ -149,7 +149,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
                 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    HideFeedRequest request=new HideFeedRequest(mFeed.getId(), new Listener<String>() {
+                    HideFeedRequest request=new HideFeedRequest(mContext,mFeed.getId(), new Listener<String>() {
 
                         @Override
                         public void onResponse(String response) {
@@ -551,7 +551,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             
             @Override
             public void onClick(View v) {
-                SocialUtils.shareBlog((Activity) mContext, info.getTitle(), info.getSummary(), UrlHelper.getBlogUrl(info.getId(), true));
+                SocialUtils.shareBlog((Activity) mContext, info.getTitle(), info.getSummary(), UrlHelper.getBlogUrl(mContext,info.getId(), true));
             }
         });
         

@@ -1,5 +1,6 @@
 package com.shuai.hehe.protocol;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.Response.ErrorListener;
@@ -11,8 +12,8 @@ import com.android.volley.toolbox.StringRequest;
  */
 public class HideFeedRequest extends StringRequest {
 
-    public HideFeedRequest(long feedId, Listener<String> listener, ErrorListener errorListener) {
-        super(UrlHelper.getHideFeedUrl(feedId), listener, errorListener);
+    public HideFeedRequest(Context context,long feedId, Listener<String> listener, ErrorListener errorListener) {
+        super(UrlHelper.getHideFeedUrl(context,feedId), listener, errorListener);
     }
 
 }

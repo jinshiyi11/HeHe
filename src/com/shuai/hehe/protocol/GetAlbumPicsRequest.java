@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import org.json.JSONException;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
@@ -32,10 +33,10 @@ public class GetAlbumPicsRequest extends JsonRequest<ArrayList<PicInfo>> {
      * @param listener
      * @param errorListener
      */
-    public GetAlbumPicsRequest(long feedId, Listener<ArrayList<PicInfo>> listener, ErrorListener errorListener) {
-        super(Method.GET, UrlHelper.getAlbumPicsUrl(feedId), null, listener, errorListener);
+    public GetAlbumPicsRequest(Context context,long feedId, Listener<ArrayList<PicInfo>> listener, ErrorListener errorListener) {
+        super(Method.GET, UrlHelper.getAlbumPicsUrl(context,feedId), null, listener, errorListener);
         if(Constants.DEBUG){
-            Log.d(TAG, UrlHelper.getAlbumPicsUrl(feedId));
+            Log.d(TAG, UrlHelper.getAlbumPicsUrl(context,feedId));
         }
     }
 
