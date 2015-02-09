@@ -47,7 +47,7 @@ public class UrlHelper {
 		List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
 		params.add(new BasicNameValuePair("id", Long.toString(id)));
 		params.add(new BasicNameValuePair("count", Integer.toString(count)));
-		if(Constants.DEBUG){
+		if(DataManager.getInstance().isAdmin()){
 		    params.add(new BasicNameValuePair(Constants.ADMIN_KEY, DataManager.getInstance().getAdminKey()));
 		}
 		addCommonParameters(context,params);
