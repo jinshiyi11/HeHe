@@ -1,7 +1,11 @@
 package com.shuai.hehe.data;
 
 public class Constants {
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
+    /**
+     * 是使用线上服务还是开发环境的服务
+     */
+    public static boolean SERVER_ONLINE = true;
     
     /**
      * jsoup的USER_AGENT
@@ -65,7 +69,7 @@ public class Constants {
     public static final String APP_ID_WEIXIN = "wx4d1680ae1b14a8a9";
 
     static {
-        if (DEBUG) {
+        if (!SERVER_ONLINE) {
             SERVER_ADDRESS = "http://10.0.2.2:8080/hehe_server";
             VIDEO_JS_URL = "http://10.0.2.2:8080/hehe_server/js/"+VIDEO_JS_FILENAME;
         } else {
