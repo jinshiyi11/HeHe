@@ -23,35 +23,42 @@
             android:id="@+id/webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-        <!-- 网络异常提示 -->
-
-        <LinearLayout
-            android:id="@+id/ll_network_error"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#fff"
-            android:orientation="vertical"
-            android:visibility="gone" >
-
-            <ImageView
-                android:id="@+id/imageView1"
-                android:layout_width="166dp"
-                android:layout_height="166dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="70dp"
-                android:src="@drawable/ic_info" />
-
-            <TextView
-                android:id="@+id/tv_error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:text="网络异常，点击刷新"
-                android:textColor="#999999"
-                android:textSize="15sp" />
-        </LinearLayout>
     </FrameLayout>
+    
+    <!-- 正在加载界面 -->
+    <com.shuai.base.view.LoadingView
+        android:id="@+id/loading_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <!-- 网络异常提示 -->
+
+    <LinearLayout
+        android:id="@+id/ll_network_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="166dp"
+            android:layout_height="166dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="70dp"
+            android:src="@drawable/ic_info" />
+
+        <TextView
+            android:id="@+id/tv_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="网络异常，点击刷新"
+            android:textColor="#999999"
+            android:textSize="15sp" />
+    </LinearLayout>
 
 </FrameLayout>

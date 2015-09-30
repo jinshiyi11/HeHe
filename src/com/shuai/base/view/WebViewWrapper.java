@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JsPromptResult;
 import android.webkit.WebChromeClient;
@@ -30,7 +31,7 @@ import com.shuai.hehe.R;
 
 public class WebViewWrapper extends FrameLayout implements OnClickListener {
     private static final String TAG = WebViewWrapper.class.getSimpleName();
-	
+    
 	private Context 							mContext;
 	private MyWebChromeClient					mWebChromeClient;
 	private View								mCustomView;
@@ -41,8 +42,10 @@ public class WebViewWrapper extends FrameLayout implements OnClickListener {
 	
 	private WebViewEx mWebView;
 	
-	private ViewGroup mNetworkErrorContainer;
-	
+	private ViewGroup mMainContainer;
+	private ViewGroup mNoNetworkContainer;
+	private ViewGroup mLoadingContainer;
+	private boolean mLoaded;
 	
     public WebViewWrapper(Context context) {
 		super(context);
@@ -67,8 +70,10 @@ public class WebViewWrapper extends FrameLayout implements OnClickListener {
         addView(mRootLayout, COVER_SCREEN_PARAMS);
         
         mWebView=(WebViewEx) findViewById(R.id.webview); 
-        mNetworkErrorContainer=(ViewGroup) findViewById(R.id.ll_network_error);
-        mNetworkErrorContainer.setOnClickListener(this);
+        mMainContainer = (ViewGroup) findViewById(R.id.main_container);
+        mLoadingContainer = (ViewGroup) findViewById(R.id.loading_container);
+        mNoNetworkContainer=(ViewGroup) findViewById(R.id.ll_network_error);
+        mNoNetworkContainer.setOnClickListener(this);
         mWebChromeClient = new MyWebChromeClient();
         mWebView.setWebChromeClient(mWebChromeClient);
         
@@ -84,7 +89,9 @@ public class WebViewWrapper extends FrameLayout implements OnClickListener {
         s.setDatabaseEnabled(true);
      
         s.setDomStorageEnabled(true);
+        
         //s.setBuiltInZoomControls(true);
+        
         s.setSaveFormData(true);
         s.setSavePassword(true);
         //s.setPluginState(PluginState.ON);
@@ -98,12 +105,22 @@ public class WebViewWrapper extends FrameLayout implements OnClickListener {
    
     }
 	
+	public void addJavascriptInterface(Object obj, String interfaceName) {
+        mWebView.addJavascriptInterface(obj, interfaceName);
+    }
+	
 	public WebViewEx getWebView() {
 		return mWebView;
 	}
 	
 	public void loadUrl(String url) {
         mWebView.loadUrl(url);
+
+        if(!mLoaded){
+        	mMainContainer.setVisibility(View.GONE);
+        	mLoadingContainer.setVisibility(View.VISIBLE);
+        	mNoNetworkContainer.setVisibility(View.GONE);
+        }
     }
 	
     public boolean inCustomView() {
@@ -130,6 +147,11 @@ public class WebViewWrapper extends FrameLayout implements OnClickListener {
 		private View 		mVideoProgressView;
     	
     	@Override
+		public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+			return super.onConsoleMessage(consoleMessage);
+		}
+
+		@Override
 		public void onShowCustomView(View view, WebChromeClient.CustomViewCallback callback)
 		{
 			//Log.i(LOGTAG, "here in on ShowCustomView");
@@ -196,6 +218,13 @@ public class WebViewWrapper extends FrameLayout implements OnClickListener {
          @Override
          public void onProgressChanged(WebView view, int newProgress) {
         	 ((Activity) mContext).getWindow().setFeatureInt(Window.FEATURE_PROGRESS, newProgress*100);
+        	 
+        	 if(!mLoaded && newProgress>90){
+        		 mLoaded=true;
+        		 mMainContainer.setVisibility(View.VISIBLE);
+                 mLoadingContainer.setVisibility(View.GONE);
+                 mNoNetworkContainer.setVisibility(View.GONE);
+        	 }
          }
          
         @Override
@@ -235,16 +264,28 @@ public class WebViewWrapper extends FrameLayout implements OnClickListener {
 	        return false;
 	    }
 
-        @Override
+		@Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             //隐藏webview默认的错误提示
             //view.loadUrl("about:blank");//该方法会修改当前的url以及更新url history.在刷新或者goBack()时逻辑不对
             //view.clearView();//该方法无法隐藏默认的提示信息
+            mLoaded=true;
             view.loadUrl("javascript:document.body.innerHTML=\"\"");
-            view.setVisibility(View.GONE);
-            mNetworkErrorContainer.setVisibility(View.VISIBLE);
+            mMainContainer.setVisibility(View.GONE);
+            mLoadingContainer.setVisibility(View.GONE);
+            mNoNetworkContainer.setVisibility(View.VISIBLE);
         }
+
+		@Override
+		public void onPageFinished(WebView view, String url) {
+			super.onPageFinished(view, url);
+			
+			mLoaded=true;
+			mMainContainer.setVisibility(View.VISIBLE);
+            mLoadingContainer.setVisibility(View.GONE);
+            mNoNetworkContainer.setVisibility(View.GONE);
+		}
 	    
 	}
 	
@@ -257,9 +298,11 @@ public class WebViewWrapper extends FrameLayout implements OnClickListener {
         switch (v.getId()) {
         case R.id.ll_network_error:
             //网络异常，点击刷新
+        	mLoaded=false;
             mWebView.reload();
-            mWebView.setVisibility(View.VISIBLE);
-            mNetworkErrorContainer.setVisibility(View.GONE);
+            mMainContainer.setVisibility(View.GONE);
+            mLoadingContainer.setVisibility(View.VISIBLE);
+            mNoNetworkContainer.setVisibility(View.GONE);
             break;        
         }
     }
