@@ -18,6 +18,14 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- 用于评论模块分享位置信息 -->
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <!-- QQ、QQ空间所需权限 -->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <!-- 人人SSO所需权限 -->
+    <uses-permission android:name="android.permission.SET_DEBUG_APP" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
 
     <application
         android:name=".HeHeApplication"
@@ -139,6 +147,10 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
+        
+        <!-- 人人 -->
+        <activity android:name="com.renn.rennsdk.oauth.OAuthActivity" 
+            android:configChanges="orientation|navigation|keyboardHidden"/>
 
         <meta-data
             android:name="UMENG_APPKEY"

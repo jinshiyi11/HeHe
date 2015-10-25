@@ -25,7 +25,6 @@ import com.shuai.hehe.base.ParallelAsyncTask;
 import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.DataManager.OnStarFeedChangedListener;
 import com.shuai.hehe.data.Feed;
-import com.umeng.socialize.controller.RequestType;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
 import com.umeng.socialize.sso.UMSsoHandler;
@@ -137,8 +136,7 @@ public class FavActivity extends BaseActivity implements OnStarFeedChangedListen
     @Override 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share",
-                RequestType.SOCIAL);
+        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
         /**使用SSO授权必须添加如下代码 */
         UMSsoHandler ssoHandler = mController.getConfig().getSsoHandler(requestCode) ;
         if(ssoHandler != null){

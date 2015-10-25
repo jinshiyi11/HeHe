@@ -6,15 +6,16 @@ import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.Stat;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.socialize.bean.SHARE_MEDIA;
-import com.umeng.socialize.controller.RequestType;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
 import com.umeng.socialize.media.UMImage;
 import com.umeng.socialize.media.UMVideo;
 import com.umeng.socialize.media.UMWebPage;
 import com.umeng.socialize.sso.QZoneSsoHandler;
+import com.umeng.socialize.sso.RenrenSsoHandler;
 import com.umeng.socialize.sso.SinaSsoHandler;
-import com.umeng.socialize.sso.UMWXHandler;
+import com.umeng.socialize.sso.UMQQSsoHandler;
+import com.umeng.socialize.weixin.controller.UMWXHandler;
 
 public class SocialUtils {
 
@@ -34,15 +35,33 @@ public class SocialUtils {
         if (!title.equalsIgnoreCase(picDescription))
             content = title + "-" + picDescription;
 
-        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share", RequestType.SOCIAL);
+        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
         // 微信图文分享必须设置一个url 
         String contentUrl = imageUrl;
-        // 添加微信平台，参数1为当前Activity, 参数2为用户申请的AppID, 参数3为点击分享内容跳转到的目标url
-        UMWXHandler wxHandler = mController.getConfig().supportWXPlatform(context,Constants.APP_ID_WEIXIN, contentUrl);
-        wxHandler.setWXTitle(content);
+     
+        // 添加微信平台
+        UMWXHandler wxHandler = new UMWXHandler(context,Constants.APP_ID_WEIXIN,Constants.APP_SECRET_WEIXIN);
+        wxHandler.addToSocialSDK();
         // 支持微信朋友圈
-        UMWXHandler circleHandler = mController.getConfig().supportWXCirclePlatform(context,Constants.APP_ID_WEIXIN, contentUrl) ;
-        circleHandler.setCircleTitle(content);
+        UMWXHandler wxCircleHandler = new UMWXHandler(context,Constants.APP_ID_WEIXIN,Constants.APP_SECRET_WEIXIN);
+        wxCircleHandler.setToCircle(true);
+        wxCircleHandler.addToSocialSDK();
+        
+        //添加QQ在分享列表页中
+        UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(context, Constants.APP_ID_QQ,Constants.APP_KEY_QQ);
+        qqSsoHandler.addToSocialSDK();  
+        
+        //添加Qzone
+        QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(context, Constants.APP_ID_QQ, Constants.APP_KEY_QQ);
+        qZoneSsoHandler.addToSocialSDK();        
+        mController.getConfig().setSsoHandler(qZoneSsoHandler);
+        
+        //添加新浪SSO
+        mController.getConfig().setSsoHandler(new SinaSsoHandler());
+        //添加人人网SSO授权功能       
+        RenrenSsoHandler renrenSsoHandler = new RenrenSsoHandler(context, Constants.APP_ID_RENREN,
+                Constants.APP_KEY_RENREN, Constants.APP_SECRET_RENREN);
+        mController.getConfig().setSsoHandler(renrenSsoHandler);
         
         //设置分享内容
         mController.setShareContent(content);
@@ -50,10 +69,7 @@ public class SocialUtils {
         mController.setShareMedia(new UMImage(context, imageUrl));
 
         //人人网分享时，如果不设置website，点击¨应用名称¨或者¨图片¨将跳转到人人主页；如果设置website将跳转到此website的页面
-        mController.setAppWebSite(SHARE_MEDIA.RENREN, "http://hehedream.duapp.com/");
-        
-        mController.getConfig().setSsoHandler(new QZoneSsoHandler(context, Constants.APP_ID_QQ));
-        mController.getConfig().setSsoHandler(new SinaSsoHandler());
+        mController.setAppWebSite(SHARE_MEDIA.RENREN, "http://hehedream.duapp.com/"); 
 
         //mController.getConfig().removePlatform(SHARE_MEDIA.DOUBAN,SHARE_MEDIA.EMAIL,SHARE_MEDIA.SMS);
 
@@ -65,16 +81,34 @@ public class SocialUtils {
     }
 
     public static void shareVideo(Activity context, String title, String thumbUrl, String videoUrl) {
-        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share", RequestType.SOCIAL);
+        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
         
         // 微信图文分享必须设置一个url 
         String contentUrl = videoUrl;
-        // 添加微信平台，参数1为当前Activity, 参数2为用户申请的AppID, 参数3为点击分享内容跳转到的目标url
-        UMWXHandler wxHandler = mController.getConfig().supportWXPlatform(context,Constants.APP_ID_WEIXIN, contentUrl);
-        wxHandler.setWXTitle(title);
+
+        // 添加微信平台
+        UMWXHandler wxHandler = new UMWXHandler(context,Constants.APP_ID_WEIXIN,Constants.APP_SECRET_WEIXIN);
+        wxHandler.addToSocialSDK();
         // 支持微信朋友圈
-        UMWXHandler circleHandler = mController.getConfig().supportWXCirclePlatform(context,Constants.APP_ID_WEIXIN, contentUrl) ;
-        circleHandler.setCircleTitle(title);
+        UMWXHandler wxCircleHandler = new UMWXHandler(context,Constants.APP_ID_WEIXIN,Constants.APP_SECRET_WEIXIN);
+        wxCircleHandler.setToCircle(true);
+        wxCircleHandler.addToSocialSDK();
+        
+        //添加QQ在分享列表页中
+        UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(context, Constants.APP_ID_QQ,Constants.APP_KEY_QQ);
+        qqSsoHandler.addToSocialSDK();  
+        
+        //添加Qzone
+        QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(context, Constants.APP_ID_QQ, Constants.APP_KEY_QQ);
+        qZoneSsoHandler.addToSocialSDK();        
+        mController.getConfig().setSsoHandler(qZoneSsoHandler);
+        
+        //添加新浪SSO
+        mController.getConfig().setSsoHandler(new SinaSsoHandler());
+        //添加人人网SSO授权功能       
+        RenrenSsoHandler renrenSsoHandler = new RenrenSsoHandler(context, Constants.APP_ID_RENREN,
+                Constants.APP_KEY_RENREN, Constants.APP_SECRET_RENREN);
+        mController.getConfig().setSsoHandler(renrenSsoHandler);
         
         //设置分享内容
         mController.setShareContent(title);
@@ -88,9 +122,6 @@ public class SocialUtils {
 
         //人人网分享时，如果不设置website，点击¨应用名称¨或者¨图片¨将跳转到人人主页；如果设置website将跳转到此website的页面
         mController.setAppWebSite(SHARE_MEDIA.RENREN, "http://hehedream.duapp.com/");
-        
-        mController.getConfig().setSsoHandler(new QZoneSsoHandler(context, Constants.APP_ID_QQ));
-        mController.getConfig().setSsoHandler(new SinaSsoHandler());
 
         //mController.getConfig().removePlatform(SHARE_MEDIA.DOUBAN,SHARE_MEDIA.EMAIL,SHARE_MEDIA.SMS);
 
@@ -103,16 +134,34 @@ public class SocialUtils {
     }
 
     public static void shareBlog(Activity context, String title, String summary, String webUrl) {
-        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share", RequestType.SOCIAL);
+        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
         
         // 微信图文分享必须设置一个url 
         String contentUrl = webUrl;
-        // 添加微信平台，参数1为当前Activity, 参数2为用户申请的AppID, 参数3为点击分享内容跳转到的目标url
-        UMWXHandler wxHandler = mController.getConfig().supportWXPlatform(context,Constants.APP_ID_WEIXIN, contentUrl);
-        wxHandler.setWXTitle(title);
+     
+        // 添加微信平台
+        UMWXHandler wxHandler = new UMWXHandler(context,Constants.APP_ID_WEIXIN,Constants.APP_SECRET_WEIXIN);
+        wxHandler.addToSocialSDK();
         // 支持微信朋友圈
-        UMWXHandler circleHandler = mController.getConfig().supportWXCirclePlatform(context,Constants.APP_ID_WEIXIN, contentUrl) ;
-        circleHandler.setCircleTitle(title);
+        UMWXHandler wxCircleHandler = new UMWXHandler(context,Constants.APP_ID_WEIXIN,Constants.APP_SECRET_WEIXIN);
+        wxCircleHandler.setToCircle(true);
+        wxCircleHandler.addToSocialSDK();
+        
+        //添加QQ在分享列表页中
+        UMQQSsoHandler qqSsoHandler = new UMQQSsoHandler(context, Constants.APP_ID_QQ,Constants.APP_KEY_QQ);
+        qqSsoHandler.addToSocialSDK();  
+        
+        //添加Qzone
+        QZoneSsoHandler qZoneSsoHandler = new QZoneSsoHandler(context, Constants.APP_ID_QQ, Constants.APP_KEY_QQ);
+        qZoneSsoHandler.addToSocialSDK();        
+        mController.getConfig().setSsoHandler(qZoneSsoHandler);
+        
+        //添加新浪SSO
+        mController.getConfig().setSsoHandler(new SinaSsoHandler());
+        //添加人人网SSO授权功能       
+        RenrenSsoHandler renrenSsoHandler = new RenrenSsoHandler(context, Constants.APP_ID_RENREN,
+                Constants.APP_KEY_RENREN, Constants.APP_SECRET_RENREN);
+        mController.getConfig().setSsoHandler(renrenSsoHandler);
         
         //设置分享内容
         mController.setShareContent(title);
@@ -124,9 +173,6 @@ public class SocialUtils {
 
         //人人网分享时，如果不设置website，点击¨应用名称¨或者¨图片¨将跳转到人人主页；如果设置website将跳转到此website的页面
         mController.setAppWebSite(SHARE_MEDIA.RENREN, "http://hehedream.duapp.com/");
-        
-        mController.getConfig().setSsoHandler(new QZoneSsoHandler(context, Constants.APP_ID_QQ));
-        mController.getConfig().setSsoHandler(new SinaSsoHandler());
 
         //mController.getConfig().removePlatform(SHARE_MEDIA.DOUBAN,SHARE_MEDIA.EMAIL,SHARE_MEDIA.SMS);
 

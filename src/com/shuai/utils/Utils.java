@@ -8,9 +8,19 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringBufferInputStream;
+
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.text.StaticLayout;
+import android.util.Log;
+import android.widget.Toast;
+
 import com.shuai.io.StringBufferOutputStream;
 
 public class Utils {
+    private static final String TAG=Utils.class.getSimpleName();
     
     /**
      * 移除java类型注释
@@ -89,6 +99,19 @@ public class Utils {
         }
     }   
 
+    /**
+     * 在浏览器中打开url
+     * @param context
+     * @param url
+     */
+    void openBrowser(Context context,String url){
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            context.startActivity(intent);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
 
 
 }
