@@ -16,6 +16,8 @@ import android.util.AttributeSet;
 import android.webkit.JsPromptResult;
 import android.webkit.WebView;
 
+import com.shuai.hehe.data.Constants;
+
 public class WebViewEx extends WebView {
     private final boolean DEBUG = true;
     private final String VAR_ARG_PREFIX = "arg";
@@ -44,18 +46,24 @@ public class WebViewEx extends WebView {
         init(context);
     }
 
+    @SuppressLint("NewApi")
     private void init(Context context) {
+    	if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT && Constants.DEBUG){
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
         // 删除默认的不安全接口
-        removeSearchBoxJavaBridge();
+        removeUnsafeJavascriptInterface();
     }
 
     @SuppressLint("NewApi")
-    private boolean removeSearchBoxJavaBridge() {
+    private boolean removeUnsafeJavascriptInterface() {
         try {
-            if (hasHoneycomb() && !hasJellyBeanMR1()) {
-                super.removeJavascriptInterface("searchBoxJavaBridge_");
-                return true;
-            }
+        	if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB){
+	            super.removeJavascriptInterface("searchBoxJavaBridge_");
+	            super.removeJavascriptInterface("accessibility");
+	            super.removeJavascriptInterface("accessibilityTraversal");
+        	}
+            return true;
         } catch (Exception e) {
         }
         return false;
@@ -68,9 +76,13 @@ public class WebViewEx extends WebView {
             super.removeJavascriptInterface(interfaceName);
         } else {
             mJsInterfaceMap.remove(interfaceName);
-            mJsStringCache = null;
-            injectJavascriptInterfaces();
+            reloadJavascriptInterfaces();
         }
+    }
+    
+    private void reloadJavascriptInterfaces(){
+    	mJsStringCache = null;
+        injectJavascriptInterfaces();
     }
 
     @Override
@@ -83,6 +95,7 @@ public class WebViewEx extends WebView {
             super.addJavascriptInterface(obj, interfaceName);
         } else {
             mJsInterfaceMap.put(interfaceName, obj);
+            reloadJavascriptInterfaces();
         }
     }
 
@@ -114,7 +127,7 @@ public class WebViewEx extends WebView {
                     args = new Object[count];
 
                     for (int i = 0; i < count; ++i) {
-                        args[i] = argsArray.get(i);
+                        args[i] = (argsArray.get(i)==JSONObject.NULL?null:argsArray.get(i));
                     }
                 }
             }
@@ -170,6 +183,9 @@ public class WebViewEx extends WebView {
     }
 
     private Class<?> getClassFromJsonObject(Object obj) {
+    	if(obj==null)
+    		return String.class;
+    	
         Class<?> cls = obj.getClass();
 
         // js对象只支持int boolean string三种类型

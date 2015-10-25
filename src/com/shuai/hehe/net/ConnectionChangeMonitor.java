@@ -1,8 +1,5 @@
 package com.shuai.hehe.net;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,31 +7,32 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import de.greenrobot.event.EventBus;
 
+/**
+ * 网络连接或断开监听类
+ */
 public class ConnectionChangeMonitor extends BroadcastReceiver {
+	
+	/**
+	 * 网络连接或断开通知事件
+	 */
+	public static class EventConnectionChange{
+		private boolean mConnected;
+		
+		EventConnectionChange(boolean connected){
+			mConnected=connected;
+		}
+		
+		public boolean isConnected(){
+			return mConnected;
+		}
+	}
+	
 	private Context mContext;
-	private List<ConnectionChangeListener> mConnectionChangeListeners=new LinkedList<ConnectionChangeListener>();
 	
 	private boolean mConnectedSent=false;//CONNECTIVITY_ACTION有时会多次触发，使用该标记过滤多余的通知
 	private boolean mDisconnectedSent=false;//CONNECTIVITY_ACTION有时会多次触发，使用该标记过滤多余的通知
-	
-	public interface ConnectionChangeListener{
-		void onConnectionChanged(boolean connected);
-	}
-	
-	public void addConnectionChangeListener(ConnectionChangeListener listener) {
-		mConnectionChangeListeners.add(listener);
-	}
-
-	public void removeConnectionChangeListener(ConnectionChangeListener listener) {
-		mConnectionChangeListeners.remove(listener);
-	}
-
-	private void notifyConnectionChange(boolean result) {		
-		for (ConnectionChangeListener listener : mConnectionChangeListeners) {
-			listener.onConnectionChanged(result);
-		}
-	}
 	
 	public ConnectionChangeMonitor(Context appContext) {
 		if(!(appContext instanceof Application)){
@@ -66,14 +64,16 @@ public class ConnectionChangeMonitor extends BroadcastReceiver {
 			if(!mConnectedSent){
 				mConnectedSent=true;
 				mDisconnectedSent=false;
-				notifyConnectionChange(true);
+				
+				EventBus.getDefault().post(new EventConnectionChange(true));
 			}
 			
 		}else{
 			if(!mDisconnectedSent){
 				mDisconnectedSent=true;
 				mConnectedSent=false;
-				notifyConnectionChange(false);
+				
+				EventBus.getDefault().post(new EventConnectionChange(false));
 			}
 			
 		}
