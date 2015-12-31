@@ -21,6 +21,14 @@ import com.shuai.io.StringBufferOutputStream;
 
 public class Utils {
     private static final String TAG=Utils.class.getSimpleName();
+
+    public static void showShortToast(Context context, String text) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showLongToast(Context context, String text) {
+        Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+    }
     
     /**
      * 移除java类型注释

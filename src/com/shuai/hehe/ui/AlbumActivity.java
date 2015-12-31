@@ -136,7 +136,8 @@ public class AlbumActivity extends BaseActivity {
             {
                 //分享
                 PicInfo info = mPicInfos.get(mViewPager.getCurrentItem());
-                SocialUtils.sharePic((Activity) mContext, mFeed.getTitle(),info.getPicDescription(), info.getBigPicUrl());
+                String link="http://hehedream.duapp.com/album.jsp?feedid="+mFeed.getId();
+                SocialUtils.shareLink((Activity) mContext, mFeed.getTitle(),info.getPicDescription(),link, info.getBigPicUrl());
                 break;
             }
             case R.id.tv_set_as_wallpaper:
