@@ -1,8 +1,6 @@
-/bin
-/gen
-/third/social_sdk_library_project_3.3.6/assets
-/third/social_sdk_library_project_3.3.6/bin
-/third/social_sdk_library_project_3.3.6/gen
-/proguard
-/third/social_sdk_library_project_4.2.4/bin
-/third/social_sdk_library_project_4.2.4/gen
+/.idea
+/build
+/.gradle
+/heHe/build
+/heHePullToRefresh/build
+/social_sdk_library_project/build
