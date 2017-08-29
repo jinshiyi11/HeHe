@@ -32,8 +32,8 @@
 
         <ImageView
             android:id="@+id/iv_thumb"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="match_parent"
+            android:layout_height="195dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="8dp"
             android:scaleType="fitCenter" />

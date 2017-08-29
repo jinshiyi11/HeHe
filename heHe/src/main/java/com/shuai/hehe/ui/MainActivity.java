@@ -17,6 +17,7 @@ import com.shuai.base.view.PopUpMenuButton;
 import com.shuai.base.view.PopUpMenuButton.OnMenuListener;
 import com.shuai.hehe.R;
 import com.shuai.utils.DisplayUtils;
+import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.umeng.fb.FeedbackAgent;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
@@ -94,6 +95,10 @@ public class MainActivity extends BaseFragmentActivity implements OnClickListene
 	
 	@Override
     public void onBackPressed() {
+		if (StandardGSYVideoPlayer.backFromWindowFull(this)) {
+			return;
+		}
+
 	    if(System.currentTimeMillis()-mLastBackPressedTime>2000){
 	        mLastBackPressedTime=System.currentTimeMillis();
 	        Toast.makeText(mContext, R.string.one_more_exit, Toast.LENGTH_SHORT).show();

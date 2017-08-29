@@ -1,40 +1,64 @@
 package com.shuai.hehe.protocol;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
-
-import android.app.Application;
 import android.content.Context;
-import android.os.Looper;
+import android.util.Pair;
 
 import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.DataManager;
 import com.shuai.utils.AppUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * 协议url辅助拼接类
  */
 public class UrlHelper {	
-	private static String getUrl(String relativePath, List<BasicNameValuePair> params) {
+	private static String getUrl(String relativePath, List<Pair<String,String>> params) {
 		StringBuilder builder = new StringBuilder(Constants.SERVER_ADDRESS);
 		builder.append("/").append(relativePath);
-		String query = params == null ? "" : URLEncodedUtils.format(params, "UTF-8");
+		String query = params == null ? "" : format(params, "UTF-8");
 		if (query.length() != 0)
 			builder.append("?").append(query);
 
 		return builder.toString();
+	}
+
+	private static String format (
+			final List <Pair<String,String>> parameters,
+			final String encoding) {
+		final StringBuilder result = new StringBuilder();
+		for (final Pair<String,String> parameter : parameters) {
+			final String encodedName = encode(parameter.first, encoding);
+			final String value = parameter.second;
+			final String encodedValue = value != null ? encode(value, encoding) : "";
+			if (result.length() > 0)
+				result.append("&");
+			result.append(encodedName);
+			result.append("=");
+			result.append(encodedValue);
+		}
+		return result.toString();
+	}
+
+	private static String encode (final String content, final String encoding) {
+		try {
+			return URLEncoder.encode(content,
+					encoding != null ? encoding : "UTF-8");
+		} catch (UnsupportedEncodingException problem) {
+			throw new IllegalArgumentException(problem);
+		}
 	}
 	
 	/**
 	 * 增加公共参数，如版本号，防止恶意攻击的hash等
 	 * @param params
 	 */
-	private static void addCommonParameters(Context context,List<BasicNameValuePair> params){
-	    params.add(new BasicNameValuePair("ver", Constants.PROTOCOL_VERSION));
-	    params.add(new BasicNameValuePair("channel", AppUtils.getChannel(context)));
+	private static void addCommonParameters(Context context,List<Pair<String, String>> params){
+	    params.add(new Pair("ver", Constants.PROTOCOL_VERSION));
+	    params.add(new Pair("channel", AppUtils.getChannel(context)));
 	}
 
 	/**
@@ -44,11 +68,11 @@ public class UrlHelper {
 	 * @return
 	 */
 	public static String getFeedsUrl(Context context,long id, int count) {
-		List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-		params.add(new BasicNameValuePair("id", Long.toString(id)));
-		params.add(new BasicNameValuePair("count", Integer.toString(count)));
+		List<Pair<String, String>> params = new LinkedList<>();
+		params.add(new Pair<>("id", Long.toString(id)));
+		params.add(new Pair<>("count", Integer.toString(count)));
 		if(DataManager.getInstance().isAdmin()){
-		    params.add(new BasicNameValuePair(Constants.ADMIN_KEY, DataManager.getInstance().getAdminKey()));
+		    params.add(new Pair(Constants.ADMIN_KEY, DataManager.getInstance().getAdminKey()));
 		}
 		addCommonParameters(context,params);
 
@@ -61,17 +85,17 @@ public class UrlHelper {
 	 * @return
 	 */
     public static String getAlbumPicsUrl(Context context,long feedId) {
-        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-        params.add(new BasicNameValuePair("feedid", Long.toString(feedId)));
+        List<Pair<String, String>> params = new LinkedList<>();
+        params.add(new Pair("feedid", Long.toString(feedId)));
         addCommonParameters(context,params);
 
         return getUrl("getalbumpics", params);
     }
     
     public static String getHideFeedUrl(Context context,long feedId) {
-        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-        params.add(new BasicNameValuePair("feedid", Long.toString(feedId)));
-        params.add(new BasicNameValuePair(Constants.ADMIN_KEY, DataManager.getInstance().getAdminKey()));
+        List<Pair<String, String>> params = new LinkedList<>();
+        params.add(new Pair("feedid", Long.toString(feedId)));
+        params.add(new Pair(Constants.ADMIN_KEY, DataManager.getInstance().getAdminKey()));
         addCommonParameters(context,params);
 
         return getUrl("hidefeed", params);
@@ -84,8 +108,8 @@ public class UrlHelper {
      * @return
      */
     public static String getBlogUrl(Context context,long feedId,boolean getHtml) {
-        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-        params.add(new BasicNameValuePair("feedid", Long.toString(feedId)));
+        List<Pair<String, String>> params = new LinkedList<>();
+        params.add(new Pair("feedid", Long.toString(feedId)));
         addCommonParameters(context,params);
 
         return getUrl("getblog", params);
@@ -97,11 +121,18 @@ public class UrlHelper {
      * @return
      */
     public static String getVideoUrl(Context context,String webUrl) {
-        List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-        params.add(new BasicNameValuePair("web_url", webUrl));
+        List<Pair<String, String>> params = new LinkedList<>();
+        params.add(new Pair("web_url", webUrl));
         addCommonParameters(context,params);
         
         return getUrl("get_video_url", params);
     }
 
+    public static String getVideoDetailUrl(Context context, String videoId) {
+        List<Pair<String, String>> params = new LinkedList<>();
+        params.add(new Pair("video_id", videoId));
+        addCommonParameters(context,params);
+
+        return getUrl("get_video_detail", params);
+    }
 }

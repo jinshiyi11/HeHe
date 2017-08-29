@@ -25,7 +25,7 @@ import com.shuai.hehe.data.PicInfo;
  * 取相册包含的所有图片
  */
 public class GetAlbumPicsRequest extends JsonRequest<ArrayList<PicInfo>> {
-    private final String TAG=getClass().getSimpleName();
+    private static final String TAG=GetAlbumPicsRequest.class.getSimpleName();
 
     /**
      * 

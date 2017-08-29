@@ -31,14 +31,15 @@
             android:textSize="@dimen/feed_title_size" />
 
         <RelativeLayout
+            android:id="@+id/rl_feed_video"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp" >
+            android:layout_marginBottom="8dp">
 
             <ImageView
                 android:id="@+id/iv_thumb"
-                android:layout_width="250dp"
-                android:layout_height="250dp"
+                android:layout_width="match_parent"
+                android:layout_height="195dp"
                 android:layout_centerInParent="true"
                 android:scaleType="fitCenter" />
 

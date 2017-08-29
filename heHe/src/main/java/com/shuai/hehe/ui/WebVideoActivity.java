@@ -3,9 +3,6 @@ package com.shuai.hehe.ui;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.http.Header;
-import org.apache.http.message.BasicHeader;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +25,9 @@ import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
 import com.shuai.utils.StorageUtils;
 import com.shuai.utils.Utils;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.message.BasicHeader;
 
 /**
  * 播放网页中的视频，并通过js脚本屏蔽非视频相关的html元素

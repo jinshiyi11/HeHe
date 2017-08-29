@@ -70,7 +70,7 @@
             android:dividerHeight="6dp"
             android:fadingEdge="none"
             android:scrollbars="vertical"
-            android:fastScrollEnabled="true"
+            android:fastScrollEnabled="false"
             pulltorefresh:ptrShowIndicator="false"
              />
     </LinearLayout>

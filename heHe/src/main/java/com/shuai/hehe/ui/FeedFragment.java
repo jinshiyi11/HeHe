@@ -31,6 +31,8 @@ import com.shuai.hehe.data.DataManager.OnStarFeedChangedListener;
 import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.protocol.GetFeedsRequest;
 import com.shuai.hehe.protocol.ProtocolError;
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
+import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 import com.umeng.analytics.MobclickAgent;
 
 public class FeedFragment extends Fragment implements OnStarFeedChangedListener {
@@ -124,11 +126,26 @@ public class FeedFragment extends Fragment implements OnStarFeedChangedListener 
     
     @Override
 	public void onDestroyView() {
+        GSYVideoPlayer.releaseAllVideos();
         mDataManager.removeStarFeedChangedListener(this);
     	mRequestQueue.cancelAll(this);
 		super.onDestroyView();
 	}
-    
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        GSYVideoManager.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        GSYVideoManager.onPause();
+    }
+
+
+
     private void setStatus(Status status) {
         mStatus = status;
         switch (status) {
