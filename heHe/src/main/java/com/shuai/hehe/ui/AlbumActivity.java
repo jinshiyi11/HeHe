@@ -32,9 +32,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+import com.android.volley.toolbox.ImageLoader;
 import com.shuai.base.view.BaseActivity;
 import com.shuai.base.view.ExpandableTextView;
 import com.shuai.base.view.PopUpMenuButton;
@@ -144,75 +142,75 @@ public class AlbumActivity extends BaseActivity {
             {
                 //设为壁纸
                 PicInfo info = mPicInfos.get(mViewPager.getCurrentItem());
-                ImageLoader.getInstance().loadImage(info.getBigPicUrl(), new ImageLoadingListener() {
-
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        Toast.makeText(mContext, R.string.set_wallpaper_failed, Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        try {
-                            WallpaperUtils.setWallper(mContext, loadedImage);
-                            Toast.makeText(mContext, R.string.set_wallpaper_success, Toast.LENGTH_SHORT).show();
-                        } catch (IOException e) {
-                            //TODO:log it
-                            e.printStackTrace();
-                            Toast.makeText(mContext, R.string.set_wallpaper_failed, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
-                    }
-                    
-                });
+//                ImageLoader.getInstance().loadImage(info.getBigPicUrl(), new ImageLoadingListener() {
+//
+//                    @Override
+//                    public void onLoadingStarted(String imageUri, View view) {
+//                    }
+//
+//                    @Override
+//                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+//                        Toast.makeText(mContext, R.string.set_wallpaper_failed, Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                        try {
+//                            WallpaperUtils.setWallper(mContext, loadedImage);
+//                            Toast.makeText(mContext, R.string.set_wallpaper_success, Toast.LENGTH_SHORT).show();
+//                        } catch (IOException e) {
+//                            //TODO:log it
+//                            e.printStackTrace();
+//                            Toast.makeText(mContext, R.string.set_wallpaper_failed, Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onLoadingCancelled(String imageUri, View view) {
+//                    }
+//
+//                });
                 break;
             }
             case R.id.tv_download_pic:
             {
                 //下载图片
                 PicInfo info = mPicInfos.get(mViewPager.getCurrentItem());
-                ImageLoader.getInstance().loadImage(info.getBigPicUrl(), new ImageLoadingListener() {
-                    
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                    }
-                    
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                        Toast.makeText(mContext, getString(R.string.pic_save_failed, failReason.getType().toString()), Toast.LENGTH_SHORT).show();
-                    }
-                    
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        File imageFile = ImageLoader.getInstance().getDiscCache().get(imageUri);
-                        
-                        File saveFile=new File(StorageUtils.getMyPicturesDirectory(),mFeed.getType()+"_"+Uri.parse(imageUri).getLastPathSegment());
-                        try {
-                            StorageUtils.copyFile(imageFile, saveFile);
-                            
-                            Toast.makeText(mContext, getString(R.string.pic_save_success, saveFile.getAbsolutePath()), Toast.LENGTH_SHORT).show();
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                            Toast.makeText(mContext, getString(R.string.pic_save_failed, ""), Toast.LENGTH_SHORT).show();
-                        }
-
-                        // Tell the media scanner about the new file so that it is
-                        // immediately available to the user.
-                        MediaScannerConnection.scanFile(mContext, new String[] { saveFile.toString() }, null, null);
-                    }
-                    
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
-                    }
-                });
+//                ImageLoader.getInstance().loadImage(info.getBigPicUrl(), new ImageLoadingListener() {
+//
+//                    @Override
+//                    public void onLoadingStarted(String imageUri, View view) {
+//                    }
+//
+//                    @Override
+//                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+//                        Toast.makeText(mContext, getString(R.string.pic_save_failed, failReason.getType().toString()), Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                        File imageFile = ImageLoader.getInstance().getDiscCache().get(imageUri);
+//
+//                        File saveFile=new File(StorageUtils.getMyPicturesDirectory(),mFeed.getType()+"_"+Uri.parse(imageUri).getLastPathSegment());
+//                        try {
+//                            StorageUtils.copyFile(imageFile, saveFile);
+//
+//                            Toast.makeText(mContext, getString(R.string.pic_save_success, saveFile.getAbsolutePath()), Toast.LENGTH_SHORT).show();
+//                        } catch (IOException e) {
+//                            // TODO Auto-generated catch block
+//                            e.printStackTrace();
+//                            Toast.makeText(mContext, getString(R.string.pic_save_failed, ""), Toast.LENGTH_SHORT).show();
+//                        }
+//
+//                        // Tell the media scanner about the new file so that it is
+//                        // immediately available to the user.
+//                        MediaScannerConnection.scanFile(mContext, new String[] { saveFile.toString() }, null, null);
+//                    }
+//
+//                    @Override
+//                    public void onLoadingCancelled(String imageUri, View view) {
+//                    }
+//                });
 
                 break;
             }

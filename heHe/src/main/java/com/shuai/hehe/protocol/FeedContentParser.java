@@ -17,9 +17,9 @@ public class FeedContentParser {
     
     public static void parseVideoFeedContent(VideoFeed feed,String content) throws JSONException{
         JSONObject json = new JSONObject(content);
-        feed.setFlashVideoUrl(json.getString("flashVideoUrl"));
-        feed.setWebVideoUrl(json.getString("webVideoUrl"));
-        feed.setThumbImgUrl(json.getString("videoThumbUrl"));
+        feed.setFlashVideoUrl(json.optString("flashVideoUrl"));
+        feed.setWebVideoUrl(json.optString("webVideoUrl"));
+        feed.setThumbImgUrl(json.optString("videoThumbUrl"));
         
     }
 

@@ -13,7 +13,7 @@ import android.util.Log;
 import com.jakewharton.disklrucache.DiskLruCache;
 import com.jakewharton.disklrucache.DiskLruCache.Editor;
 import com.jakewharton.disklrucache.DiskLruCache.Snapshot;
-import com.nostra13.universalimageloader.utils.StorageUtils;
+import com.shuai.utils.StorageUtils;
 
 public class CacheManager {
 	private static final String TAG=CacheManager.class.getSimpleName();
@@ -21,6 +21,8 @@ public class CacheManager {
 	private static final String HTTP_RESPONSE_CACHE_DIR = "http_cache";
 	private static DiskLruCache mDiskLruCache;
 	private static CacheManager mSelf;
+
+
 
 	public static void init(Context appContext) {
 		try {

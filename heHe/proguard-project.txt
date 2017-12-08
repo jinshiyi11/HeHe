@@ -40,6 +40,22 @@
 
 -keep class com.shuai.hehe.data.PicInfo {*;}
 
+#glide
+-keep class com.bumptech.glide.GeneratedAppGlideModuleImpl
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+
+#okhttp
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+# A resource is loaded with a relative path so the package of this class must be preserved.
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+
 #-libraryjars libs/SocialSDK_QQZone_1.jar
 #-libraryjars libs/SocialSDK_QQZone_2.jar
 -keep interface com.umeng.** {*;}

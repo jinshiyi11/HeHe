@@ -96,8 +96,8 @@ public class Constants {
 
     static {
         if (!SERVER_ONLINE) {
-            SERVER_ADDRESS = "http://10.0.2.2:8080/hehe_server";
-            VIDEO_JS_URL = "http://10.0.2.2:8080/hehe_server/js/"+VIDEO_JS_FILENAME;
+            SERVER_ADDRESS = "http://192.168.1.101:8080";
+            VIDEO_JS_URL = "http://192.168.1.101:8080/js/"+VIDEO_JS_FILENAME;
         } else {
             //SERVER_ADDRESS = "http://hehe1.sinaapp.com";
         	SERVER_ADDRESS = "http://hehedream.duapp.com";
