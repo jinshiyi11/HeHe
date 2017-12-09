@@ -35,9 +35,9 @@ public class MyActivity extends BaseFragmentActivity {
     private List<TabsAdapter.TabInfo> getTabInfos(){
         List<TabsAdapter.TabInfo> list=new ArrayList<>();
         list.add(new TabsAdapter.TabInfo("视频",R.drawable.tab_followed,FeedFragment.class,null));
-        list.add(new TabsAdapter.TabInfo("图片",R.drawable.tab_followed,FeedFragment.class,null));
-        list.add(new TabsAdapter.TabInfo("收藏",R.drawable.tab_followed,FeedFragment.class,null));
-        list.add(new TabsAdapter.TabInfo("我的",R.drawable.tab_followed,FeedFragment.class,null));
+        list.add(new TabsAdapter.TabInfo("图片",R.drawable.tab_market,FeedFragment.class,null));
+        list.add(new TabsAdapter.TabInfo("收藏",R.drawable.tab_news,FeedFragment.class,null));
+        list.add(new TabsAdapter.TabInfo("我的",R.drawable.tab_user,FeedFragment.class,null));
         return list;
     }
 }

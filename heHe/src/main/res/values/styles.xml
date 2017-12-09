@@ -1,8 +1,11 @@
 <resources>
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="BaseAppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">#673AB7</item>
+        <item name="colorPrimaryDark">#512DA8</item>
+        <item name="colorAccent">#FF4081</item>
     </style>
+
+    <style name="AppTheme" parent="BaseAppTheme"/>
     
     <style name="MoreMenuItemStyle">
         <item name="android:layout_width">match_parent</item>

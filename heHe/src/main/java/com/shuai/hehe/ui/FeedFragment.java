@@ -6,6 +6,8 @@ import java.util.Iterator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,7 @@ import com.umeng.analytics.MobclickAgent;
 
 public class FeedFragment extends Fragment implements OnStarFeedChangedListener {
 	private Context mContext;
+	private Toolbar mToolbar;
     private ViewGroup mNoNetworkContainer;
     private ViewGroup mLoadingContainer;
     private ViewGroup mMainContainer;
@@ -88,7 +91,11 @@ public class FeedFragment extends Fragment implements OnStarFeedChangedListener 
         mContext=getActivity();
         mRequestQueue=HeHeApplication.getRequestQueue();
         mDataManager=DataManager.getInstance();
-        
+
+        mToolbar=view.findViewById(R.id.toolbar);
+//        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
+//        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mNoNetworkContainer=(ViewGroup) view.findViewById(R.id.no_network_container);
         mLoadingContainer=(ViewGroup) view.findViewById(R.id.loading_container);
         mMainContainer=(ViewGroup) view.findViewById(R.id.main_container);
