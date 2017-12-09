@@ -7,7 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,12 +28,17 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageLoadingListener;
+import com.android.volley.toolbox.ImageLoader;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.shuai.base.view.FlipImageView;
 import com.shuai.base.view.FlipImageView.OnFlipListener;
+import com.shuai.hehe.GlideApp;
 import com.shuai.hehe.HeHeApplication;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.AlbumFeed;
@@ -52,18 +59,17 @@ import com.shuai.utils.FeedUtil;
 import com.shuai.utils.SocialUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FeedAdapter extends ArrayAdapter<Feed> {
+    private static final String TAG=FeedAdapter.class.getSimpleName();
     private Context mContext;
     private FeedList mFeeds;
     private LayoutInflater mInflater;
-    private DisplayImageOptions mDisplayImageOptions;
-    //缩略图加载监听器
-    private ImageLoadingListener mThumbLoadingListener;
     private int mLastPosition = -1;
     private VideoViewHolder mPlayingVideoHolder;
     private DataManager mDataManager = DataManager.getInstance();
@@ -197,70 +203,70 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
     }
 
     private void init() {
-        mDisplayImageOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisc(true)
-                .showImageOnLoading(new ColorDrawable(0xffcccccc))
-                .showImageOnFail(R.drawable.ic_image_load_failed)
-                .build();
-
-        mThumbLoadingListener = new ImageLoadingListener() {
-            private int mDefaultHeight = -1;
-            private double mDefaultRatio = -1;
-
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                //如果记录过item的展示高度，直接设置其高度，防止加载完成后高度变化导致闪动
-                Integer height = mHeightCache.get(imageUri);
-                if (height != null) {
-                    LayoutParams layoutParams = view.getLayoutParams();
-                    layoutParams.height = height;
-                    view.setLayoutParams(layoutParams);
-                }
-            }
-
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-            }
-
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                if (loadedImage == null) {
-                    return;
-                }
-                //修改imageview的高度，使上下不出现空白
-                LayoutParams layoutParams = view.getLayoutParams();
-                int viewWidth = view.getWidth();
-                int oldHeight = layoutParams.height;
-                if (mDefaultHeight < 0) {
-                    mDefaultHeight = view.getHeight();
-                    mDefaultRatio = viewWidth / mDefaultHeight;
-                }
-
-                int newHeight;
-                if (((double) loadedImage.getWidth()) / loadedImage.getHeight() > mDefaultRatio) {
-                    newHeight = (int) (loadedImage.getHeight() * viewWidth / (double) loadedImage.getWidth());
-                } else {
-                    newHeight = mDefaultHeight;
-                }
-
-                if (oldHeight != newHeight) {
-                    layoutParams.height = newHeight;
-                    view.setLayoutParams(layoutParams);
-                }
-
-                if (!mHeightCache.containsKey(imageUri)) {
-                    mHeightCache.put(imageUri, newHeight);
-                }
-            }
-
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
-                // TODO Auto-generated method stub
-
-            }
-        };
+//        mDisplayImageOptions = new DisplayImageOptions.Builder()
+//                .cacheInMemory(true)
+//                .cacheOnDisc(true)
+//                .showImageOnLoading(new ColorDrawable(0xffcccccc))
+//                .showImageOnFail(R.drawable.ic_image_load_failed)
+//                .build();
+//
+//        mThumbLoadingListener = new ImageLoadingListener() {
+//            private int mDefaultHeight = -1;
+//            private double mDefaultRatio = -1;
+//
+//            @Override
+//            public void onLoadingStarted(String imageUri, View view) {
+//                //如果记录过item的展示高度，直接设置其高度，防止加载完成后高度变化导致闪动
+//                Integer height = mHeightCache.get(imageUri);
+//                if (height != null) {
+//                    LayoutParams layoutParams = view.getLayoutParams();
+//                    layoutParams.height = height;
+//                    view.setLayoutParams(layoutParams);
+//                }
+//            }
+//
+//            @Override
+//            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+//
+//            }
+//
+//            @Override
+//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                if (loadedImage == null) {
+//                    return;
+//                }
+//                //修改imageview的高度，使上下不出现空白
+//                LayoutParams layoutParams = view.getLayoutParams();
+//                int viewWidth = view.getWidth();
+//                int oldHeight = layoutParams.height;
+//                if (mDefaultHeight < 0) {
+//                    mDefaultHeight = view.getHeight();
+//                    mDefaultRatio = viewWidth / mDefaultHeight;
+//                }
+//
+//                int newHeight;
+//                if (((double) loadedImage.getWidth()) / loadedImage.getHeight() > mDefaultRatio) {
+//                    newHeight = (int) (loadedImage.getHeight() * viewWidth / (double) loadedImage.getWidth());
+//                } else {
+//                    newHeight = mDefaultHeight;
+//                }
+//
+//                if (oldHeight != newHeight) {
+//                    layoutParams.height = newHeight;
+//                    view.setLayoutParams(layoutParams);
+//                }
+//
+//                if (!mHeightCache.containsKey(imageUri)) {
+//                    mHeightCache.put(imageUri, newHeight);
+//                }
+//            }
+//
+//            @Override
+//            public void onLoadingCancelled(String imageUri, View view) {
+//                // TODO Auto-generated method stub
+//
+//            }
+//        };
 
     }
 
@@ -456,7 +462,11 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
 
         holder.feed = feed;
         holder.mTvTitle.setText(info.getTitle());
-        ImageLoader.getInstance().displayImage(info.getThumbImgUrl(), holder.mIvThumb, mDisplayImageOptions, mThumbLoadingListener);
+        GlideApp.with(mContext)
+                .load(info.getThumbImgUrl())
+                .error(R.drawable.ic_image_load_failed)
+                .placeholder(new ColorDrawable(0xffcccccc))
+                .into(holder.mIvThumb);
 
         holder.mIvThumb.setOnClickListener(new OnClickListener() {
 
@@ -498,6 +508,14 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
 
             @Override
             public void onClick(View v) {
+                GlideApp.with(mContext)
+                        .asFile()
+                        .load(info.getThumbImgUrl()).into(new SimpleTarget<File>() {
+                    @Override
+                    public void onResourceReady(File resource, Transition<? super File> transition) {
+                        Log.d(TAG,"xx");
+                    }
+                });
                 SocialUtils.shareVideo((Activity) mContext, info.getTitle(), info.getThumbImgUrl(), info.getWebVideoUrl());
             }
 
@@ -550,7 +568,11 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
 
         holder.feed = feed;
         holder.mTvTitle.setText(info.getTitle());
-        ImageLoader.getInstance().displayImage(info.getBigImgUrl(), holder.mIvThumb, mDisplayImageOptions, mThumbLoadingListener);
+        GlideApp.with(mContext)
+                .load(info.getBigImgUrl())
+                .error(R.drawable.ic_image_load_failed)
+                .placeholder(new ColorDrawable(0xffcccccc))
+                .into(holder.mIvThumb);
 
         holder.mIvThumb.setOnClickListener(new OnClickListener() {
 

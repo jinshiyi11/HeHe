@@ -1,11 +1,11 @@
 package com.shuai.base.view;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.umeng.analytics.MobclickAgent;
 
-public class BaseFragmentActivity extends FragmentActivity {
+public class BaseFragmentActivity extends AppCompatActivity {
     protected Context mContext;
 
     public BaseFragmentActivity() {
