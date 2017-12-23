@@ -1,9 +1,13 @@
 package com.shuai.hehe.protocol;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.Pair;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -15,6 +19,8 @@ import com.android.volley.toolbox.JsonRequest;
 import com.google.gson.Gson;
 import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.VideoInfo;
+
+import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 /**
  * 根据视频的web url获取对应的视频流文件的url
@@ -30,10 +36,23 @@ public class GetVideoUrlRequest extends JsonRequest<VideoInfo> {
      */
     public GetVideoUrlRequest(Context context,String webUrl, Listener<VideoInfo> listener,
             ErrorListener errorListener) {
-        super(Method.GET, UrlHelper.getVideoUrl(context,webUrl), null, listener, errorListener);
+        super(Method.GET, getUrl(context,webUrl), null, listener, errorListener);
         if (Constants.DEBUG) {
-            Log.d(TAG, UrlHelper.getVideoUrl(context,webUrl));
+            Log.d(TAG, getUrl(context,webUrl));
         }
+    }
+
+    /**
+     * 根据视频的web url获取对应的视频信息
+     *
+     * @param webUrl
+     * @return
+     */
+    private static String getUrl(Context context, String webUrl) {
+        List<BasicNameValuePair> params = new LinkedList<>();
+        params.add(new BasicNameValuePair("webUrl", webUrl));
+
+        return UrlHelper.getUrl(context,"api/getVideoUrl", params);
     }
 
     @Override

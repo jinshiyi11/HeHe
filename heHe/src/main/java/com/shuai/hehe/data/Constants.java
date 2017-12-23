@@ -5,7 +5,12 @@ public class Constants {
     /**
      * 是使用线上服务还是开发环境的服务
      */
-    public static boolean SERVER_ONLINE = true;
+    public static boolean SERVER_ONLINE = false;
+
+    /**
+     * 标明请求来自android客户端
+     */
+    public static final String DEVICE_INFO = "android";
     
     /**
      * jsoup的USER_AGENT
@@ -92,15 +97,31 @@ public class Constants {
      * renren app secret
      */
     public static final String APP_SECRET_RENREN = "84353fbcbe624317a17f47870e87457b";
+
+    /**
+     * 因为注册和找回密码很相似，所以使用同一activity实现，通过该参数控制是显示注册页面还是找回密码页面
+     */
+    public static final String EXTRA_IS_FIND_APSSWORD = "extra_is_find_password";
+
+    /**
+     * 注册和修改也共用同一个界面
+     */
+    public static final String EXTRA_IS_MODIFY_APSSWORD = "extra_is_modify_password";
+
+    /**
+     * 登录成功后要执行的intent
+     */
+    public static final String EXTRA_LOGIN_TARGET_INTENT = "extra_login_target_intent";
     
 
     static {
         if (!SERVER_ONLINE) {
-            SERVER_ADDRESS = "http://192.168.1.101:8080";
+            SERVER_ADDRESS = "http://192.168.1.101:8082";
             VIDEO_JS_URL = "http://192.168.1.101:8080/js/"+VIDEO_JS_FILENAME;
         } else {
             //SERVER_ADDRESS = "http://hehe1.sinaapp.com";
-        	SERVER_ADDRESS = "http://hehedream.duapp.com";
+        	//SERVER_ADDRESS = "http://hehedream.duapp.com";
+            SERVER_ADDRESS = "http://39.106.50.167/hehe";
         	VIDEO_JS_URL= "http://bcs.duapp.com/hehe-data/"+VIDEO_JS_FILENAME;
         }
     }

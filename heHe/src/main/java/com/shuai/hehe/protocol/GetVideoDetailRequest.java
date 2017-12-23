@@ -3,6 +3,7 @@ package com.shuai.hehe.protocol;
 import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
+import android.util.Pair;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -15,6 +16,10 @@ import com.shuai.hehe.data.VideoDetail;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.LinkedList;
+import java.util.List;
+
+import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 /**
  * 获取视频详细信息
@@ -24,10 +29,17 @@ public class GetVideoDetailRequest extends JsonRequest<VideoDetail> {
     private static final String TAG = GetVideoDetailRequest.class.getSimpleName();
 
     public GetVideoDetailRequest(Context context, String videoId, Response.Listener<VideoDetail> listener, Response.ErrorListener errorListener) {
-        super(Method.GET, UrlHelper.getVideoDetailUrl(context, videoId), null, listener, errorListener);
+        super(Method.GET, getUrl(context, videoId), null, listener, errorListener);
         if (Constants.DEBUG) {
-            Log.d(TAG, UrlHelper.getVideoDetailUrl(context, videoId));
+            Log.d(TAG, getUrl(context, videoId));
         }
+    }
+
+    private static String getUrl(Context context, String videoId) {
+        List<BasicNameValuePair> params = new LinkedList<>();
+        params.add(new BasicNameValuePair("videoId", videoId));
+
+        return UrlHelper.getUrl(context,"api/getVideoDetail", params);
     }
 
     @Override
@@ -41,7 +53,9 @@ public class GetVideoDetailRequest extends JsonRequest<VideoDetail> {
             JSONObject json = new JSONObject(jsonString);
             int code = json.getInt("code");
             if (code != 0) {
-                return Response.error(new ParseError());
+                //code如果为1表示"未通过审核，视频无法播放"
+                String message=json.optString("message");
+                return Response.error(new ErrorInfo(ErrorInfo.ERROR_DATA,message));
             }
 
             JSONObject dataJson=json.getJSONObject("data");

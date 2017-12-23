@@ -24,12 +24,12 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.android.volley.RequestQueue;
-import com.shuai.base.view.BaseActivity;
 import com.shuai.base.view.WebViewEx;
 import com.shuai.base.view.WebViewWrapper;
 import com.shuai.hehe.HeHeApplication;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
+import com.shuai.hehe.ui.base.BaseActivity;
 import com.shuai.utils.DisplayUtils;
 import com.shuai.utils.StorageUtils;
 import com.shuai.utils.Utils;
@@ -142,7 +142,7 @@ public class ExpVideoActivity extends BaseActivity {
                 String js;
                 try {
                     js = StorageUtils.getAssetUTF8FileData(mContext, "getvideo.js");
-                    js=Utils.removeComment(js);
+                    //js=Utils.removeComment(js);
                     view.loadUrl("javascript:" + js);
                 } catch (IOException e) {
                     // TODO Auto-generated catch block

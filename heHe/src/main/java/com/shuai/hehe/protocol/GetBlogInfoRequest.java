@@ -1,6 +1,8 @@
 package com.shuai.hehe.protocol;
 
 import java.io.UnsupportedEncodingException;
+import java.util.LinkedList;
+import java.util.List;
 
 import android.content.Context;
 import android.util.Log;
@@ -16,15 +18,29 @@ import com.google.gson.Gson;
 import com.shuai.hehe.data.BlogInfo;
 import com.shuai.hehe.data.Constants;
 
+import cz.msebera.android.httpclient.message.BasicNameValuePair;
+
 public class GetBlogInfoRequest extends JsonRequest<BlogInfo> {
     private final static String TAG = GetBlogInfoRequest.class.getSimpleName();
 
     public GetBlogInfoRequest(Context context,long feedId, Listener<BlogInfo> listener,
             ErrorListener errorListener) {
-        super(Method.GET, UrlHelper.getBlogUrl(context,feedId,false), null, listener, errorListener);
+        super(Method.GET, getUrl(context,feedId,false), null, listener, errorListener);
         if (Constants.DEBUG) {
-            Log.d(TAG, UrlHelper.getBlogUrl(context,feedId,false));
+            Log.d(TAG, getUrl(context,feedId,false));
         }
+    }
+
+    /**
+     * @param feedId
+     * @param getHtml 请求返回html还是json数据
+     * @return
+     */
+    public static String getUrl(Context context, long feedId, boolean getHtml) {
+        List<BasicNameValuePair> params = new LinkedList<>();
+        params.add(new BasicNameValuePair("feedId", Long.toString(feedId)));
+
+        return UrlHelper.getUrl(context,"api/getBlog", params);
     }
 
     @Override

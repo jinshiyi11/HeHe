@@ -12,10 +12,10 @@ import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
-import com.shuai.base.view.BaseFragmentActivity;
 import com.shuai.base.view.PopUpMenuButton;
 import com.shuai.base.view.PopUpMenuButton.OnMenuListener;
 import com.shuai.hehe.R;
+import com.shuai.hehe.ui.base.BaseFragmentActivity;
 import com.shuai.utils.DisplayUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.umeng.fb.FeedbackAgent;

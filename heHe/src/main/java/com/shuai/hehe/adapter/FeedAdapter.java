@@ -49,9 +49,10 @@ import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoDetail;
 import com.shuai.hehe.data.VideoFeed;
+import com.shuai.hehe.protocol.GetBlogInfoRequest;
 import com.shuai.hehe.protocol.GetVideoDetailRequest;
 import com.shuai.hehe.protocol.HideFeedRequest;
-import com.shuai.hehe.protocol.ProtocolError;
+import com.shuai.hehe.protocol.ProtocolUtils;
 import com.shuai.hehe.protocol.UrlHelper;
 import com.shuai.hehe.ui.AlbumActivity;
 import com.shuai.hehe.ui.BlogActivity;
@@ -174,7 +175,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
 
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(mContext, ProtocolError.getErrorMessage(mContext, error), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, ProtocolUtils.getErrorInfo(error).getErrorMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -642,7 +643,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
 
             @Override
             public void onClick(View v) {
-                SocialUtils.shareBlog((Activity) mContext, info.getTitle(), info.getSummary(), UrlHelper.getBlogUrl(mContext, info.getId(), true));
+                SocialUtils.shareBlog((Activity) mContext, info.getTitle(), info.getSummary(), GetBlogInfoRequest.getUrl(mContext, info.getId(), true));
             }
         });
 
@@ -682,7 +683,7 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             @Override
             public void onErrorResponse(VolleyError error) {
                 resetPlayingVideo();
-                Toast.makeText(mContext, ProtocolError.getErrorMessage(mContext, error), Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, ProtocolUtils.getErrorInfo(error).getErrorMessage(), Toast.LENGTH_LONG).show();
             }
         });
 

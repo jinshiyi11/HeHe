@@ -14,4 +14,9 @@
     <dimen name="feed_title_margin_left">8dp</dimen>
     <dimen name="feed_title_margin_right">8dp</dimen>
 
+    <dimen name="default_title_height">50dp</dimen>
+    <dimen name="default_title_bottom_line_height">1px</dimen>
+    <dimen name="default_split_line_height">1px</dimen>
+    <dimen name="default_dialog_button_height">46dp</dimen>
+
 </resources>

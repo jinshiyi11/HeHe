@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,6 +18,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.Pair;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -25,13 +28,20 @@ import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.shuai.hehe.data.AlbumFeed;
 import com.shuai.hehe.data.Constants;
+import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.data.BlogFeed;
 import com.shuai.hehe.data.FeedType;
 import com.shuai.hehe.data.VideoFeed;
+import com.shuai.hehe.ui.FeedFragment;
+
+import cz.msebera.android.httpclient.message.BasicNameValuePair;
 
 /**
  * 取新鲜事
@@ -43,10 +53,29 @@ public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
     public final static int FEED_CACHE_COUNT = 20;
     private final static String FEED_CACHE_FILENAME = "feed_cache.json";
 
-    public GetFeedsRequest(Context context,long id, int count, Listener<ArrayList<Feed>> listener, ErrorListener errorListener) {
-        super(Method.GET, UrlHelper.getFeedsUrl(context,id, count), null, listener, errorListener);
+    public GetFeedsRequest(Context context,int type,long id, int count, Listener<ArrayList<Feed>> listener, ErrorListener errorListener) {
+        super(Method.GET, getUrl(context,type,id, count), null, listener, errorListener);
         if (Constants.DEBUG) {
-            Log.d(TAG, UrlHelper.getFeedsUrl(context,id, count));
+            Log.d(TAG, getUrl(context,type,id, count));
+        }
+    }
+
+    /**
+     * 获取新鲜事的url
+     *
+     * @param id
+     * @param count
+     * @return
+     */
+    public static String getUrl(Context context, int type, long id, int count) {
+        List<BasicNameValuePair> params = new LinkedList<>();
+        params.add(new BasicNameValuePair("id", Long.toString(id)));
+        params.add(new BasicNameValuePair("count", Integer.toString(count)));
+
+        if (type == FeedFragment.TYPE_VIDEO) {
+            return UrlHelper.getUrl(context,"api/getVideoList", params);
+        } else {
+            return UrlHelper.getUrl(context,"api/getAlbumList", params);
         }
     }
 
@@ -77,12 +106,10 @@ public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
                 byteArrayOutputStream.close();
                 fs.close();
 
-                feedList = parseFeeds(json);
+                //feedList = parseFeeds(json);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
                 e.printStackTrace();
             }
             return feedList;
@@ -132,12 +159,20 @@ public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
     @Override
     protected Response<ArrayList<Feed>> parseNetworkResponse(NetworkResponse response) {
         try {
-            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
             if (Constants.DEBUG) {
-                Log.d(TAG, json);
+                Log.d(TAG, jsonString);
             }
 
-            ArrayList<Feed> feedList = parseFeeds(json);
+            JsonParser parser=new JsonParser();
+            JsonObject root = parser.parse(jsonString).getAsJsonObject();
+            ErrorInfo error = ProtocolUtils.getProtocolInfo(root);
+            if (error.getErrorCode() != 0) {
+                return Response.error(error);
+            }
+
+
+            ArrayList<Feed> feedList = parseFeeds(root.getAsJsonArray(ProtocolUtils.DATA));
             return Response.success(feedList, HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
@@ -149,32 +184,30 @@ public class GetFeedsRequest extends JsonRequest<ArrayList<Feed>> {
         }
     }
 
-    private static ArrayList<Feed> parseFeeds(String json) throws JSONException {
+    private static ArrayList<Feed> parseFeeds(JsonArray jsonArray) throws JSONException {
         ArrayList<Feed> feedList = new ArrayList<Feed>();
-        JSONArray jsonArray = new JSONArray(json);
-        for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonObject jsonObject = (JsonObject) jsonArray.get(i);
 
-            String jsonFeedString = jsonObject.toString();
-            int feedType = jsonObject.getInt("type");
+            int feedType = jsonObject.get("type").getAsInt();
             switch (feedType) {
             case FeedType.TYPE_ALBUM: {
                 Gson gson = new Gson();
-                AlbumFeed feed = gson.fromJson(jsonFeedString, AlbumFeed.class);
+                AlbumFeed feed = gson.fromJson(jsonObject, AlbumFeed.class);
                 FeedContentParser.parseAlbumFeedContent(feed, feed.getContent());
                 feedList.add(feed);
                 break;
             }
             case FeedType.TYPE_VIDEO: {
                 Gson gson = new Gson();
-                VideoFeed feed = gson.fromJson(jsonFeedString, VideoFeed.class);
+                VideoFeed feed = gson.fromJson(jsonObject, VideoFeed.class);
                 FeedContentParser.parseVideoFeedContent(feed, feed.getContent());
                 feedList.add(feed);
                 break;
             }
             case FeedType.TYPE_BLOG: {
                 Gson gson = new Gson();
-                BlogFeed feed = gson.fromJson(jsonFeedString, BlogFeed.class);
+                BlogFeed feed = gson.fromJson(jsonObject, BlogFeed.class);
                 FeedContentParser.parseBlogFeedContent(feed, feed.getContent());
                 feedList.add(feed);
                 break;

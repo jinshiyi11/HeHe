@@ -1,11 +1,12 @@
 package com.shuai.hehe.ui;
 
-import com.shuai.base.view.BaseActivity;
 import com.shuai.base.view.WebViewWrapper;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.BlogFeed;
+import com.shuai.hehe.protocol.GetBlogInfoRequest;
 import com.shuai.hehe.protocol.UrlHelper;
+import com.shuai.hehe.ui.base.BaseActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -60,7 +61,7 @@ public class BlogActivity extends BaseActivity {
         });
         
         mWebView=(WebViewWrapper) findViewById(R.id.wv_web);
-        mWebView.loadUrl(UrlHelper.getBlogUrl(mContext,mFeed.getId(),true));
+        mWebView.loadUrl(GetBlogInfoRequest.getUrl(mContext,mFeed.getId(),true));
 
     } 
 

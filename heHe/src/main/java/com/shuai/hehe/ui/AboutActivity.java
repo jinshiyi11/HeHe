@@ -6,8 +6,8 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.shuai.base.view.BaseActivity;
 import com.shuai.hehe.R;
+import com.shuai.hehe.ui.base.BaseActivity;
 import com.shuai.utils.AppUtils;
 
 public class AboutActivity extends BaseActivity {

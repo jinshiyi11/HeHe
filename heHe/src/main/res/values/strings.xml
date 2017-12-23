@@ -16,10 +16,11 @@
     <string name="error_getting_video_url">获取视频地址失败</string>
     <string name="add_star_tip">收藏成功</string>
     <string name="remove_star_tip">收藏已删除</string>
-    <string name="pic_save_success">图片保存到%1$s</string>
-    <string name="pic_save_failed">图片保存失败:%1$s</string>
+    <string name="save_pic_success">图片保存到%1$s</string>
+    <string name="save_pic_failed">图片保存失败:%1$s</string>
     <string name="set_wallpaper_success">壁纸设置成功</string>
     <string name="set_wallpaper_failed">壁纸设置失败</string>
+    <string name="launch_app_market_failed">您的手机上未发现应用市场</string>
 
     <!-- 主菜单 -->
     <string name="my_star">我的收藏</string>

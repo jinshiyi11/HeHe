@@ -7,7 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import de.greenrobot.event.EventBus;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * 网络连接或断开监听类

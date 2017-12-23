@@ -18,11 +18,11 @@ import android.view.WindowManager;
 import android.webkit.WebView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.FileAsyncHttpResponseHandler;
-import com.shuai.base.view.BaseActivity;
 import com.shuai.base.view.WebViewEx;
 import com.shuai.base.view.WebViewWrapper;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
+import com.shuai.hehe.ui.base.BaseActivity;
 import com.shuai.utils.StorageUtils;
 import com.shuai.utils.Utils;
 
@@ -275,7 +275,7 @@ public class WebVideoActivity extends BaseActivity {
 //                data = StorageUtils.getAssetFileData(mContext, Constants.VIDEO_JS_FILENAME);
 //            }
             data = StorageUtils.getAssetUTF8FileData(mContext, Constants.VIDEO_JS_FILENAME);
-            data=Utils.removeComment(data);
+            //data=Utils.removeComment(data);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

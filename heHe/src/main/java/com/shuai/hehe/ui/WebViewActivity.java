@@ -18,9 +18,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
-import com.shuai.base.view.BaseActivity;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.Constants;
+import com.shuai.hehe.ui.base.BaseActivity;
 
 public class WebViewActivity extends BaseActivity {
 	private static final String TAG="WebViewActivity";

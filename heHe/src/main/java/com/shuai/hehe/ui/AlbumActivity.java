@@ -1,15 +1,8 @@
 package com.shuai.hehe.ui;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -32,8 +25,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-import com.shuai.base.view.BaseActivity;
 import com.shuai.base.view.ExpandableTextView;
 import com.shuai.base.view.PopUpMenuButton;
 import com.shuai.base.view.PopUpMenuButton.OnMenuListener;
@@ -45,15 +36,16 @@ import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.PicInfo;
 import com.shuai.hehe.protocol.GetAlbumPicsRequest;
-import com.shuai.hehe.protocol.ProtocolError;
+import com.shuai.hehe.protocol.ProtocolUtils;
+import com.shuai.hehe.ui.base.BaseActivity;
 import com.shuai.utils.AnimUtils;
 import com.shuai.utils.DisplayUtils;
 import com.shuai.utils.SocialUtils;
-import com.shuai.utils.StorageUtils;
-import com.shuai.utils.WallpaperUtils;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
 import com.umeng.socialize.sso.UMSsoHandler;
+
+import java.util.ArrayList;
 
 public class AlbumActivity extends BaseActivity {
     private DataManager mDataManager;
@@ -430,7 +422,7 @@ public class AlbumActivity extends BaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 setStatus(Status.STATUS_NO_NETWORK_OR_DATA);
-                Toast.makeText(mContext, ProtocolError.getErrorMessage(mContext, error), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, ProtocolUtils.getErrorInfo(error).getErrorMessage(), Toast.LENGTH_SHORT).show();
             }
         });
         
@@ -451,9 +443,9 @@ public class AlbumActivity extends BaseActivity {
 
             PicInfo info = mPicInfos.get(position);
             String desc = info.getPicDescription();
-            mEtvDesc.setText(Html.fromHtml(desc));
             if (!TextUtils.isEmpty(desc) && mShowPicInfo) {
                 mEtvDesc.setVisibility(View.VISIBLE);
+                mEtvDesc.setText(Html.fromHtml(desc));
             } else {
                 mEtvDesc.setVisibility(View.INVISIBLE);
             }
