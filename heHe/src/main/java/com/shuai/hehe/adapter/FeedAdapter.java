@@ -522,9 +522,9 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
 
         });
 
-        if (mDataManager.isAdmin()) {
-            holder.mIvThumb.setOnLongClickListener(new HideFeedListener(info));
-        }
+//        if (mDataManager.isAdmin()) {
+//            holder.mIvThumb.setOnLongClickListener(new HideFeedListener(info));
+//        }
         return view;
     }
 
@@ -597,9 +597,9 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             }
         });
 
-        if (mDataManager.isAdmin()) {
-            holder.mIvThumb.setOnLongClickListener(new HideFeedListener(info));
-        }
+//        if (mDataManager.isAdmin()) {
+//            holder.mIvThumb.setOnLongClickListener(new HideFeedListener(info));
+//        }
         return view;
     }
 
@@ -647,9 +647,9 @@ public class FeedAdapter extends ArrayAdapter<Feed> {
             }
         });
 
-        if (mDataManager.isAdmin()) {
-            holder.mLlFeedContainer.setOnLongClickListener(new HideFeedListener(info));
-        }
+//        if (mDataManager.isAdmin()) {
+//            holder.mLlFeedContainer.setOnLongClickListener(new HideFeedListener(info));
+//        }
         return view;
     }
 

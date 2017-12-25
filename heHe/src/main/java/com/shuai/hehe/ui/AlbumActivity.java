@@ -232,7 +232,7 @@ public class AlbumActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         mDataManager=DataManager.getInstance();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
         mRequestQueue=HeHeApplication.getRequestQueue();

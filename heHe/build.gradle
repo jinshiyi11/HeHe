@@ -10,6 +10,7 @@ android {
         applicationId "com.shuai.hehe"
         minSdkVersion 16
         targetSdkVersion 26
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -21,14 +22,20 @@ android {
 }
 
 dependencies {
+    compile 'com.android.support:multidex:1.0.2'
     implementation 'com.github.bumptech.glide:glide:4.4.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.4.0'
     compile 'com.github.bumptech.glide:annotations:4.4.0'
     compile "com.github.bumptech.glide:okhttp3-integration:4.4.0"
+    compile 'me.jessyan:progressmanager:1.5.0'
 
     compile 'com.squareup.okhttp3:okhttp:3.9.1'
     compile 'org.greenrobot:eventbus:3.1.1'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.7'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.4-5'
+//    compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.4-5'
 
     compile project(':social_sdk_library_project')
     compile project(':heHePullToRefresh')

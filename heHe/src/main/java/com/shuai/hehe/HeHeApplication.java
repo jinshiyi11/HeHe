@@ -1,8 +1,9 @@
 package com.shuai.hehe;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.Process;
+import android.support.annotation.NonNull;
+import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -12,19 +13,28 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.DefaultRefreshHeaderCreater;
+import com.scwang.smartrefresh.layout.api.RefreshHeader;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.shuai.hehe.data.Config;
 import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.logic.UserManager;
-import com.shuai.hehe.net.ConnectionChangeMonitor;
 import com.shuai.utils.AppUtils;
+import com.shuai.utils.ConnectionChangeMonitor;
 import com.shuai.utils.CustomImageDownloader;
 import com.shuai.utils.ProcessUtils;
 import com.umeng.analytics.MobclickAgent;
 
-public class HeHeApplication extends Application {
+import me.jessyan.progressmanager.ProgressManager;
+import okhttp3.OkHttpClient;
+
+public class HeHeApplication extends MultiDexApplication {
 
     private static Context mContext;
     private static RequestQueue mRequestQueue;
+    private static OkHttpClient mOkHttpClient;
     private ConnectionChangeMonitor mConnectionChangeMonitor;
 
     public HeHeApplication() {
@@ -41,6 +51,10 @@ public class HeHeApplication extends Application {
 
     public static Context getAppContext() {
         return mContext;
+    }
+
+    public static OkHttpClient getOkHttpClient(){
+        return mOkHttpClient;
     }
 
     @Override
@@ -62,6 +76,10 @@ public class HeHeApplication extends Application {
     private void init() {
         // 初始化网络异步请求对象
         mRequestQueue = Volley.newRequestQueue(this);
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        ProgressManager.getInstance().with(builder);
+        mOkHttpClient=builder.build();
+
         Config.getInstance().init(this);
         UserManager userManager = UserManager.getInstance();
         userManager.init(this);
@@ -78,6 +96,15 @@ public class HeHeApplication extends Application {
 
         if(!userManager.isLogined())
             userManager.autoLogin();
+
+        SmartRefreshLayout.setDefaultRefreshHeaderCreater(new DefaultRefreshHeaderCreater() {
+            @NonNull
+            @Override
+            public RefreshHeader createRefreshHeader(Context context, RefreshLayout layout) {
+                //return new MaterialHeader(context);
+                return new ClassicsHeader(context);
+            }
+        });
     }
 
     private void initImageLoader() {

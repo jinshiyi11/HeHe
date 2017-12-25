@@ -27,7 +27,6 @@ public class HideFeedRequest extends StringRequest {
     public static String getUrl(Context context, long feedId) {
         List<BasicNameValuePair> params = new LinkedList<>();
         params.add(new BasicNameValuePair("feedid", Long.toString(feedId)));
-        params.add(new BasicNameValuePair(Constants.ADMIN_KEY, DataManager.getInstance().getAdminKey()));
 
         return UrlHelper.getUrl(context,"hidefeed", params);
     }

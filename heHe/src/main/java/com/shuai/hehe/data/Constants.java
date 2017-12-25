@@ -5,7 +5,7 @@ public class Constants {
     /**
      * 是使用线上服务还是开发环境的服务
      */
-    public static boolean SERVER_ONLINE = false;
+    public static boolean SERVER_ONLINE = true;
 
     /**
      * 标明请求来自android客户端
@@ -32,7 +32,7 @@ public class Constants {
     /**
      * 协议版本号
      */
-    public static final String PROTOCOL_VERSION = "1.3";
+    public static final int PROTOCOL_VERSION = 1;
     
     public static final String ADMIN_KEY="admin";
     

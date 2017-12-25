@@ -3,25 +3,36 @@ package com.shuai.hehe.adapter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+
 import pl.droidsonroids.gif.GifDrawable;
 import uk.co.senab.photoview.PhotoViewAttacher;
 import uk.co.senab.photoview.PhotoViewAttacher.OnViewTapListener;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView.ScaleType;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.shuai.base.view.DoubleTapListener;
 import com.shuai.base.view.NetworkPhotoView;
 import com.shuai.hehe.R;
 import com.shuai.hehe.data.PicInfo;
 import com.shuai.utils.DisplayUtils;
+
 import pl.droidsonroids.gif.GifDrawable;;
 
 public class AlbumAdapter extends PagerAdapter {
@@ -32,7 +43,7 @@ public class AlbumAdapter extends PagerAdapter {
     public AlbumAdapter(Context context, ArrayList<PicInfo> picInfos) {
         mContext = context;
         mPicInfos = picInfos;
-        mLayoutInflater=(LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -49,7 +60,7 @@ public class AlbumAdapter extends PagerAdapter {
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
     }
-    
+
 //    private DisplayImageOptions getDisplayImageOptions(){
 //        if(mDisplayImageOptions!=null)
 //            return mDisplayImageOptions;
@@ -66,9 +77,9 @@ public class AlbumAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        PicInfo info=mPicInfos.get(position);
-        
-        NetworkPhotoView photoView=new NetworkPhotoView(mContext);
+        PicInfo info = mPicInfos.get(position);
+
+        final NetworkPhotoView photoView = new NetworkPhotoView(mContext);
         photoView.setBackgroundColor(mContext.getResources().getColor(R.color.black_color));
         photoView.setProgressRadius(DisplayUtils.dp2px(mContext, 25));
         photoView.setProgressCircleWidth(DisplayUtils.dp2px(mContext, 2));
@@ -77,10 +88,26 @@ public class AlbumAdapter extends PagerAdapter {
         photoView.setMediumScale(2.0f);
         photoView.setMaximumScale(3f);
         photoView.setOnDoubleTapListener(new DoubleTapListener((PhotoViewAttacher) photoView.getIPhotoViewImplementation()));
-        
+
         container.addView(photoView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         photoView.setScaleType(ScaleType.CENTER_INSIDE);
-        Glide.with(mContext).load(info.getBigPicUrl()).into(photoView);
+        Glide.with(mContext).load(info.getBigPicUrl())
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        photoView.onLoadingFailed();
+                        photoView.setScaleType(ScaleType.CENTER_INSIDE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        photoView.onLoadingComplete();
+                        photoView.setScaleType(ScaleType.FIT_CENTER);
+                        return false;
+                    }
+                })
+                .into(photoView);
 //        ImageLoader.getInstance().displayImage(info.getBigPicUrl(), photoView,getDisplayImageOptions(),new ImageLoadingListener() {
 //
 //            @Override
@@ -139,9 +166,9 @@ public class AlbumAdapter extends PagerAdapter {
 //            }
 //
 //        });
-        
+
         photoView.setOnViewTapListener(new OnViewTapListener() {
-            
+
             @SuppressLint("NewApi")
             @Override
             public void onViewTap(View view, float x, float y) {
@@ -153,12 +180,12 @@ public class AlbumAdapter extends PagerAdapter {
                 }
             }
         });
-        
+
         return photoView;
     }
 
     //该url对应的是否是gif图
-    private boolean isGif(String imageUri) {
-        return imageUri.toLowerCase().endsWith(".gif");
-    }
+//    private boolean isGif(String imageUri) {
+//        return imageUri.toLowerCase().endsWith(".gif");
+//    }
 }

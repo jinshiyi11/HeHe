@@ -40,6 +40,24 @@
 
 -keep class com.shuai.hehe.data.PicInfo {*;}
 
+#rxjava
+-dontwarn sun.misc.**
+
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+   long producerIndex;
+   long consumerIndex;
+}
+
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+-dontnote rx.internal.util.PlatformDependent
+
 #glide
 -keep class com.bumptech.glide.GeneratedAppGlideModuleImpl
 -keep public class * implements com.bumptech.glide.module.GlideModule
@@ -48,6 +66,10 @@
   **[] $VALUES;
   public *;
 }
+
+#glide ProgressManager
+-keep class me.jessyan.progressmanager.** { *; }
+-keep interface me.jessyan.progressmanager.** { *; }
 
 #okhttp
 -dontwarn okhttp3.**
@@ -66,6 +88,3 @@
 -keep class com.tencent.mm.sdk.openapi.WXMediaMessage {*;}
 -keep class com.tencent.mm.sdk.openapi.** implements com.tencent.mm.sdk.openapi.WXMediaMessage$IMediaObject {*;}
 
-#vitamio
--keep class io.vov.utils.** { *; }
--keep class io.vov.vitamio.** { *; }

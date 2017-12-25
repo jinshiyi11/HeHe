@@ -30,14 +30,6 @@ public class DataManager {
     private static DataManager mDataManager;
     private Context mContext;
     private LocalBroadcastManager mLocalBroadcastManager;
-    /**
-     * 当前安装的版本是否是管理员版，管理员可以删除新鲜事
-     */
-    private boolean mIsAdmin;
-    /**
-     * 管理员的认证信息，在向服务器发送指令时需要带上该消息
-     */
-    private String mAdminKey;
     
     private DatabaseHelper mDbHelper;
     
@@ -50,18 +42,6 @@ public class DataManager {
      * 数据库版本
      */
     private static final int DB_VERSION = 1;
-    
-    //private LinkedBlockingDeque<Runnable> mDbTasks;
-    
-    /**
-     * 用来执行数据库操作的线程，所有数据库操作都在一个单独的行程中串行执行
-     */
-    private Executor mDbThread=Executors.newSingleThreadExecutor();
-    
-    /**
-     * 收藏的新鲜事的id集合
-     */
-    private Set<Long> mStarFeedIds;
     
     /**
      * 记录上次看到相册的第几张图片。如果再次打开相册，自动跳到上次浏览的图片
@@ -130,41 +110,6 @@ public class DataManager {
         mContext=context;
         mDbHelper= new DatabaseHelper(mContext);
         mLocalBroadcastManager=LocalBroadcastManager.getInstance(mContext);
-        
-        loadStarFeeds();
-        loadAdminKey();
-    }
-    
-    private void loadAdminKey(){
-        try {
-            InputStream stream = mContext.getAssets().open("admin.txt");
-            String key = StorageUtils.inputStreamToString(stream);
-            if(key!=null && key.length()!=0){
-                mIsAdmin=true;
-                mAdminKey=key;
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
-        }
-    }
-    
-    /**
-     * 当前安装的版本是否是管理员版，管理员可以删除新鲜事
-     */
-    public boolean isAdmin(){
-        return mIsAdmin;
-    }
-    
-    /**
-     * 管理员的认证信息，在向服务器发送指令时需要带上该消息
-     */
-    public String getAdminKey(){
-        return mAdminKey;
-    }
-    
-    public ParallelAsyncTask executeDbTask(ParallelAsyncTask task,Object... params ){
-        return task.executeOnExecutor(mDbThread,params);
     }
     
     /**
@@ -213,40 +158,12 @@ public class DataManager {
         }
     }
     
-    private void loadStarFeeds(){
-        ParallelAsyncTask<Object, Object, Set<Long>> task=new ParallelAsyncTask<Object, Object, Set<Long>>(){
-
-            @Override
-            protected Set<Long> doInBackground(Object... params) {
-                Set<Long> feedIds=new HashSet<Long>();
-                SQLiteDatabase db = mDbHelper.getReadableDatabase();
-                Cursor cursor = db.rawQuery("select feed_id from star_feed", null);
-                while(cursor.moveToNext()){
-                    feedIds.add(cursor.getLong(0));
-                }
-                return feedIds;
-            }
-
-            @Override
-            protected void onPostExecute(Set<Long> result) {
-                super.onPostExecute(result);
-                mStarFeedIds=result;
-            }
-        };
-        
-        executeDbTask(task);
-    }
-    
     /**
      * 该feedId对应的新鲜事是否已收藏
      * @param feedId
      * @return
      */
     public boolean isStarFeed(final long feedId){
-        if(mStarFeedIds==null){
-            //TODO:mStarredFeedIds还没从db加载完成？
-            return false;
-        }
         
         return mStarFeedIds.contains(feedId);
     }
@@ -256,10 +173,6 @@ public class DataManager {
      * @param feed
      */
     public void addStarFeed(final Feed feed){
-        if(mStarFeedIds==null){
-            //TODO:mStarredFeedIds还没从db加载完成？
-            return;
-        }
         
         //统计
         MobclickAgent.onEvent(mContext, Stat.EVENT_STAR);
