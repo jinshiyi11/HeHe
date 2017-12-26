@@ -7,7 +7,6 @@ import android.content.Intent;
 import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.ui.AboutActivity;
 import com.shuai.hehe.ui.LoginActivity;
-import com.shuai.hehe.ui.MainActivity;
 
 
 /**

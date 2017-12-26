@@ -38,7 +38,6 @@ dependencies {
 //    compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.4-5'
 
     compile project(':social_sdk_library_project')
-    compile project(':heHePullToRefresh')
     compile 'com.android.support:support-v4:26.0.0-alpha1'
     compile 'com.google.code.gson:gson:2.3.1'
 //    compile 'fm.jiecao:jiecaovideoplayer:5.8.1'
@@ -49,7 +48,7 @@ dependencies {
 
 //    compile 'com.shuyu:gsyVideoPlayer-armv5:2.0.5'
     compile 'com.shuyu:gsyVideoPlayer-armv7a:2.0.5'
-    compile 'com.shuyu:gsyVideoPlayer-arm64:2.0.5'
+    //compile 'com.shuyu:gsyVideoPlayer-arm64:2.0.5'
 //    compile 'com.shuyu:gsyVideoPlayer-x64:2.0.5'
 //    compile 'com.shuyu:gsyVideoPlayer-x86:2.0.5'
 

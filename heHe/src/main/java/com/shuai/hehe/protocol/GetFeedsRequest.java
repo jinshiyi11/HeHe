@@ -7,18 +7,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Context;
 import android.util.Log;
-import android.util.Pair;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
@@ -31,10 +27,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import com.shuai.hehe.data.AlbumFeed;
 import com.shuai.hehe.data.Constants;
-import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.Feed;
 import com.shuai.hehe.data.BlogFeed;
 import com.shuai.hehe.data.FeedType;

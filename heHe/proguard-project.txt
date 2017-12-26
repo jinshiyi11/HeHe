@@ -88,3 +88,9 @@
 -keep class com.tencent.mm.sdk.openapi.WXMediaMessage {*;}
 -keep class com.tencent.mm.sdk.openapi.** implements com.tencent.mm.sdk.openapi.WXMediaMessage$IMediaObject {*;}
 
+#gsy video
+-keep class tv.danmaku.ijk.** { *; }
+-dontwarn tv.danmaku.ijk.**
+-keep class com.shuyu.gsyvideoplayer.** { *; }
+-dontwarn com.shuyu.gsyvideoplayer.**
+

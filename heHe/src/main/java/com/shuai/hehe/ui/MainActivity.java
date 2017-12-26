@@ -1,140 +1,107 @@
 package com.shuai.hehe.ui;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.PopupWindow;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
-import com.shuai.base.view.PopUpMenuButton;
-import com.shuai.base.view.PopUpMenuButton.OnMenuListener;
 import com.shuai.hehe.R;
+import com.shuai.hehe.adapter.TabsAdapter;
+import com.shuai.hehe.logic.UserManager;
 import com.shuai.hehe.ui.base.BaseFragmentActivity;
-import com.shuai.utils.DisplayUtils;
+import com.shuai.utils.ConnectionChangeMonitor;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
-import com.umeng.fb.FeedbackAgent;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
 import com.umeng.socialize.sso.UMSsoHandler;
-import com.umeng.update.UmengUpdateAgent;
 
-public class MainActivity extends BaseFragmentActivity implements OnClickListener {
-	private static final String TAG="MainActivity";
-    private View mTitleContainer;
-    private FeedFragment mFeedFragment;
-    private PopUpMenuButton mIbMenuMore;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends BaseFragmentActivity {
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
+    private TabsAdapter mTabsAdapter;
+
     /**
      * 上次按下back按钮的时间
      */
     private long mLastBackPressedTime;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		//检查升级
-		UmengUpdateAgent.update(this);
-		getWindow().requestFeature(Window.FEATURE_NO_TITLE);		
-		setContentView(R.layout.activity_main);
-		
-		mTitleContainer=findViewById(R.id.rl_title);
-		mIbMenuMore=(PopUpMenuButton) findViewById(R.id.ib_menu_more);
-		mFeedFragment=(FeedFragment)getSupportFragmentManager().findFragmentById(R.id.feed_fragment);
-		mTitleContainer.setOnClickListener(new OnClickListener() {
-            
-            @Override
-            public void onClick(View v) {
-                mFeedFragment.onTitleClicked();
-                
-            }
-        });
-		
-		mIbMenuMore.setOnMenuListener(new OnMenuListener() {
-		    
-		    @Override
-            public void onCreateMenu(PopupWindow popupWindow) {
-		        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View view = inflater.inflate(R.layout.main_menu, null);
-                popupWindow.setContentView(view);
-                popupWindow.setWidth(DisplayUtils.dp2px(mContext, 150));
-                popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-                view.findViewById(R.id.tv_star).setOnClickListener(MainActivity.this);
-                view.findViewById(R.id.tv_feedback).setOnClickListener(MainActivity.this);
-                view.findViewById(R.id.tv_about).setOnClickListener(MainActivity.this);
-            }
-            
-            @Override
-            public void onPreShowMenu(PopupWindow popupWindow) {
-            }
-   
-        });
-	}
-	
-	@Override 
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    super.onActivityResult(requestCode, resultCode, data);
-	    final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
-	    /**使用SSO授权必须添加如下代码 */
-	    UMSsoHandler ssoHandler = mController.getConfig().getSsoHandler(requestCode) ;
-	    if(ssoHandler != null){
-	       ssoHandler.authorizeCallBack(requestCode, resultCode, data);
-	    }
-	}
+        mViewPager=findViewById(R.id.viewpager);
+        mTabLayout=findViewById(R.id.tablayout);
+        mTabsAdapter=new TabsAdapter(this,R.layout.tab_with_icon,getTabInfos());
+        mViewPager.setAdapter(mTabsAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
+        for (int i = 0; i < mTabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = mTabLayout.getTabAt(i);
+            tab.setCustomView(mTabsAdapter.getTabView(i));
+        }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-	    mIbMenuMore.showMenu();
-		return false;
-	}
-	
-	@Override
-    public void onBackPressed() {
-		if (StandardGSYVideoPlayer.backFromWindowFull(this)) {
-			return;
-		}
+        //防止回收page
+        mViewPager.setOffscreenPageLimit(mTabsAdapter.getCount());
+    }
 
-	    if(System.currentTimeMillis()-mLastBackPressedTime>2000){
-	        mLastBackPressedTime=System.currentTimeMillis();
-	        Toast.makeText(mContext, R.string.one_more_exit, Toast.LENGTH_SHORT).show();
-	    }else{
-	        super.onBackPressed();
-	    }
+    private List<TabsAdapter.TabInfo> getTabInfos(){
+        Bundle videoFragmentBundle=new Bundle();
+        videoFragmentBundle.putInt(FeedFragment.KEY_TYPE, FeedFragment.TYPE_VIDEO);
+        videoFragmentBundle.putString(FeedFragment.KEY_TITLE,"视频");
+        Bundle albumFragmentBundle=new Bundle();
+        albumFragmentBundle.putInt(FeedFragment.KEY_TYPE, FeedFragment.TYPE_ALBUM);
+        albumFragmentBundle.putString(FeedFragment.KEY_TITLE,"图片");
+        Bundle favFragmentBundle=new Bundle();
+        favFragmentBundle.putInt(FeedFragment.KEY_TYPE, FeedFragment.TYPE_FAVORITE);
+        favFragmentBundle.putString(FeedFragment.KEY_TITLE,"收藏");
+
+        List<TabsAdapter.TabInfo> list=new ArrayList<>();
+        list.add(new TabsAdapter.TabInfo("视频",R.drawable.tab_followed,FeedFragment.class,videoFragmentBundle));
+        list.add(new TabsAdapter.TabInfo("图片",R.drawable.tab_market,FeedFragment.class,albumFragmentBundle));
+        list.add(new TabsAdapter.TabInfo("收藏",R.drawable.tab_news,FavFragment.class,favFragmentBundle));
+        list.add(new TabsAdapter.TabInfo("我的",R.drawable.tab_user,UserCenterFragment.class,null));
+        return list;
     }
 
     @Override
-	public void onClick(View v) {
-	    mIbMenuMore.hideMenu();
-		
-		//响应选中菜单项
-		int id=v.getId();
-		switch (id) {
-		//我的收藏
-        case R.id.tv_star: {
-            Intent intent = new Intent(mContext, FavActivity.class);
-            startActivity(intent);
-            break;
+    public void onBackPressed() {
+        if (StandardGSYVideoPlayer.backFromWindowFull(this)) {
+            return;
         }
-        //反馈
-		case R.id.tv_feedback: {
-            FeedbackAgent agent = new FeedbackAgent(mContext);
-            agent.startFeedbackActivity();
-            break;
-        }
-		//关于
-		case R.id.tv_about: {
-			Intent intent = new Intent(mContext, AboutActivity.class);
-			startActivity(intent);
-			break;
-		}
-		default:
-			break;
-		}
-	}
 
+        if(System.currentTimeMillis()-mLastBackPressedTime>2000){
+            mLastBackPressedTime=System.currentTimeMillis();
+            Toast.makeText(mContext, R.string.one_more_exit, Toast.LENGTH_SHORT).show();
+        }else{
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
+        /**使用SSO授权必须添加如下代码 */
+        UMSsoHandler ssoHandler = mController.getConfig().getSsoHandler(requestCode) ;
+        if(ssoHandler != null){
+            ssoHandler.authorizeCallBack(requestCode, resultCode, data);
+        }
+    }
+
+    @Subscribe
+    public void onEvent(ConnectionChangeMonitor.EventConnectionChange event){
+        if(event.isConnected()){
+            //发现连上网，自动登录
+            if(!UserManager.getInstance().isLogined())
+                UserManager.getInstance().autoLogin();
+
+            //updateOnlineConfig();
+        }
+    }
 }

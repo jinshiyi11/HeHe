@@ -295,27 +295,27 @@ public class TestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      *
      * @param parentView 父控件(比如ListView，遍历其子控件并更新相应子控件的收藏状态)
      */
-    public void updateStarFeedState(ViewGroup parentView, long feedId) {
-        for (int i = 0; i < parentView.getChildCount(); i++) {
-            View view = parentView.getChildAt(i);
-            Object tag = view.getTag();
-            if (tag != null && tag instanceof BaseHolder) {
-                BaseHolder holder = (BaseHolder) tag;
-                if (holder.feed.getId() == feedId) {
-                    updateStarFeedState(holder.mFivStar, holder.feed);
-                    break;
-                }
-            }
-        }
-    }
+//    public void updateStarFeedState(ViewGroup parentView, long feedId) {
+//        for (int i = 0; i < parentView.getChildCount(); i++) {
+//            View view = parentView.getChildAt(i);
+//            Object tag = view.getTag();
+//            if (tag != null && tag instanceof BaseHolder) {
+//                BaseHolder holder = (BaseHolder) tag;
+//                if (holder.feed.getId() == feedId) {
+//                    updateStarFeedState(holder.mFivStar, holder.feed);
+//                    break;
+//                }
+//            }
+//        }
+//    }
 
-    private void updateStarFeedState(FlipImageView starView, Feed feed) {
-        if (mDataManager.isStarFeed(feed.getId())) {
-            starView.setFlipped(true, false);
-        } else {
-            starView.setFlipped(false, false);
-        }
-    }
+//    private void updateStarFeedState(FlipImageView starView, Feed feed) {
+//        if (mDataManager.isStarFeed(feed.getId())) {
+//            starView.setFlipped(true, false);
+//        } else {
+//            starView.setFlipped(false, false);
+//        }
+//    }
 
     private static class BaseHolder extends RecyclerView.ViewHolder {
         Feed feed;

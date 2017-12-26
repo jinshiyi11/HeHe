@@ -1,42 +1,38 @@
 package com.shuai.hehe.ui;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.ListView;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadmoreListener;
 import com.shuai.hehe.HeHeApplication;
 import com.shuai.hehe.R;
-import com.shuai.hehe.adapter.FeedAdapter;
 import com.shuai.hehe.adapter.FeedAdapter.FeedList;
+import com.shuai.hehe.adapter.TestAdapter;
 import com.shuai.hehe.data.DataManager;
-import com.shuai.hehe.data.Stat;
 import com.shuai.hehe.data.DataManager.OnStarFeedChangedListener;
 import com.shuai.hehe.data.Feed;
+import com.shuai.hehe.data.Stat;
 import com.shuai.hehe.protocol.GetFeedsRequest;
 import com.shuai.hehe.protocol.ProtocolUtils;
 import com.shuai.hehe.ui.base.BaseTabFragment;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer;
 import com.umeng.analytics.MobclickAgent;
+
+import java.util.ArrayList;
 
 public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedListener {
     public static final String KEY_TYPE = "FeedFragmentType";
@@ -47,6 +43,7 @@ public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedLi
 
     private Context mContext;
     private Toolbar mToolbar;
+    private TextView mTvTitle;
     private int mType;
     private ViewGroup mNoNetworkContainer;
     private ViewGroup mLoadingContainer;
@@ -69,9 +66,11 @@ public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedLi
 
     private Status mStatus;
 
-    private PullToRefreshListView mListView;
+    private RefreshLayout mRefreshLayout;
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
     private FeedList mFeedList = new FeedList();
-    private FeedAdapter mFeedAdapter;
+    private TestAdapter mFeedAdapter;
 
     /**
      * 每次获取的feed个数
@@ -94,7 +93,7 @@ public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedLi
     private RequestQueue mRequestQueue;
     private DataManager mDataManager;
 
-    public FeedFragment(){
+    public FeedFragment() {
         super(R.layout.fragment_feed);
     }
 
@@ -106,6 +105,14 @@ public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedLi
 
         mType = getArguments().getInt(KEY_TYPE);
         mToolbar = root.findViewById(R.id.toolbar);
+        mTvTitle = root.findViewById(R.id.tv_title);
+        mTvTitle.setText(getArguments().getString(KEY_TITLE));
+        mToolbar.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onTitleClicked();
+            }
+        });
 //        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
 //        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -113,21 +120,30 @@ public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedLi
         mLoadingContainer = (ViewGroup) root.findViewById(R.id.loading_container);
         mMainContainer = (ViewGroup) root.findViewById(R.id.main_container);
 
-        mListView = (PullToRefreshListView) root.findViewById(R.id.listview);
-        mListView.setMode(Mode.BOTH);
-        mFeedAdapter = new FeedAdapter(getActivity(), mFeedList);
-        mListView.setAdapter(mFeedAdapter);
-
-        mListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
-
+        mRefreshLayout = root.findViewById(R.id.refresh_layout);
+        mRecyclerView = root.findViewById(R.id.recyclerview);
+        mFeedAdapter = new TestAdapter(mContext, mFeedList);
+        mLayoutManager = new LinearLayoutManager(mContext);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mFeedAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                getData(true);
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                mFeedAdapter.onScrolled(mLayoutManager.findFirstVisibleItemPosition(),
+                        mLayoutManager.findLastVisibleItemPosition());
+            }
+        });
+
+        mRefreshLayout.setOnRefreshLoadmoreListener(new OnRefreshLoadmoreListener() {
+            @Override
+            public void onLoadmore(RefreshLayout refreshlayout) {
+                getData(false);
             }
 
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                getData(false);
+            public void onRefresh(RefreshLayout refreshlayout) {
+                getData(true);
             }
         });
 
@@ -135,22 +151,22 @@ public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedLi
 
             @Override
             public void onClick(View v) {
-                mListView.setRefreshing(false);
+                mRefreshLayout.autoRefresh();
             }
         });
 
         mDataManager.addStarFeedChangedListener(this);
-        mListView.setRefreshing(false);
+        mRefreshLayout.autoRefresh();
     }
 
     @Override
     public void onDestroyView() {
         GSYVideoPlayer.releaseAllVideos();
-        if(mDataManager!=null) {
+        if (mDataManager != null) {
             mDataManager.removeStarFeedChangedListener(this);
         }
 
-        if(mRequestQueue!=null) {
+        if (mRequestQueue != null) {
             mRequestQueue.cancelAll(this);
         }
         super.onDestroyView();
@@ -194,16 +210,7 @@ public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedLi
     }
 
     private void getData(final boolean isPullDown) {
-        //如果是首次加载，先读cache
-        if (mIsStartRequest && mFeedAdapter.getCount() == 0) {
-            ArrayList<Feed> feedList = GetFeedsRequest.loadCache(mContext);
-            if (feedList != null && feedList.size() > 0) {
-                mFeedList.addAll(0, feedList);
-                mFeedAdapter.notifyDataSetChanged();
-            }
-        }
-
-        if (mFeedAdapter.getCount() == 0) {
+        if (mFeedList.size() == 0) {
             setStatus(Status.STATUS_LOADING);
         } else {
             setStatus(Status.STATUS_GOT_DATA);
@@ -211,12 +218,12 @@ public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedLi
 
         long id = START_ID;
         int count = PAGE_COUNT * -1;
-        if (!mIsStartRequest && mFeedAdapter.getCount() > 0) {
+        if (!mIsStartRequest && mFeedList.size() > 0) {
             if (isPullDown) {
-                id = mFeedAdapter.getItem(0).getShowTime();
+                id = mFeedList.get(0).getShowTime();
                 count = PAGE_COUNT;
             } else {
-                id = mFeedAdapter.getItem(mFeedAdapter.getCount() - 1).getShowTime();
+                id = mFeedList.get(mFeedList.size() - 1).getShowTime();
                 count = PAGE_COUNT * -1;
             }
         }
@@ -225,11 +232,16 @@ public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedLi
 
             @Override
             public void onResponse(ArrayList<Feed> feedList) {
-                mListView.onRefreshComplete();
+                if (isPullDown) {
+                    mRefreshLayout.finishRefresh();
+                } else {
+                    mRefreshLayout.finishLoadmore();
+                }
                 if (mIsStartRequest) {
                     mIsStartRequest = false;
                     //成功完成首次请求，clear启动时加载的cache数据
-                    mFeedAdapter.clear();
+                    mFeedList.clear();
+                    mFeedAdapter.notifyDataSetChanged();
                 }
 
                 if (isPullDown) {
@@ -255,9 +267,13 @@ public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedLi
             @Override
             public void onErrorResponse(VolleyError error) {
                 MobclickAgent.onEvent(mContext, Stat.EVENT_GET_FEED_ERROR);
-                mListView.onRefreshComplete();
+                if (isPullDown) {
+                    mRefreshLayout.finishRefresh();
+                } else {
+                    mRefreshLayout.finishLoadmore();
+                }
 
-                if (mFeedAdapter.getCount() == 0) {
+                if (mFeedList.size() == 0) {
                     setStatus(Status.STATUS_NO_NETWORK_OR_DATA);
                 }
 
@@ -275,21 +291,29 @@ public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedLi
      */
     public void onTitleClicked() {
         //单击标题栏时返回顶部
-        ListView listView = mListView.getRefreshableView();
-        if (listView.getCount() > 0) {
-            listView.setSelection(0);
+        if (mFeedList.size() > 0) {
+            mRecyclerView.scrollToPosition(0);
+            //mRecyclerView.smoothScrollToPosition(0);
         }
-
     }
 
     @Override
     public void onStarFeedAdded(Feed feed) {
-        mFeedAdapter.updateStarFeedState(mListView.getRefreshableView(), feed.getId());
+        updateStarFeedState(feed.getId());
     }
 
     @Override
     public void onStarFeedRemoved(long feedId) {
-        mFeedAdapter.updateStarFeedState(mListView.getRefreshableView(), feedId);
+        updateStarFeedState(feedId);
+    }
+
+    private void updateStarFeedState(long feedId) {
+        for (int i = 0; i < mFeedList.size(); i++) {
+            if (mFeedList.get(i).getId() == feedId) {
+                mFeedAdapter.notifyItemChanged(i);
+                break;
+            }
+        }
     }
 
 }

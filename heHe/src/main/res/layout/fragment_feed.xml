@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:pulltorefresh="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/default_bg_color"
@@ -79,20 +78,31 @@
         android:layout_weight="1"
         android:orientation="vertical"
         android:visibility="visible">
-
-        <com.handmark.pulltorefresh.library.PullToRefreshListView
-            android:id="@+id/listview"
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout
+            android:id="@+id/refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/feedlist_bg_color"
-            android:cacheColorHint="#00000000"
-            android:divider="@null"
-            android:dividerHeight="6dp"
-            android:fadingEdge="none"
-            android:fastScrollEnabled="false"
-            android:listSelector="@color/transparent_color"
-            android:scrollbars="vertical"
-            pulltorefresh:ptrShowIndicator="false" />
+            android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:background="@color/feedlist_bg_color" />
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
+        <!--<com.handmark.pulltorefresh.library.PullToRefreshListView-->
+            <!--android:id="@+id/listview"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@color/feedlist_bg_color"-->
+            <!--android:cacheColorHint="#00000000"-->
+            <!--android:divider="@null"-->
+            <!--android:dividerHeight="6dp"-->
+            <!--android:fadingEdge="none"-->
+            <!--android:fastScrollEnabled="false"-->
+            <!--android:listSelector="@color/transparent_color"-->
+            <!--android:scrollbars="vertical"-->
+            <!--pulltorefresh:ptrShowIndicator="false" />-->
     </LinearLayout>
 
 </LinearLayout>

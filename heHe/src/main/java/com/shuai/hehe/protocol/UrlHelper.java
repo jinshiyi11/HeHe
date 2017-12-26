@@ -2,15 +2,10 @@ package com.shuai.hehe.protocol;
 
 import android.content.Context;
 import android.util.Log;
-import android.util.Pair;
 
 import com.shuai.hehe.data.Constants;
-import com.shuai.hehe.data.DataManager;
-import com.shuai.hehe.ui.FeedFragment;
 import com.shuai.utils.AppUtils;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.LinkedList;
 import java.util.List;
 

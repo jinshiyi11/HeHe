@@ -1,43 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity" >
+    tools:context="com.shuai.hehe.ui.MainActivity">
 
-    <!-- 标题栏 -->
-    <RelativeLayout
-        android:id="@+id/rl_title"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/activity_title_height"
-        android:background="@color/title_bg_color" >
+        android:layout_height="0dp"
+        android:layout_weight="1"></android.support.v4.view.ViewPager>
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="@string/title"
-            android:textColor="@color/title_color"
-            android:textSize="@dimen/activity_title_size"
-            android:textStyle="bold" />
-
-        <com.shuai.base.view.PopUpMenuButton
-            android:id="@+id/ib_menu_more"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/main_menu_btn_bg"
-            android:src="@drawable/ic_menu_more" />
-
-    </RelativeLayout>
-
-    <fragment
-        android:id="@+id/feed_fragment"
-        android:name="com.shuai.hehe.ui.FeedFragment"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="1px"
+        android:background="@color/split_line_deep_color" />
 
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#f7f7f8"
+        app:tabMode="fixed"
+        app:tabIndicatorHeight="0dp"></android.support.design.widget.TabLayout>
 </LinearLayout>

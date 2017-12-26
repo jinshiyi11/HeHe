@@ -23,14 +23,15 @@ import cz.msebera.android.httpclient.message.BasicNameValuePair;
 public class AddFavTask extends BaseAutoReloginTask<Void> {
     private static final String TAG = AddFavTask.class.getSimpleName();
 
-    public AddFavTask(Context context, String futuresId, Listener<Void> listener, Response.ErrorListener errorListener) {
+    public AddFavTask(Context context, int feedId,int feedType, Listener<Void> listener, Response.ErrorListener errorListener) {
         super(Method.POST, UrlHelper.getUrl(context, "api/addFav"),
-                getBody(context, futuresId), listener, errorListener);
+                getBody(context, feedId,feedType), listener, errorListener);
     }
 
-    private static List<BasicNameValuePair> getBody(Context context, String feedId) {
+    private static List<BasicNameValuePair> getBody(Context context, int feedId,int feedType) {
         List<BasicNameValuePair> params = new LinkedList<BasicNameValuePair>();
-        params.add(new BasicNameValuePair("feedId", feedId));
+        params.add(new BasicNameValuePair("feedId", String.valueOf(feedId)));
+        params.add(new BasicNameValuePair("feedType", String.valueOf(feedType)));
         UserInfo accountInfo = UserManager.getInstance().getUserInfo();
         params.add(new BasicNameValuePair("uid", String.valueOf(accountInfo.getUid())));
         params.add(new BasicNameValuePair("access_token", accountInfo.getToken()));

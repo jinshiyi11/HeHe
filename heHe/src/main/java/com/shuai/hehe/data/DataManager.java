@@ -44,6 +44,16 @@ public class DataManager {
     private static final int DB_VERSION = 1;
     
     /**
+     * 用来执行数据库操作的线程，所有数据库操作都在一个单独的行程中串行执行
+     */
+    private Executor mDbThread=Executors.newSingleThreadExecutor();
+    
+    /**
+     * 收藏的新鲜事的id集合
+     */
+    private Set<Long> mStarFeedIds;
+    
+    /**
      * 记录上次看到相册的第几张图片。如果再次打开相册，自动跳到上次浏览的图片
      */
     private Map<Long, Integer> mLastAblumPicPositions=new HashMap<Long, Integer>();
@@ -110,8 +120,14 @@ public class DataManager {
         mContext=context;
         mDbHelper= new DatabaseHelper(mContext);
         mLocalBroadcastManager=LocalBroadcastManager.getInstance(mContext);
+        loadStarFeeds();
     }
     
+
+    public ParallelAsyncTask executeDbTask(ParallelAsyncTask task,Object... params ){
+        return task.executeOnExecutor(mDbThread,params);
+    }
+
     /**
      * 记录上次看到相册的第几张图片
      * @param feedId
@@ -158,12 +174,40 @@ public class DataManager {
         }
     }
     
+    private void loadStarFeeds(){
+        ParallelAsyncTask<Object, Object, Set<Long>> task=new ParallelAsyncTask<Object, Object, Set<Long>>(){
+
+            @Override
+            protected Set<Long> doInBackground(Object... params) {
+                Set<Long> feedIds=new HashSet<Long>();
+                SQLiteDatabase db = mDbHelper.getReadableDatabase();
+                Cursor cursor = db.rawQuery("select feed_id from star_feed", null);
+                while(cursor.moveToNext()){
+                    feedIds.add(cursor.getLong(0));
+                }
+                return feedIds;
+            }
+
+            @Override
+            protected void onPostExecute(Set<Long> result) {
+                super.onPostExecute(result);
+                mStarFeedIds=result;
+            }
+        };
+        
+        executeDbTask(task);
+    }
+    
     /**
      * 该feedId对应的新鲜事是否已收藏
      * @param feedId
      * @return
      */
     public boolean isStarFeed(final long feedId){
+        if(mStarFeedIds==null){
+            //TODO:mStarredFeedIds还没从db加载完成？
+            return false;
+        }
         
         return mStarFeedIds.contains(feedId);
     }
@@ -173,6 +217,10 @@ public class DataManager {
      * @param feed
      */
     public void addStarFeed(final Feed feed){
+        if(mStarFeedIds==null){
+            //TODO:mStarredFeedIds还没从db加载完成？
+            return;
+        }
         
         //统计
         MobclickAgent.onEvent(mContext, Stat.EVENT_STAR);

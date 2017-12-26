@@ -1,41 +1,39 @@
 package com.shuai.hehe.ui;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadmoreListener;
 import com.shuai.hehe.R;
-import com.shuai.hehe.adapter.FeedAdapter;
 import com.shuai.hehe.adapter.FeedAdapter.FeedList;
+import com.shuai.hehe.adapter.TestAdapter;
 import com.shuai.hehe.base.ParallelAsyncTask;
 import com.shuai.hehe.data.DataManager;
 import com.shuai.hehe.data.DataManager.OnStarFeedChangedListener;
 import com.shuai.hehe.data.Feed;
-import com.shuai.hehe.ui.base.BaseActivity;
-import com.umeng.socialize.controller.UMServiceFactory;
-import com.umeng.socialize.controller.UMSocialService;
-import com.umeng.socialize.sso.UMSsoHandler;
+import com.shuai.hehe.ui.base.BaseTabFragment;
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import static com.shuai.hehe.ui.FeedFragment.KEY_TITLE;
 
 /**
  * 我的收藏页面
  */
-public class FavActivity extends BaseActivity implements OnStarFeedChangedListener {
+public class FavFragment extends BaseTabFragment implements OnStarFeedChangedListener {
     private ViewGroup mNoNetworkContainer;
     private ViewGroup mLoadingContainer;
     private ViewGroup mMainContainer;
+
     enum Status {
         /**
          * 正在加载并且还没有任何数据
@@ -53,96 +51,103 @@ public class FavActivity extends BaseActivity implements OnStarFeedChangedListen
     
     private Status mStatus;
     
-    private PullToRefreshListView mListView;
-    private FeedList mFeedList=new FeedList(); 
-    private FeedAdapter mFeedAdapter;
-    
     /**
      * 每次获取的feed个数
      */
     private static final int PAGE_COUNT = 30;
 
-    private View mIvBack;
-    private View mTitleContainer;
+    private Toolbar mToolbar;
     private TextView mTvTitle;
-    
+
+    private RefreshLayout mRefreshLayout;
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
+    private FeedList mFeedList = new FeedList();
+    private TestAdapter mFeedAdapter;
     private DataManager mDataManager;
     private GetStarFeedsTask mDbTask;
 
+    public FavFragment() {
+        super(R.layout.fragment_fav);
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        
-        setContentView(R.layout.activity_star);
+    protected void onInit(View root, Bundle savedInstanceState) {
         mDataManager=DataManager.getInstance();
-        mIvBack=findViewById(R.id.iv_back);
-        mIvBack.setOnClickListener(new OnClickListener() {
-            
+
+        mToolbar = root.findViewById(R.id.toolbar);
+        mTvTitle=root.findViewById(R.id.tv_title);
+        mTvTitle.setText(getArguments().getString(KEY_TITLE));
+        mToolbar.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onTitleClicked();
             }
         });
         
-        mTvTitle=(TextView) findViewById(R.id.tv_title);
-        mTvTitle.setText(R.string.my_star);
-        mTitleContainer = findViewById(R.id.rl_title);
-        mTitleContainer.setOnClickListener(new OnClickListener() {
+        mNoNetworkContainer=(ViewGroup) root.findViewById(R.id.no_data_container);
+        mLoadingContainer=(ViewGroup) root.findViewById(R.id.loading_container);
+        mMainContainer=(ViewGroup) root.findViewById(R.id.main_container);
 
+        mRefreshLayout = root.findViewById(R.id.refresh_layout);
+        mRecyclerView = root.findViewById(R.id.recyclerview);
+        mFeedAdapter = new TestAdapter(mContext, mFeedList);
+        mLayoutManager = new LinearLayoutManager(mContext);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mFeedAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onClick(View v) {
-              //单击标题栏时返回顶部
-                ListView listView=mListView.getRefreshableView();
-                if(listView.getCount()>0){
-                    listView.setSelection(0);
-                }
-
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                mFeedAdapter.onScrolled(mLayoutManager.findFirstVisibleItemPosition(),
+                        mLayoutManager.findLastVisibleItemPosition());
             }
         });
-        
-        mNoNetworkContainer=(ViewGroup) findViewById(R.id.no_data_container);
-        mLoadingContainer=(ViewGroup) findViewById(R.id.loading_container);
-        mMainContainer=(ViewGroup) findViewById(R.id.main_container);
-        
-        mListView=(PullToRefreshListView) findViewById(R.id.listview);
-        mListView.setMode(Mode.BOTH);
-        mFeedAdapter=new FeedAdapter(mContext, mFeedList);
-        mListView.setAdapter(mFeedAdapter);
-        
-        mListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
 
+        mRefreshLayout.setOnRefreshLoadmoreListener(new OnRefreshLoadmoreListener() {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                getData(true);
-            }
-
-            @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+            public void onLoadmore(RefreshLayout refreshlayout) {
                 getData(false);
             }
+
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                getData(true);
+            }
         });
-        
+
         mDataManager.addStarFeedChangedListener(this);
-        mListView.setRefreshing(false);
+        mRefreshLayout.autoRefresh();
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroyView() {
         mDataManager.removeStarFeedChangedListener(this);
-        super.onDestroy();
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        GSYVideoManager.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        GSYVideoManager.onPause();
     }
     
-    @Override 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
-        /**使用SSO授权必须添加如下代码 */
-        UMSsoHandler ssoHandler = mController.getConfig().getSsoHandler(requestCode) ;
-        if(ssoHandler != null){
-           ssoHandler.authorizeCallBack(requestCode, resultCode, data);
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        final UMSocialService mController = UMServiceFactory.getUMSocialService("com.umeng.share");
+//        /**使用SSO授权必须添加如下代码 */
+//        UMSsoHandler ssoHandler = mController.getConfig().getSsoHandler(requestCode) ;
+//        if(ssoHandler != null){
+//           ssoHandler.authorizeCallBack(requestCode, resultCode, data);
+//        }
+//    }
 
     private void setStatus(Status status) {
         mStatus = status;
@@ -169,7 +174,7 @@ public class FavActivity extends BaseActivity implements OnStarFeedChangedListen
     }
     
     private void getData(final boolean isPullDown){
-        if(mFeedAdapter.getCount()==0){
+        if(mFeedList.size()==0){
             setStatus(Status.STATUS_LOADING);
         }else{
             setStatus(Status.STATUS_GOT_DATA);
@@ -177,12 +182,12 @@ public class FavActivity extends BaseActivity implements OnStarFeedChangedListen
         
         long starTime = System.currentTimeMillis();
         int count = PAGE_COUNT * -1;
-        if (mFeedAdapter.getCount() > 0) {
+        if (mFeedList.size() > 0) {
             if (isPullDown) {
-                starTime = mFeedAdapter.getItem(0).getStarTime();
+                starTime = mFeedList.get(0).getStarTime();
                 count = PAGE_COUNT;
             } else {
-                starTime = mFeedAdapter.getItem(mFeedAdapter.getCount() - 1).getStarTime();
+                starTime = mFeedList.get(mFeedList.size() - 1).getStarTime();
                 count = PAGE_COUNT * -1;
             }
         }
@@ -212,24 +217,37 @@ public class FavActivity extends BaseActivity implements OnStarFeedChangedListen
         @Override
         protected void onPostExecute(ArrayList<Feed> feedList) {
             super.onPostExecute(feedList);
-            
-            mListView.onRefreshComplete();
-            
             if(mIsPullDown){
+                mRefreshLayout.finishRefresh();
                 mFeedList.addAll(0, feedList);
+                mFeedAdapter.notifyItemRangeInserted(0,feedList.size());
             }else{
+                mRefreshLayout.finishLoadmore();
+                int start=feedList.size();
                 mFeedList.addAll(feedList);
+                mFeedAdapter.notifyItemRangeInserted(start,feedList.size());
             }
             
             updateStatus();
         }
     }
+
+    /**
+     * 响应单击标题栏
+     */
+    public void onTitleClicked() {
+        //单击标题栏时返回顶部
+        if(mFeedList.size()>0) {
+            mRecyclerView.scrollToPosition(0);
+            //mRecyclerView.smoothScrollToPosition(0);
+        }
+    }
     
     private void updateStatus(){
-        if (mFeedAdapter.getCount() == 0) {
-            setStatus(FavActivity.Status.STATUS_NO_NETWORK_OR_DATA);
+        if (mFeedList.size() == 0) {
+            setStatus(FavFragment.Status.STATUS_NO_NETWORK_OR_DATA);
         }else{
-            setStatus(FavActivity.Status.STATUS_GOT_DATA);
+            setStatus(FavFragment.Status.STATUS_GOT_DATA);
         }
     }
 

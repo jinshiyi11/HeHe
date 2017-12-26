@@ -29,7 +29,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.MyActivity"
+            android:name=".ui.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
@@ -48,13 +48,6 @@
             android:screenOrientation="portrait" />
         <activity android:name=".ui.TestActivity"></activity>
         <activity
-            android:name=".ui.MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-
-        </activity>
-        <activity
             android:name=".ui.WebVideoActivity"
             android:hardwareAccelerated="true"
             android:screenOrientation="landscape" />
@@ -72,9 +65,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.BlogActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.FavActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.AboutActivity"
