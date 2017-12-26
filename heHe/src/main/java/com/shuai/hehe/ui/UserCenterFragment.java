@@ -128,7 +128,7 @@ public class UserCenterFragment extends BaseTabFragment implements OnClickListen
 		
 		getFragmentManager().executePendingTransactions();
 
-		mTvBalance.setText("0.00");
+		mTvBalance.setText("0");
 		mTvCoin.setText("0");
 		
 	}
@@ -159,8 +159,8 @@ public class UserCenterFragment extends BaseTabFragment implements OnClickListen
 			break;
 		case R.id.iv_settings:
 		{
-			//Intent intent=new Intent(mContext, SettingsActivity.class);
-			//startActivity(intent);
+			Intent intent=new Intent(mContext, SettingsActivity.class);
+			startActivity(intent);
 		}
 			break;
 		case R.id.ll_balance:

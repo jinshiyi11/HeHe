@@ -7,6 +7,8 @@ import android.content.Intent;
 import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.ui.AboutActivity;
 import com.shuai.hehe.ui.LoginActivity;
+import com.shuai.hehe.ui.MainActivity;
+import com.shuai.hehe.ui.SettingsActivity;
 
 
 /**
@@ -14,16 +16,16 @@ import com.shuai.hehe.ui.LoginActivity;
  */
 
 public class NavigateUtils {
-    public static final int TAB_FOLLOWED = 0;
-    public static final int TAB_MARKET = 1;
-    public static final int TAB_NEWS = 2;
+    public static final int TAB_VIDEO = 0;
+    public static final int TAB_ALBUM = 1;
+    public static final int TAB_FAV = 2;
     public static final int TAB_USER = 3;
 
     public static void showTab(Context context, int tab) {
-//        Intent intent = new Intent(context, MainActivity.class);
-//        intent.putExtra(Constants.EXTRA_TAB, tab);
-//
-//        context.startActivity(intent);
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra(Constants.EXTRA_TAB, tab);
+
+        context.startActivity(intent);
     }
 
     /**
@@ -49,11 +51,11 @@ public class NavigateUtils {
 //        Intent intent = new Intent(context, SearchActivity.class);
 //        context.startActivity(intent);
 //    }
-//
-//    public static void showSettingsActivity(Context context) {
-//        Intent intent = new Intent(context, SettingsActivity.class);
-//        context.startActivity(intent);
-//    }
+
+    public static void showSettingsActivity(Context context) {
+        Intent intent = new Intent(context, SettingsActivity.class);
+        context.startActivity(intent);
+    }
 
     public static void showAboutActivity(Context context) {
         Intent intent = new Intent(context, AboutActivity.class);

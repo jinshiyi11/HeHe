@@ -94,6 +94,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/multi-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/prebuild" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/proguard-rules" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/shaders" />
@@ -102,6 +103,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
+      <excludeFolder url="file://$MODULE_DIR$/build/reports" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 26 Platform" jdkType="Android SDK" />
@@ -115,8 +117,8 @@
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\heHe\libs\disklrucache-2.0.2.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\heHe\libs\commons-io-2.4.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_AtFriends.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\bolts-android-1.1.4.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_shake.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\bolts-android-1.1.4.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_evernote.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_QQZone_1.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="com.github.bumptech.glide:okhttp3-integration:4.4.0@jar" level="project" />
@@ -138,6 +140,7 @@
     <orderEntry type="library" name="org.slf4j:slf4j-android:1.7.21@jar" level="project" />
     <orderEntry type="library" name="tv.danmaku.ijk.media:ijkplayer-exo-0.8.2" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_flickr.jar:unspecified@jar" level="project" />
+    <orderEntry type="library" name="com.daimajia.easing:library-2.0" level="project" />
     <orderEntry type="library" name="android.arch.core:common:1.0.0@jar" level="project" />
     <orderEntry type="library" name="com.shuyu:gsyVideoPlayer-armv7a-2.0.5" level="project" />
     <orderEntry type="library" name="com.android.support:support-core-ui-27.0.2" level="project" />
@@ -148,7 +151,6 @@
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_facebook_2.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="com.danikula:videocache-2.7.0" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_WeiXin_2.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\heHe\libs\AndroidViewAnimations-1.1.3.jar:unspecified@jar" level="project" />
     <orderEntry type="library" scope="TEST" name="com.android.support:multidex-instrumentation-1.0.2" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_laiwang_2.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_pocket.jar:unspecified@jar" level="project" />
@@ -159,8 +161,8 @@
     <orderEntry type="library" name="com.github.bumptech.glide:gifdecoder:4.4.0@jar" level="project" />
     <orderEntry type="library" name="com.android.support:appcompat-v7-27.0.2" level="project" />
     <orderEntry type="library" name="com.google.android.exoplayer:exoplayer-r1.5.11" level="project" />
-    <orderEntry type="library" name="com.github.bumptech.glide:annotations:4.4.0@jar" level="project" />
     <orderEntry type="library" name="com.android.support:support-annotations:27.0.2@jar" level="project" />
+    <orderEntry type="library" name="com.github.bumptech.glide:annotations:4.4.0@jar" level="project" />
     <orderEntry type="library" name="com.android.support:design-27.0.2" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\heHe\libs\umeng_sdk.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\heHe\libs\commons-codec-1.10.jar:unspecified@jar" level="project" />
@@ -193,9 +195,10 @@
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_line.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_yixin_2.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="com.android.support:support-core-utils-27.0.2" level="project" />
+    <orderEntry type="library" name="com.daimajia.androidanimations:library-2.3" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\heHe\libs\nineoldandroids-2.4.0.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_renren_1.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="com.loopj.android:android-async-http:1.4.9@jar" level="project" />
+    <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_renren_1.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="org.greenrobot:eventbus:3.1.1@jar" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_comment.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="__local_aars__:C.\code\mycode\HeHe2\social_sdk_library_project\libs\SocialSDK_QQZone_3.jar:unspecified@jar" level="project" />

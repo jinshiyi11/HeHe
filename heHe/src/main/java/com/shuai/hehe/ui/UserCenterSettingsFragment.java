@@ -27,7 +27,7 @@ public class UserCenterSettingsFragment extends BaseFragment implements View.OnC
         mContext = getActivity();
         View view = inflater.inflate(R.layout.fragment_user_center_settings,
                 container, false);
-        mRlFollowed = (RelativeLayout) view.findViewById(R.id.rl_followed);
+        mRlFollowed = (RelativeLayout) view.findViewById(R.id.rl_fav);
         mRlSettings = (RelativeLayout) view.findViewById(R.id.rl_settings);
         mRlAbout = (RelativeLayout) view.findViewById(R.id.rl_about);
 
@@ -41,11 +41,11 @@ public class UserCenterSettingsFragment extends BaseFragment implements View.OnC
     public void onClick(View v) {
         int id=v.getId();
         switch (id){
-            case R.id.rl_followed:
-                NavigateUtils.showTab(mContext,NavigateUtils.TAB_FOLLOWED);
+            case R.id.rl_fav:
+                NavigateUtils.showTab(mContext,NavigateUtils.TAB_FAV);
                 break;
             case R.id.rl_settings:
-                //NavigateUtils.showSettingsActivity(mContext);
+                NavigateUtils.showSettingsActivity(mContext);
                 break;
             case R.id.rl_about:
                 NavigateUtils.showAboutActivity(mContext);

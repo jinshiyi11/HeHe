@@ -1,3 +1,2 @@
-include ':heHePullToRefresh'
 include ':social_sdk_library_project'
 include ':heHe'

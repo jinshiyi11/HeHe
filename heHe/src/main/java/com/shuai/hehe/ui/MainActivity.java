@@ -8,9 +8,11 @@ import android.widget.Toast;
 
 import com.shuai.hehe.R;
 import com.shuai.hehe.adapter.TabsAdapter;
+import com.shuai.hehe.data.Constants;
 import com.shuai.hehe.logic.UserManager;
 import com.shuai.hehe.ui.base.BaseFragmentActivity;
 import com.shuai.utils.ConnectionChangeMonitor;
+import com.shuai.utils.NavigateUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import com.umeng.socialize.controller.UMServiceFactory;
 import com.umeng.socialize.controller.UMSocialService;
@@ -103,5 +105,40 @@ public class MainActivity extends BaseFragmentActivity {
 
             //updateOnlineConfig();
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        showTab(intent.getIntExtra(Constants.EXTRA_TAB, NavigateUtils.TAB_VIDEO));
+    }
+
+    private void showTab(int tab) {
+        switch (tab) {
+            case NavigateUtils.TAB_VIDEO: {
+                mViewPager.setCurrentItem(0);
+                break;
+            }
+            case NavigateUtils.TAB_ALBUM: {
+                mViewPager.setCurrentItem(1);
+                break;
+            }
+            case NavigateUtils.TAB_FAV: {
+                mViewPager.setCurrentItem(2);
+                break;
+            }
+            case NavigateUtils.TAB_USER: {
+//                if (!isLogined()) {
+//                    //NavigateUtils.showTab(mContext, NavigateUtils.TAB_MESSAGE);
+//                    return;
+//                }
+                mViewPager.setCurrentItem(3);
+                break;
+            }
+        }
+    }
+
+    private boolean isLogined() {
+        return UserManager.getInstance().isLogined();
     }
 }

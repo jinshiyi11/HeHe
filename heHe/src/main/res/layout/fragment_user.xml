@@ -101,14 +101,14 @@
                     android:id="@+id/tv_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.00"
+                    android:text="0"
                     android:textColor="@color/default_text_color"
                     android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="账户资金"
+                    android:text="等级"
                     android:textColor="#aaaaaa"
                     android:textSize="12sp" />
             </LinearLayout>

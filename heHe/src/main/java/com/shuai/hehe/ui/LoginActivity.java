@@ -42,8 +42,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private Context mContext;
 	//登录成功后要执行的intent
 	private Intent mLoginTargetIntent;
-	
-	
+
     private TextView mTvRegister;
     private TextView mTvFindPassword;
     private LinearLayout mLlName;

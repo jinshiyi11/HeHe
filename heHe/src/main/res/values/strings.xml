@@ -21,6 +21,7 @@
     <string name="set_wallpaper_success">壁纸设置成功</string>
     <string name="set_wallpaper_failed">壁纸设置失败</string>
     <string name="launch_app_market_failed">您的手机上未发现应用市场</string>
+    <string name="service_phone">000-000-0000</string>
 
     <!-- 主菜单 -->
     <string name="my_star">我的收藏</string>

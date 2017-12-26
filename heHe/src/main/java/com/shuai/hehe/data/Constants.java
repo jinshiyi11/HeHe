@@ -38,6 +38,11 @@ public class Constants {
     
     public static final String PREF_NAME="preferences";
 
+    /**
+     * 主界面显示哪个tab
+     */
+    public static final String EXTRA_TAB = "extra_tab";
+
     public static final String FEED = "feed";
     public static final String FEED_ID = "feed_id";
     public static final String FEED_ALBUM = "feed_album";

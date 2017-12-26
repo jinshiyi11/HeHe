@@ -10,13 +10,14 @@ import android.widget.RadioButton;
 
 import com.shuai.hehe.R;
 
-public class RadioButtonCenter extends RadioButton {
+
+public class RadioButtonCenter extends android.support.v7.widget.AppCompatRadioButton {
 
 	public RadioButtonCenter(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.CompoundButton, 0, 0);
-		buttonDrawable = a.getDrawable(1);
+		//buttonDrawable = a.getDrawable(1);
 		setButtonDrawable(android.R.color.transparent);
 		setButtonDrawable(null);
 	}

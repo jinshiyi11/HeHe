@@ -37,7 +37,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="38dp"
         android:gravity="center"
-        android:text="登陆之后尽享超值服务"
+        android:text="登陆之后更精彩"
         android:textColor="#beaca4"
         android:textSize="16sp" />
 
