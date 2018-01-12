@@ -308,12 +308,7 @@ public class FeedFragment extends BaseTabFragment implements OnStarFeedChangedLi
     }
 
     private void updateStarFeedState(long feedId) {
-        for (int i = 0; i < mFeedList.size(); i++) {
-            if (mFeedList.get(i).getId() == feedId) {
-                mFeedAdapter.notifyItemChanged(i);
-                break;
-            }
-        }
+        mFeedAdapter.updateStarFeedState(mRecyclerView,feedId);
     }
 
 }

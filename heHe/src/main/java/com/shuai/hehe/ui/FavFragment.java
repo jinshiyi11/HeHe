@@ -122,7 +122,9 @@ public class FavFragment extends BaseTabFragment implements OnStarFeedChangedLis
 
     @Override
     public void onDestroyView() {
-        mDataManager.removeStarFeedChangedListener(this);
+        if(mDataManager!=null) {
+            mDataManager.removeStarFeedChangedListener(this);
+        }
         super.onDestroyView();
     }
 
